@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Wand2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
 import { useSceneStore } from "@/store/scene-store";
@@ -14,7 +15,6 @@ interface DirectorBarProps {
 export function DirectorBar({ projectId }: DirectorBarProps) {
   const [description, setDescription] = useState("");
   const [isRunning, setIsRunning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const loadGraph = useProjectStore((s) => s.loadGraph);
   const settings = useProjectStore((s) => s.settings);
@@ -23,7 +23,6 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
   const handleRun = async () => {
     if (!description.trim() || isRunning) return;
     setIsRunning(true);
-    setError(null);
 
     const input: DirectorInput = {
       projectId,
@@ -33,23 +32,24 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
       numScenes: settings.numScenes,
     };
 
+    const tid = toast.loading("Director is planning your shots…");
     try {
       const res = await fetch("/api/director", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Director failed");
 
-      // Update the graph in-store so React Flow reflects the new nodes
       loadGraph(data.graph.nodes, data.graph.edges);
-      // Reload scenes panel
       await loadScenes(projectId);
       setDescription("");
+      const sceneCount = data.scenes?.length ?? 0;
+      const shotCount = data.scenes?.reduce((s: number, sc: { shots: unknown[] }) => s + sc.shots.length, 0) ?? 0;
+      toast.success(`Shot plan ready — ${sceneCount} scenes, ${shotCount} shots`, { id: tid });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(err instanceof Error ? err.message : "Director failed", { id: tid });
     } finally {
       setIsRunning(false);
     }
@@ -72,10 +72,6 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
         }}
         disabled={isRunning}
       />
-
-      {error && (
-        <span className="shrink-0 text-[10px] text-red-400/80">{error}</span>
-      )}
 
       <Button
         size="sm"

@@ -2,7 +2,8 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Check, Play, Film, Settings, Zap } from "lucide-react";
+import { ChevronLeft, Loader2, Check, Play, Film, Settings, Zap, Download } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
 import { useCredits } from "@/hooks/use-credits";
@@ -19,7 +20,6 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
   const [isTitleSaving, setIsTitleSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const { isDirty, isSaving } = useProjectStore();
   const credits = useCredits();
@@ -34,7 +34,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
 
   const handleGenerateAll = async () => {
     setIsGenerating(true);
-    setActionError(null);
+    const tid = toast.loading("Queuing generation jobs…");
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -43,8 +43,9 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Generation failed");
+      toast.success(`${data.runs?.length ?? 0} shots queued — watch the Scene panel for progress`, { id: tid });
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : "Generation failed");
+      toast.error(err instanceof Error ? err.message : "Generation failed", { id: tid });
     } finally {
       setIsGenerating(false);
     }
@@ -52,7 +53,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
 
   const handleCompose = async () => {
     setIsComposing(true);
-    setActionError(null);
+    const tid = toast.loading("Composing final video…");
     try {
       const res = await fetch("/api/compose", {
         method: "POST",
@@ -61,8 +62,9 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Composition failed");
+      toast.success("Composition job started — check dashboard when complete", { id: tid });
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : "Composition failed");
+      toast.error(err instanceof Error ? err.message : "Composition failed", { id: tid });
     } finally {
       setIsComposing(false);
     }
@@ -99,10 +101,6 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        {actionError && (
-          <span className="text-[10px] text-red-400/80">{actionError}</span>
-        )}
-
         {/* Save status */}
         {isSaving ? (
           <span className="flex items-center gap-1 text-xs text-white/30">

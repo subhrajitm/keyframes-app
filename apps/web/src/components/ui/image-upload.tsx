@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import { Upload, Loader2, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   value?: string;
@@ -25,11 +26,9 @@ export function ImageUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const upload = useCallback(async (file: File) => {
     setIsUploading(true);
-    setError(null);
     try {
       const form = new FormData();
       form.append("file", file);
@@ -40,8 +39,9 @@ export function ImageUpload({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
       onChange(data.url);
+      toast.success("Image uploaded");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      toast.error(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setIsUploading(false);
     }
@@ -108,8 +108,6 @@ export function ImageUpload({
           </div>
         )}
       </div>
-
-      {error && <p className="text-[10px] text-red-400">{error}</p>}
 
       <input
         ref={inputRef}

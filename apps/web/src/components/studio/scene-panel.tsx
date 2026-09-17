@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, CheckCircle2, XCircle, Clock, Film } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, Clock, Film, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { useSceneStore } from "@/store/scene-store";
 import { ShotPreviewModal } from "./shot-preview-modal";
 import type { Shot } from "@keyframe/types";
@@ -23,6 +24,23 @@ interface ScenePanelProps {
 export function ScenePanel({ projectId }: ScenePanelProps) {
   const { scenes, isLoading, loadScenes, subscribeRealtime } = useSceneStore();
   const [previewShot, setPreviewShot] = useState<Shot | null>(null);
+  const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
+
+  const handleRegenerate = async (e: React.MouseEvent, shot: Shot) => {
+    e.stopPropagation();
+    setRegeneratingId(shot.id);
+    const tid = toast.loading(`Regenerating "${shot.title}"…`);
+    try {
+      const res = await fetch(`/api/shots/${shot.id}/regenerate`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Regeneration failed");
+      toast.success("Shot queued for regeneration", { id: tid });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Regeneration failed", { id: tid });
+    } finally {
+      setRegeneratingId(null);
+    }
+  };
 
   // Flat list of all shots for prev/next navigation
   const allShots = scenes.flatMap((s) => s.shots);
@@ -75,7 +93,7 @@ export function ScenePanel({ projectId }: ScenePanelProps) {
                   <button
                     key={shot.id}
                     onClick={() => setPreviewShot(shot)}
-                    className="flex items-center gap-2 rounded-md border border-white/5 bg-white/[0.03] px-2 py-1.5 text-left transition-colors hover:border-white/10 hover:bg-white/[0.06]"
+                    className="group/shot flex items-center gap-2 rounded-md border border-white/5 bg-white/[0.03] px-2 py-1.5 text-left transition-colors hover:border-white/10 hover:bg-white/[0.06]"
                   >
                     {shot.video_url ? (
                       <video src={shot.video_url} className="h-8 w-14 shrink-0 rounded object-cover" muted loop autoPlay />
@@ -92,6 +110,18 @@ export function ScenePanel({ projectId }: ScenePanelProps) {
                         <span className="text-[9px]">{cfg.label}</span>
                       </div>
                     </div>
+
+                    {/* Regenerate button — show on hover for completed/failed */}
+                    {(shot.status === "completed" || shot.status === "failed") && (
+                      <button
+                        onClick={(e) => handleRegenerate(e, shot)}
+                        disabled={regeneratingId === shot.id}
+                        className="shrink-0 rounded p-0.5 text-white/20 opacity-0 transition-opacity hover:text-white/60 group-hover/shot:opacity-100 disabled:cursor-not-allowed"
+                        title="Regenerate shot"
+                      >
+                        <RefreshCw className={`h-3 w-3 ${regeneratingId === shot.id ? "animate-spin" : ""}`} />
+                      </button>
+                    )}
                   </button>
                 );
               })}

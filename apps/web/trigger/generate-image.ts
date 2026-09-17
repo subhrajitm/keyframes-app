@@ -66,6 +66,15 @@ export const generateImageTask = task({
         .from("shots")
         .update({ status: "failed", error, updated_at: new Date().toISOString() })
         .eq("id", shotId);
+
+      // Refund 4 credits (1 image + 3 video) if image generation itself fails
+      const { data: shot } = await supabase.from("shots").select("project_id").eq("id", shotId).single();
+      if (shot) {
+        const { data: project } = await supabase.from("projects").select("user_id").eq("id", shot.project_id).single();
+        if (project) {
+          await supabase.rpc("increment_credits", { uid: project.user_id, amount: 4 });
+        }
+      }
       throw err;
     }
   },

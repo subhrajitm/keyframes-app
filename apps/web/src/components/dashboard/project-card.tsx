@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MoreHorizontal, Trash2, Film } from "lucide-react";
+import { MoreHorizontal, Trash2, Film, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatRelativeTime } from "@/lib/utils";
@@ -90,9 +90,24 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </DropdownMenu>
         </div>
 
-        <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs capitalize ${STATUS_STYLE[project.status] ?? "bg-white/5 text-white/40"}`}>
-          {project.status}
-        </span>
+        <div className="mt-2 flex items-center justify-between">
+          <span className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${STATUS_STYLE[project.status] ?? "bg-white/5 text-white/40"}`}>
+            {project.status}
+          </span>
+
+          {project.status === "complete" && project.thumbnail_url && (
+            <a
+              href={project.thumbnail_url}
+              download={`${project.title}.mp4`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] text-white/40 hover:bg-white/5 hover:text-white/70"
+              title="Download final video"
+            >
+              <Download className="h-3 w-3" />
+              Download
+            </a>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
