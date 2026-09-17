@@ -12,6 +12,7 @@ import {
   type EdgeChange,
   type Connection,
 } from "@xyflow/react";
+import type { ImageModel, VideoModel, AspectRatio } from "@keyframe/types";
 
 export type NodeType =
   | "character"
@@ -23,22 +24,35 @@ export type NodeType =
 
 export interface NodeData extends Record<string, unknown> {
   label: string;
-  // Character
   characterName?: string;
   characterImageUrl?: string;
-  // Location
   locationName?: string;
   locationDescription?: string;
   locationImageUrl?: string;
-  // Prompt
   promptText?: string;
-  // ImageGen / VideoGen
   generationId?: string;
   generationStatus?: "idle" | "pending" | "processing" | "completed" | "failed";
   outputUrl?: string;
-  // Output
   clipOrder?: number;
 }
+
+export interface ProjectSettings {
+  aspectRatio: AspectRatio;
+  style: string;
+  totalDuration: number;
+  numScenes: number;
+  imageModel: ImageModel;
+  videoModel: VideoModel;
+}
+
+export const DEFAULT_SETTINGS: ProjectSettings = {
+  aspectRatio: "16:9",
+  style: "",
+  totalDuration: 30,
+  numScenes: 3,
+  imageModel: "fal/flux-pro",
+  videoModel: "fal/minimax-h3-max",
+};
 
 export type KFNode = Node<NodeData, NodeType>;
 export type KFEdge = Edge;
@@ -47,23 +61,22 @@ interface ProjectStore {
   projectId: string;
   nodes: KFNode[];
   edges: KFEdge[];
+  settings: ProjectSettings;
   selectedNodeId: string | null;
   isDirty: boolean;
   isSaving: boolean;
 
-  // ReactFlow handlers
   onNodesChange: (changes: NodeChange<KFNode>[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
 
-  // Node operations
   addNode: (type: NodeType, position: { x: number; y: number }) => void;
   updateNodeData: (id: string, data: Partial<NodeData>) => void;
   deleteNode: (id: string) => void;
   selectNode: (id: string | null) => void;
+  updateSettings: (settings: Partial<ProjectSettings>) => void;
 
-  // Persistence
-  loadGraph: (nodes: KFNode[], edges: KFEdge[]) => void;
+  loadGraph: (nodes: KFNode[], edges: KFEdge[], settings?: Partial<ProjectSettings>) => void;
   markSaved: () => void;
   markSaving: () => void;
 }
@@ -91,22 +104,17 @@ export const useProjectStore = create<ProjectStore>()(
     projectId: "",
     nodes: [],
     edges: [],
+    settings: DEFAULT_SETTINGS,
     selectedNodeId: null,
     isDirty: false,
     isSaving: false,
 
     onNodesChange: (changes) => {
-      set((s) => ({
-        nodes: applyNodeChanges(changes, s.nodes) as KFNode[],
-        isDirty: true,
-      }));
+      set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as KFNode[], isDirty: true }));
     },
 
     onEdgesChange: (changes) => {
-      set((s) => ({
-        edges: applyEdgeChanges(changes, s.edges),
-        isDirty: true,
-      }));
+      set((s) => ({ edges: applyEdgeChanges(changes, s.edges), isDirty: true }));
     },
 
     onConnect: (connection) => {
@@ -121,21 +129,14 @@ export const useProjectStore = create<ProjectStore>()(
 
     addNode: (type, position) => {
       const id = makeNodeId(type);
-      const newNode: KFNode = {
-        id,
-        type,
-        position,
-        data: defaultDataForType(type),
-      };
+      const newNode: KFNode = { id, type, position, data: defaultDataForType(type) };
       set((s) => ({ nodes: [...s.nodes, newNode], isDirty: true }));
       get().selectNode(id);
     },
 
     updateNodeData: (id, data) => {
       set((s) => ({
-        nodes: s.nodes.map((n) =>
-          n.id === id ? { ...n, data: { ...n.data, ...data } } : n
-        ),
+        nodes: s.nodes.map((n) => n.id === id ? { ...n, data: { ...n.data, ...data } } : n),
         isDirty: true,
       }));
     },
@@ -151,7 +152,16 @@ export const useProjectStore = create<ProjectStore>()(
 
     selectNode: (id) => set({ selectedNodeId: id }),
 
-    loadGraph: (nodes, edges) => set({ nodes, edges, isDirty: false }),
+    updateSettings: (partial) => {
+      set((s) => ({ settings: { ...s.settings, ...partial }, isDirty: true }));
+    },
+
+    loadGraph: (nodes, edges, settings) => set({
+      nodes,
+      edges,
+      settings: { ...DEFAULT_SETTINGS, ...settings },
+      isDirty: false,
+    }),
 
     markSaved: () => set({ isDirty: false, isSaving: false }),
     markSaving: () => set({ isSaving: true }),

@@ -1,14 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { StudioShell } from "@/components/studio/studio-shell";
-import type { KFNode, KFEdge } from "@/store/project-store";
+import type { KFNode, KFEdge, ProjectSettings } from "@/store/project-store";
 import type { Json } from "@keyframe/types";
 
 interface StudioPageProps {
   params: Promise<{ projectId: string }>;
 }
 
-function parseGraph(graphState: Json | null): { nodes: KFNode[]; edges: KFEdge[] } {
+function parseGraph(graphState: Json | null): { nodes: KFNode[]; edges: KFEdge[]; settings?: Partial<ProjectSettings> } {
   if (!graphState || typeof graphState !== "object" || Array.isArray(graphState)) {
     return { nodes: [], edges: [] };
   }
@@ -16,6 +16,7 @@ function parseGraph(graphState: Json | null): { nodes: KFNode[]; edges: KFEdge[]
   return {
     nodes: Array.isArray(g["nodes"]) ? (g["nodes"] as unknown as KFNode[]) : [],
     edges: Array.isArray(g["edges"]) ? (g["edges"] as unknown as KFEdge[]) : [],
+    settings: g["settings"] ? (g["settings"] as unknown as Partial<ProjectSettings>) : undefined,
   };
 }
 
@@ -34,7 +35,7 @@ export default async function StudioPage({ params }: StudioPageProps) {
 
   if (!project) notFound();
 
-  const { nodes, edges } = parseGraph(project.graph_state);
+  const { nodes, edges, settings } = parseGraph(project.graph_state);
 
   return (
     <StudioShell
@@ -42,6 +43,7 @@ export default async function StudioPage({ params }: StudioPageProps) {
       initialTitle={project.title}
       initialNodes={nodes}
       initialEdges={edges}
+      initialSettings={settings}
     />
   );
 }

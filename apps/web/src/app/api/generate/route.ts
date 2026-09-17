@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { tasks } from "@trigger.dev/sdk/v3";
-import type { ShotSpec } from "@keyframe/types";
+import type { ShotSpec, Json } from "@keyframe/types";
 import type { generateImageTask } from "../../../../trigger/generate-image";
+
+const IMAGE_CREDITS = 1;
+const VIDEO_CREDITS = 3;
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -12,40 +15,71 @@ export async function POST(req: NextRequest) {
   const { projectId, shotIds } = await req.json() as { projectId: string; shotIds?: string[] };
   if (!projectId) return NextResponse.json({ error: "projectId required" }, { status: 400 });
 
-  // Verify project ownership
   const { data: project } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, graph_state")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
   if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
-  // Fetch shots to generate (all idle shots, or specified ones)
-  let query = supabase
-    .from("shots")
-    .select("id, shot_spec")
-    .eq("project_id", projectId)
-    .eq("status", "idle");
+  // Check credit balance
+  const { data: userData } = await supabase
+    .from("users")
+    .select("credits")
+    .eq("id", user.id)
+    .single();
 
-  if (shotIds?.length) {
-    query = query.in("id", shotIds);
+  const credits = userData?.credits ?? 0;
+
+  // Count idle shots first to check credits upfront
+  let countQuery = supabase.from("shots").select("id", { count: "exact", head: true })
+    .eq("project_id", projectId).eq("status", "idle");
+  if (shotIds?.length) countQuery = countQuery.in("id", shotIds);
+  const { count: shotCount } = await countQuery;
+
+  const creditsNeeded = (shotCount ?? 0) * (IMAGE_CREDITS + VIDEO_CREDITS);
+  if (credits < creditsNeeded) {
+    return NextResponse.json(
+      { error: `Insufficient credits. Need ${creditsNeeded}, have ${credits}.` },
+      { status: 402 }
+    );
   }
+
+  // Extract character/location refs from graph nodes
+  const graphState = project.graph_state as Record<string, Json> | null;
+  const nodes = Array.isArray(graphState?.["nodes"]) ? graphState!["nodes"] as Array<Record<string, unknown>> : [];
+  const characterRefs = nodes
+    .filter((n) => n["type"] === "character")
+    .map((n) => (n["data"] as Record<string, unknown>)?.["characterImageUrl"] as string)
+    .filter(Boolean);
+  const locationRef = nodes
+    .filter((n) => n["type"] === "location")
+    .map((n) => (n["data"] as Record<string, unknown>)?.["locationImageUrl"] as string)
+    .find(Boolean);
+
+  // Fetch idle shots
+  let query = supabase.from("shots").select("id, shot_spec")
+    .eq("project_id", projectId).eq("status", "idle");
+  if (shotIds?.length) query = query.in("id", shotIds);
 
   const { data: shots } = await query;
-  if (!shots?.length) {
-    return NextResponse.json({ error: "No idle shots to generate" }, { status: 400 });
-  }
+  if (!shots?.length) return NextResponse.json({ error: "No idle shots to generate" }, { status: 400 });
 
   const runs: { shotId: string; runId: string }[] = [];
 
   for (const shot of shots) {
-    const shotSpec = shot.shot_spec as unknown as ShotSpec;
+    const shotSpec: ShotSpec = {
+      ...(shot.shot_spec as unknown as ShotSpec),
+      // Merge uploaded asset refs from the graph into the spec
+      characterRefs: characterRefs.length
+        ? characterRefs
+        : (shot.shot_spec as unknown as ShotSpec).characterRefs ?? [],
+      locationRef: locationRef ?? (shot.shot_spec as unknown as ShotSpec).locationRef,
+    };
 
-    // Mark as pending before queuing
-    await supabase
-      .from("shots")
+    await supabase.from("shots")
       .update({ status: "image_pending", updated_at: new Date().toISOString() })
       .eq("id", shot.id);
 
@@ -54,20 +88,21 @@ export async function POST(req: NextRequest) {
       shotSpec,
     });
 
-    // Store Trigger run ID for tracking
-    await supabase
-      .from("shots")
+    await supabase.from("shots")
       .update({ trigger_run_id: handle.id })
       .eq("id", shot.id);
 
     runs.push({ shotId: shot.id, runId: handle.id });
   }
 
-  // Update project status
-  await supabase
-    .from("projects")
+  // Deduct credits upfront (refunded if task fails)
+  await supabase.from("users")
+    .update({ credits: credits - creditsNeeded })
+    .eq("id", user.id);
+
+  await supabase.from("projects")
     .update({ status: "generating", updated_at: new Date().toISOString() })
     .eq("id", projectId);
 
-  return NextResponse.json({ runs });
+  return NextResponse.json({ runs, creditsDeducted: creditsNeeded });
 }

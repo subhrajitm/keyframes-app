@@ -55,11 +55,7 @@ export function StudioCanvas({ projectId, initialNodes, initialEdges }: StudioCa
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const supabase = createClient();
 
-  // Load initial graph from server
-  useEffect(() => {
-    loadGraph(initialNodes, initialEdges);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Initial graph is loaded by StudioShell to avoid double-load
 
   // Autosave: debounce 2s after last change
   useEffect(() => {
@@ -67,10 +63,10 @@ export function StudioCanvas({ projectId, initialNodes, initialEdges }: StudioCa
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       markSaving();
-      const { nodes: current, edges: currentEdges } = useProjectStore.getState();
+      const { nodes: current, edges: currentEdges, settings } = useProjectStore.getState();
       await supabase
         .from("projects")
-        .update({ graph_state: { nodes: current, edges: currentEdges } as unknown as import("@keyframe/types").Json })
+        .update({ graph_state: { nodes: current, edges: currentEdges, settings } as unknown as import("@keyframe/types").Json })
         .eq("id", projectId);
       markSaved();
     }, 2000);

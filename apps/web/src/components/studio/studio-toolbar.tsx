@@ -2,17 +2,19 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Check, Play, Film } from "lucide-react";
+import { ChevronLeft, Loader2, Check, Play, Film, Settings, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
+import { useCredits } from "@/hooks/use-credits";
 
 interface StudioToolbarProps {
   projectId: string;
   initialTitle: string;
   onTitleChange: (title: string) => Promise<void>;
+  onSettingsOpen: () => void;
 }
 
-export function StudioToolbar({ projectId, initialTitle, onTitleChange }: StudioToolbarProps) {
+export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettingsOpen }: StudioToolbarProps) {
   const [title, setTitle] = useState(initialTitle);
   const [isTitleSaving, setIsTitleSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -20,6 +22,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange }: Studio
   const [actionError, setActionError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const { isDirty, isSaving } = useProjectStore();
+  const credits = useCredits();
 
   const handleTitleBlur = async () => {
     if (title !== initialTitle && title.trim()) {
@@ -86,37 +89,50 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange }: Studio
           onBlur={handleTitleBlur}
           onKeyDown={(e) => {
             if (e.key === "Enter") titleRef.current?.blur();
-            if (e.key === "Escape") {
-              setTitle(initialTitle);
-              titleRef.current?.blur();
-            }
+            if (e.key === "Escape") { setTitle(initialTitle); titleRef.current?.blur(); }
           }}
           className="bg-transparent text-sm font-medium text-white/80 outline-none focus:text-white"
           style={{ width: `${Math.max(title.length, 8)}ch` }}
         />
-
         {isTitleSaving && <Loader2 className="h-3 w-3 animate-spin text-white/30" />}
       </div>
 
-      {/* Right: save status + actions */}
-      <div className="flex items-center gap-3">
+      {/* Right */}
+      <div className="flex items-center gap-2">
         {actionError && (
           <span className="text-[10px] text-red-400/80">{actionError}</span>
         )}
 
+        {/* Save status */}
         {isSaving ? (
-          <span className="flex items-center gap-1.5 text-xs text-white/30">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            Saving…
+          <span className="flex items-center gap-1 text-xs text-white/30">
+            <Loader2 className="h-3 w-3 animate-spin" /> Saving…
           </span>
         ) : isDirty ? (
-          <span className="text-xs text-white/30">Unsaved changes</span>
+          <span className="text-xs text-white/30">Unsaved</span>
         ) : (
-          <span className="flex items-center gap-1.5 text-xs text-white/20">
-            <Check className="h-3 w-3" />
-            Saved
+          <span className="flex items-center gap-1 text-xs text-white/20">
+            <Check className="h-3 w-3" /> Saved
           </span>
         )}
+
+        {/* Credits */}
+        {credits !== null && (
+          <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/50">
+            <Zap className="h-3 w-3 text-yellow-400/70" />
+            {credits}
+          </span>
+        )}
+
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-7 w-7 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
+          onClick={onSettingsOpen}
+          title="Project settings"
+        >
+          <Settings className="h-3.5 w-3.5" />
+        </Button>
 
         <Button
           size="sm"
@@ -125,11 +141,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange }: Studio
           onClick={handleGenerateAll}
           disabled={isGenerating}
         >
-          {isGenerating ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
-          ) : (
-            <Play className="h-3 w-3" />
-          )}
+          {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
           {isGenerating ? "Generating…" : "Generate All"}
         </Button>
 
@@ -140,11 +152,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange }: Studio
           onClick={handleCompose}
           disabled={isComposing}
         >
-          {isComposing ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
-          ) : (
-            <Film className="h-3 w-3" />
-          )}
+          {isComposing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Film className="h-3 w-3" />}
           {isComposing ? "Composing…" : "Compose"}
         </Button>
       </div>

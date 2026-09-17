@@ -18,13 +18,31 @@ interface ProjectCardProps {
   project: Project;
 }
 
+const STATUS_STYLE: Record<string, string> = {
+  complete:   "bg-green-500/10 text-green-400",
+  generating: "bg-yellow-500/10 text-yellow-400",
+  draft:      "bg-white/5 text-white/40",
+};
+
 export function ProjectCard({ project }: ProjectCardProps) {
+  const isVideo = project.thumbnail_url?.endsWith(".mp4") ||
+                  project.thumbnail_url?.includes("/videos/");
+
   return (
     <Card className="group relative overflow-hidden transition-colors hover:border-violet-500/40">
-      {/* Thumbnail */}
+      {/* Thumbnail / Video */}
       <Link href={`/studio/${project.id}`}>
         <div className="aspect-video w-full overflow-hidden bg-white/5">
-          {project.thumbnail_url ? (
+          {project.status === "complete" && project.thumbnail_url && isVideo ? (
+            <video
+              src={project.thumbnail_url}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              muted
+              loop
+              autoPlay
+              playsInline
+            />
+          ) : project.thumbnail_url && !isVideo ? (
             <img
               src={project.thumbnail_url}
               alt={project.title}
@@ -72,15 +90,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </DropdownMenu>
         </div>
 
-        <span
-          className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs capitalize ${
-            project.status === "complete"
-              ? "bg-green-500/10 text-green-400"
-              : project.status === "generating"
-              ? "bg-yellow-500/10 text-yellow-400"
-              : "bg-white/5 text-white/40"
-          }`}
-        >
+        <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs capitalize ${STATUS_STYLE[project.status] ?? "bg-white/5 text-white/40"}`}>
           {project.status}
         </span>
       </CardContent>

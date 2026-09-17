@@ -17,6 +17,7 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
   const [error, setError] = useState<string | null>(null);
 
   const loadGraph = useProjectStore((s) => s.loadGraph);
+  const settings = useProjectStore((s) => s.settings);
   const loadScenes = useSceneStore((s) => s.loadScenes);
 
   const handleRun = async () => {
@@ -27,6 +28,9 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
     const input: DirectorInput = {
       projectId,
       description: description.trim(),
+      style: settings.style || undefined,
+      totalDuration: settings.totalDuration,
+      numScenes: settings.numScenes,
     };
 
     try {
