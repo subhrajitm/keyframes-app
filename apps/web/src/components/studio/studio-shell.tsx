@@ -46,7 +46,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
           </main>
         </ReactFlowProvider>
 
-        <NodeInspector />
+        <NodeInspector projectId={projectId} />
       </div>
     </div>
   );

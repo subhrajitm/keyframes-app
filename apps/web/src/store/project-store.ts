@@ -29,6 +29,7 @@ export interface NodeData extends Record<string, unknown> {
   // Location
   locationName?: string;
   locationDescription?: string;
+  locationImageUrl?: string;
   // Prompt
   promptText?: string;
   // ImageGen / VideoGen

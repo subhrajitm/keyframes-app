@@ -4,8 +4,13 @@ import { Trash2, X } from "lucide-react";
 import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ImageUpload } from "@/components/ui/image-upload";
 
-export function NodeInspector() {
+interface NodeInspectorProps {
+  projectId: string;
+}
+
+export function NodeInspector({ projectId }: NodeInspectorProps) {
   const selectedNodeId = useProjectStore((s) => s.selectedNodeId);
   const nodes = useProjectStore((s) => s.nodes);
   const updateNodeData = useProjectStore((s) => s.updateNodeData);
@@ -40,20 +45,44 @@ export function NodeInspector() {
       </div>
 
       <div className="flex flex-col gap-4 overflow-y-auto p-3">
-        {/* Character fields */}
+        {/* Character */}
         {type === "character" && (
-          <Field label="Character Name">
-            <Input
-              value={data.characterName ?? ""}
-              onChange={(e) => updateNodeData(node.id, { characterName: e.target.value })}
-              placeholder="e.g. Maya"
-            />
-          </Field>
+          <>
+            <Field label="Reference Image">
+              <ImageUpload
+                value={data.characterImageUrl}
+                onChange={(url) => updateNodeData(node.id, { characterImageUrl: url })}
+                onClear={() => updateNodeData(node.id, { characterImageUrl: undefined })}
+                projectId={projectId}
+                assetType="character"
+                shape="circle"
+                label="Drop photo or click"
+              />
+            </Field>
+            <Field label="Character Name">
+              <Input
+                value={data.characterName ?? ""}
+                onChange={(e) => updateNodeData(node.id, { characterName: e.target.value })}
+                placeholder="e.g. Maya"
+              />
+            </Field>
+          </>
         )}
 
-        {/* Location fields */}
+        {/* Location */}
         {type === "location" && (
           <>
+            <Field label="Reference Image">
+              <ImageUpload
+                value={data.locationImageUrl}
+                onChange={(url) => updateNodeData(node.id, { locationImageUrl: url })}
+                onClear={() => updateNodeData(node.id, { locationImageUrl: undefined })}
+                projectId={projectId}
+                assetType="location"
+                shape="rect"
+                label="Drop scene photo or click"
+              />
+            </Field>
             <Field label="Location Name">
               <Input
                 value={data.locationName ?? ""}
@@ -73,7 +102,7 @@ export function NodeInspector() {
           </>
         )}
 
-        {/* Prompt fields */}
+        {/* Prompt */}
         {type === "prompt" && (
           <Field label="Prompt Text">
             <textarea
@@ -86,11 +115,28 @@ export function NodeInspector() {
           </Field>
         )}
 
-        {/* ImageGen / VideoGen - read-only status */}
+        {/* ImageGen / VideoGen */}
         {(type === "imageGen" || type === "videoGen") && (
-          <Field label="Status">
-            <p className="text-xs capitalize text-white/50">{data.generationStatus ?? "idle"}</p>
-          </Field>
+          <>
+            <Field label="Status">
+              <p className="text-xs capitalize text-white/50">{data.generationStatus ?? "idle"}</p>
+            </Field>
+            {data.outputUrl && (
+              <Field label="Output">
+                {type === "videoGen" ? (
+                  <video
+                    src={data.outputUrl}
+                    controls
+                    className="w-full rounded-lg"
+                    muted
+                    loop
+                  />
+                ) : (
+                  <img src={data.outputUrl} alt="Generated" className="w-full rounded-lg" />
+                )}
+              </Field>
+            )}
+          </>
         )}
 
         {/* Output */}
@@ -107,7 +153,6 @@ export function NodeInspector() {
           </Field>
         )}
 
-        {/* Node ID (for reference) */}
         <Field label="Node ID">
           <p className="truncate font-mono text-[10px] text-white/20">{node.id}</p>
         </Field>
