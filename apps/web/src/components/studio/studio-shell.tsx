@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { StudioToolbar } from "./studio-toolbar";
 import { DirectorBar } from "./director-bar";
-import { ScenePanel } from "./scene-panel";
+import { StudioLeftPanel } from "./studio-left-panel";
 import { StudioCanvas } from "./studio-canvas";
 import { NodeInspector } from "./node-inspector";
 import { ProjectSettingsPanel } from "./project-settings-panel";
@@ -45,7 +45,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
       <DirectorBar projectId={projectId} />
 
       <div className="flex flex-1 overflow-hidden">
-        <ScenePanel projectId={projectId} />
+        <StudioLeftPanel projectId={projectId} />
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">

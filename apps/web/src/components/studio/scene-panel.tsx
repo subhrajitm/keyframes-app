@@ -19,9 +19,11 @@ const STATUS_CONFIG: Record<Shot["status"], { label: string; color: string; icon
 
 interface ScenePanelProps {
   projectId: string;
+  /** When true, renders without the outer border/bg — used inside StudioLeftPanel */
+  embedded?: boolean;
 }
 
-export function ScenePanel({ projectId }: ScenePanelProps) {
+export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
   const { scenes, isLoading, loadScenes, subscribeRealtime } = useSceneStore();
   const [previewShot, setPreviewShot] = useState<Shot | null>(null);
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
@@ -60,13 +62,24 @@ export function ScenePanel({ projectId }: ScenePanelProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes]);
 
+  const wrapper = embedded
+    ? "flex flex-1 flex-col overflow-hidden"
+    : "flex w-56 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]";
+
   return (
     <>
-      <aside className="flex w-56 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]">
-        <div className="flex items-center justify-between border-b border-white/10 px-3 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-white/30">Scenes</p>
-          {isLoading && <Loader2 className="h-3 w-3 animate-spin text-white/30" />}
-        </div>
+      <aside className={wrapper}>
+        {!embedded && (
+          <div className="flex items-center justify-between border-b border-white/10 px-3 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/30">Scenes</p>
+            {isLoading && <Loader2 className="h-3 w-3 animate-spin text-white/30" />}
+          </div>
+        )}
+        {embedded && isLoading && (
+          <div className="flex justify-end px-3 py-1">
+            <Loader2 className="h-3 w-3 animate-spin text-white/30" />
+          </div>
+        )}
 
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2">
           {scenes.length === 0 && !isLoading && (

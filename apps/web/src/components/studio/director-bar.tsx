@@ -30,6 +30,8 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
       style: settings.style || undefined,
       totalDuration: settings.totalDuration,
       numScenes: settings.numScenes,
+      imageModel: settings.imageModel,
+      videoModel: settings.videoModel,
     };
 
     const tid = toast.loading("Director is planning your shots…");
