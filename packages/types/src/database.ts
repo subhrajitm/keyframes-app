@@ -134,6 +134,80 @@ export type Database = {
         };
         Relationships: [];
       };
+      scenes: {
+        Row: {
+          id: string;
+          project_id: string;
+          order_index: number;
+          title: string;
+          description: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          order_index?: number;
+          title?: string;
+          description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          order_index?: number;
+          title?: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      shots: {
+        Row: {
+          id: string;
+          scene_id: string;
+          project_id: string;
+          order_index: number;
+          title: string;
+          shot_spec: Json;
+          node_id: string | null;
+          status: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
+          image_url: string | null;
+          video_url: string | null;
+          error: string | null;
+          trigger_run_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          scene_id: string;
+          project_id: string;
+          order_index?: number;
+          title?: string;
+          shot_spec?: Json;
+          node_id?: string | null;
+          status?: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
+          image_url?: string | null;
+          video_url?: string | null;
+          error?: string | null;
+          trigger_run_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          order_index?: number;
+          title?: string;
+          shot_spec?: Json;
+          node_id?: string | null;
+          status?: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
+          image_url?: string | null;
+          video_url?: string | null;
+          error?: string | null;
+          trigger_run_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       templates: {
         Row: {
           id: string;

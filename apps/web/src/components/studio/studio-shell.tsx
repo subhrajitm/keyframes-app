@@ -2,7 +2,8 @@
 
 import { ReactFlowProvider } from "@xyflow/react";
 import { StudioToolbar } from "./studio-toolbar";
-import { NodePalette } from "./node-palette";
+import { DirectorBar } from "./director-bar";
+import { ScenePanel } from "./scene-panel";
 import { StudioCanvas } from "./studio-canvas";
 import { NodeInspector } from "./node-inspector";
 import { createClient } from "@/lib/supabase/client";
@@ -30,8 +31,10 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
         onTitleChange={handleTitleChange}
       />
 
+      <DirectorBar projectId={projectId} />
+
       <div className="flex flex-1 overflow-hidden">
-        <NodePalette />
+        <ScenePanel projectId={projectId} />
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">
