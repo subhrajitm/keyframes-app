@@ -7,9 +7,13 @@ export type ImageModel =
   | "comfyui/custom";
 
 export type VideoModel =
-  | "fal/kling-v1"
-  | "fal/kling-v1-5"
-  | "fal/minimax-video"
+  // Recommended default — best quality/price, 5 free gens/day
+  | "fal/minimax-h3-max"
+  // Premium — tops independent quality leaderboards, ~7x more expensive
+  | "fal/seedance-2-5"
+  // Legacy / fallback
+  | "fal/kling-v3"
+  | "fal/wan-3"
   | "comfyui/wan";
 
 export interface ShotSpec {

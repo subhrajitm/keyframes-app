@@ -7,9 +7,28 @@ const ASPECT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   "1:1": { width: 1024, height: 1024 },
 };
 
-function dimensionsFromSize(w: number, h: number) {
-  const key = `${w}:${h}`;
-  return ASPECT_DIMENSIONS[key] ?? { width: w, height: h };
+// Full fal.ai endpoint paths for each model key
+const VIDEO_ENDPOINTS: Record<string, string> = {
+  "fal/minimax-h3-max": "fal-ai/minimax/h3-max/image-to-video",
+  "fal/seedance-2-5":   "fal-ai/bytedance/seedance-2.5/image-to-video",
+  "fal/kling-v3":       "fal-ai/kling-video/v3/standard/image-to-video",
+  "fal/wan-3":          "fal-ai/wan/v3/image-to-video",
+};
+
+// Per-model input builders — each API has slightly different field names/options
+function buildVideoInput(modelKey: string, req: VideoGenerationRequest): Record<string, unknown> {
+  const base = { prompt: req.prompt, image_url: req.imageUrl };
+
+  switch (modelKey) {
+    case "fal/minimax-h3-max":
+      return { ...base, duration: Math.min(req.duration, 10) as 5 | 10, resolution: "768p" };
+    case "fal/seedance-2-5":
+      return { ...base, duration: Math.max(4, Math.min(req.duration, 15)), resolution: "720p" };
+    case "fal/kling-v3":
+      return { ...base, duration: req.duration, aspect_ratio: "16:9" };
+    default:
+      return { ...base, duration: req.duration, aspect_ratio: "16:9" };
+  }
 }
 
 export class FalProvider implements AIProvider {
@@ -41,20 +60,13 @@ export class FalProvider implements AIProvider {
   }
 
   async generateVideo(req: VideoGenerationRequest): Promise<GenerationResult> {
-    const modelId = req.modelId.replace("fal/", "fal-ai/");
+    const endpoint = VIDEO_ENDPOINTS[req.modelId] ?? req.modelId.replace("fal/", "fal-ai/");
+    const input = buildVideoInput(req.modelId, req);
 
-    const result = await fal.run(modelId, {
-      input: {
-        prompt: req.prompt,
-        image_url: req.imageUrl,
-        duration: req.duration,
-        aspect_ratio: "16:9",
-      },
-    }) as { video?: { url: string } };
-
+    const result = await fal.run(endpoint, { input }) as { video?: { url: string } };
     const url = result?.video?.url;
     if (!url) throw new Error("fal.ai returned no video URL");
 
-    return { url, metadata: { model: req.modelId } };
+    return { url, metadata: { model: req.modelId, endpoint } };
   }
 }

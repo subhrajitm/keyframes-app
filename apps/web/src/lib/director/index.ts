@@ -1,106 +1,84 @@
-import Anthropic from "@anthropic-ai/sdk";
-import type { DirectorInput, DirectorOutput, DirectorScene, ShotSpec } from "@keyframe/types";
+import { generateObject } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { z } from "zod";
+import type { DirectorInput, DirectorOutput, DirectorScene } from "@keyframe/types";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// OpenRouter exposes the same free models shown in the Trigger.dev model library.
+// Sign up at openrouter.ai (no credit card) to get a free API key.
+const openrouter = createOpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY ?? "",
+});
 
-const SHOT_PLAN_SCHEMA = {
-  type: "object" as const,
-  required: ["scenes"],
-  properties: {
-    scenes: {
-      type: "array",
-      items: {
-        type: "object",
-        required: ["title", "description", "shots"],
-        properties: {
-          title: { type: "string" },
-          description: { type: "string" },
-          shots: {
-            type: "array",
-            items: {
-              type: "object",
-              required: ["title", "prompt", "duration", "fps", "aspectRatio", "imageModel", "videoModel", "characterRefs", "orderInScene"],
-              properties: {
-                title: { type: "string" },
-                prompt: { type: "string", description: "Detailed visual description of the shot" },
-                negativePrompt: { type: "string" },
-                characterRefs: { type: "array", items: { type: "string" } },
-                locationRef: { type: "string" },
-                style: { type: "string" },
-                duration: { type: "number", description: "Shot duration in seconds" },
-                fps: { type: "number", enum: [24, 30] },
-                aspectRatio: { type: "string", enum: ["16:9", "9:16", "1:1"] },
-                imageModel: {
-                  type: "string",
-                  enum: ["fal/flux-pro", "fal/flux-lora", "fal/stable-diffusion-xl", "comfyui/custom"],
-                },
-                videoModel: {
-                  type: "string",
-                  enum: ["fal/kling-v1", "fal/kling-v1-5", "fal/minimax-video", "comfyui/wan"],
-                },
-                orderInScene: { type: "number" },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-};
+// Best free model from the Trigger.dev model library for structured output
+const DIRECTOR_MODEL = "openai/gpt-oss-120b";
+
+const ShotSchema = z.object({
+  title: z.string(),
+  prompt: z.string().describe("Detailed cinematic description of the shot"),
+  negativePrompt: z.string().optional(),
+  characterRefs: z.array(z.string()).default([]),
+  locationRef: z.string().optional(),
+  style: z.string().optional(),
+  duration: z.number().describe("Shot duration in seconds"),
+  fps: z.union([z.literal(24), z.literal(30)]).default(24),
+  aspectRatio: z.enum(["16:9", "9:16", "1:1"]).default("16:9"),
+  imageModel: z
+    .enum(["fal/flux-pro", "fal/flux-lora", "fal/stable-diffusion-xl", "comfyui/custom"])
+    .default("fal/flux-pro"),
+  videoModel: z
+    .enum(["fal/minimax-h3-max", "fal/seedance-2-5", "fal/kling-v3", "fal/wan-3", "comfyui/wan"])
+    .default("fal/minimax-h3-max"),
+  orderInScene: z.number(),
+});
+
+const DirectorOutputSchema = z.object({
+  scenes: z.array(
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      shots: z.array(ShotSchema),
+    })
+  ),
+});
 
 function buildSystemPrompt(): string {
   return `You are an AI Film Director for a video generation platform.
-Given a project description, you decompose it into a precise, production-ready shot plan.
+Given a project description, decompose it into a precise, production-ready shot plan.
 
 Rules:
-- Keep shot prompts detailed and cinematic — include camera angle, lighting, subject action, mood
-- Prefer "fal/flux-pro" for high-quality photorealistic stills
-- Use "fal/kling-v1-5" for video unless specified otherwise
-- Default fps is 24, aspect ratio is 16:9
-- Shots should be 3–6 seconds each
-- Keep style consistent across scenes for visual coherence
-- Use negative prompts to exclude common artifacts (blur, overexposed, watermark)`;
+- Shot prompts must be detailed and cinematic: include camera angle, lighting, subject action, and mood
+- Default to "fal/flux-pro" for images and "fal/minimax-h3-max" for video (best quality/price)
+- Only use "fal/seedance-2-5" if the user explicitly requests maximum quality regardless of cost
+- Each shot should be 3–6 seconds. Default fps is 24, aspect ratio is 16:9
+- Keep visual style consistent across all scenes
+- Use negative prompts to exclude blur, overexposure, watermarks, and deformed anatomy`;
 }
 
 function buildUserPrompt(input: DirectorInput): string {
-  const lines = [`Project description: "${input.description}"`];
-  if (input.style) lines.push(`Visual style: ${input.style}`);
-  if (input.totalDuration) lines.push(`Target total duration: ~${input.totalDuration} seconds`);
+  const lines = [`Project: "${input.description}"`];
+  if (input.style) lines.push(`Style: ${input.style}`);
+  if (input.totalDuration) lines.push(`Target total duration: ~${input.totalDuration}s`);
   if (input.numScenes) lines.push(`Number of scenes: ${input.numScenes}`);
   if (input.characterAssets?.length) {
-    lines.push(`Characters: ${input.characterAssets.map((c) => `${c.name} (ref: ${c.url})`).join(", ")}`);
+    lines.push(`Characters: ${input.characterAssets.map((c) => `${c.name} (${c.url})`).join(", ")}`);
   }
   if (input.locationAssets?.length) {
-    lines.push(`Locations: ${input.locationAssets.map((l) => `${l.name} (ref: ${l.url})`).join(", ")}`);
+    lines.push(`Locations: ${input.locationAssets.map((l) => `${l.name} (${l.url})`).join(", ")}`);
   }
-  lines.push("\nCreate a complete shot plan.");
+  lines.push("\nCreate a complete shot plan with scenes and shots.");
   return lines.join("\n");
 }
 
 export async function runDirector(input: DirectorInput): Promise<DirectorOutput> {
-  const response = await client.messages.create({
-    model: "claude-opus-4-7",
-    max_tokens: 4096,
+  const { object } = await generateObject({
+    model: openrouter(DIRECTOR_MODEL),
+    schema: DirectorOutputSchema,
     system: buildSystemPrompt(),
-    tools: [
-      {
-        name: "create_shot_plan",
-        description: "Create a structured shot plan for the video project",
-        input_schema: SHOT_PLAN_SCHEMA,
-      },
-    ],
-    tool_choice: { type: "tool", name: "create_shot_plan" },
-    messages: [{ role: "user", content: buildUserPrompt(input) }],
+    prompt: buildUserPrompt(input),
   });
 
-  const toolUse = response.content.find((b) => b.type === "tool_use");
-  if (!toolUse || toolUse.type !== "tool_use") {
-    throw new Error("Director did not produce a shot plan");
-  }
-
-  const raw = toolUse.input as { scenes: Array<{ title: string; description: string; shots: ShotSpec[] }> };
-
-  const scenes: DirectorScene[] = raw.scenes.map((scene) => ({
+  const scenes: DirectorScene[] = object.scenes.map((scene) => ({
     title: scene.title,
     description: scene.description,
     shots: scene.shots.map((shot) => ({
