@@ -119,8 +119,7 @@ export function StudioCanvas({ projectId, initialNodes, initialEdges }: StudioCa
         minZoom={0.2}
         maxZoom={2}
         deleteKeyCode="Delete"
-        proOptions={{ hideAttribution: true }}
-        style={{ backgroundColor: "#07070e" }}
+style={{ backgroundColor: "#07070e" }}
       >
         <Background
           variant={BackgroundVariant.Dots}
