@@ -49,11 +49,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">
-            <StudioCanvas
-              projectId={projectId}
-              initialNodes={initialNodes}
-              initialEdges={initialEdges}
-            />
+            <StudioCanvas projectId={projectId} />
           </main>
         </ReactFlowProvider>
 

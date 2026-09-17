@@ -8,8 +8,6 @@ import {
   Controls,
   MiniMap,
   type NodeTypes,
-  type OnInit,
-  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -33,11 +31,9 @@ const NODE_TYPES: NodeTypes = {
 
 interface StudioCanvasProps {
   projectId: string;
-  initialNodes: KFNode[];
-  initialEdges: KFEdge[];
 }
 
-export function StudioCanvas({ projectId, initialNodes, initialEdges }: StudioCanvasProps) {
+export function StudioCanvas({ projectId }: StudioCanvasProps) {
   const {
     nodes,
     edges,
@@ -45,7 +41,6 @@ export function StudioCanvas({ projectId, initialNodes, initialEdges }: StudioCa
     onEdgesChange,
     onConnect,
     addNode,
-    loadGraph,
     markSaved,
     markSaving,
     isDirty,
