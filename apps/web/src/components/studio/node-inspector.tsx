@@ -1,0 +1,141 @@
+"use client";
+
+import { Trash2, X } from "lucide-react";
+import { useProjectStore } from "@/store/project-store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export function NodeInspector() {
+  const selectedNodeId = useProjectStore((s) => s.selectedNodeId);
+  const nodes = useProjectStore((s) => s.nodes);
+  const updateNodeData = useProjectStore((s) => s.updateNodeData);
+  const deleteNode = useProjectStore((s) => s.deleteNode);
+  const selectNode = useProjectStore((s) => s.selectNode);
+
+  const node = nodes.find((n) => n.id === selectedNodeId);
+
+  if (!node) {
+    return (
+      <aside className="flex w-64 shrink-0 flex-col items-center justify-center border-l border-white/10 bg-[#0a0a12]">
+        <p className="text-xs text-white/20">Select a node to edit it</p>
+      </aside>
+    );
+  }
+
+  const { data, type } = node;
+
+  return (
+    <aside className="flex w-64 shrink-0 flex-col border-l border-white/10 bg-[#0a0a12]">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-white/50">
+          {type} node
+        </p>
+        <button
+          onClick={() => selectNode(null)}
+          className="text-white/30 hover:text-white/60"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-4 overflow-y-auto p-3">
+        {/* Character fields */}
+        {type === "character" && (
+          <Field label="Character Name">
+            <Input
+              value={data.characterName ?? ""}
+              onChange={(e) => updateNodeData(node.id, { characterName: e.target.value })}
+              placeholder="e.g. Maya"
+            />
+          </Field>
+        )}
+
+        {/* Location fields */}
+        {type === "location" && (
+          <>
+            <Field label="Location Name">
+              <Input
+                value={data.locationName ?? ""}
+                onChange={(e) => updateNodeData(node.id, { locationName: e.target.value })}
+                placeholder="e.g. Tokyo Street"
+              />
+            </Field>
+            <Field label="Description">
+              <textarea
+                className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-2 text-xs text-white placeholder:text-white/30 focus:border-green-500/60 focus:outline-none"
+                rows={3}
+                value={data.locationDescription ?? ""}
+                onChange={(e) => updateNodeData(node.id, { locationDescription: e.target.value })}
+                placeholder="Neon-lit alley, rain-soaked…"
+              />
+            </Field>
+          </>
+        )}
+
+        {/* Prompt fields */}
+        {type === "prompt" && (
+          <Field label="Prompt Text">
+            <textarea
+              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-2 text-xs text-white placeholder:text-white/30 focus:border-blue-500/60 focus:outline-none"
+              rows={5}
+              value={data.promptText ?? ""}
+              onChange={(e) => updateNodeData(node.id, { promptText: e.target.value })}
+              placeholder="A cinematic close-up of…"
+            />
+          </Field>
+        )}
+
+        {/* ImageGen / VideoGen - read-only status */}
+        {(type === "imageGen" || type === "videoGen") && (
+          <Field label="Status">
+            <p className="text-xs capitalize text-white/50">{data.generationStatus ?? "idle"}</p>
+          </Field>
+        )}
+
+        {/* Output */}
+        {type === "output" && (
+          <Field label="Clip Order">
+            <Input
+              type="number"
+              min={1}
+              value={(data.clipOrder ?? 0) + 1}
+              onChange={(e) =>
+                updateNodeData(node.id, { clipOrder: Math.max(0, Number(e.target.value) - 1) })
+              }
+            />
+          </Field>
+        )}
+
+        {/* Node ID (for reference) */}
+        <Field label="Node ID">
+          <p className="truncate font-mono text-[10px] text-white/20">{node.id}</p>
+        </Field>
+      </div>
+
+      {/* Delete */}
+      <div className="mt-auto border-t border-white/10 p-3">
+        <Button
+          variant="destructive"
+          size="sm"
+          className="w-full"
+          onClick={() => deleteNode(node.id)}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Delete Node
+        </Button>
+      </div>
+    </aside>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] font-semibold uppercase tracking-wider text-white/30">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
