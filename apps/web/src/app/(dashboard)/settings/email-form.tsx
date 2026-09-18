@@ -11,31 +11,37 @@ export function EmailForm({ currentEmail }: { currentEmail: string }) {
   const [state, formAction, isPending] = useActionState(updateEmail, initial);
 
   return (
-    <form action={formAction} className="space-y-4">
-      {state.error && (
-        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">{state.error}</p>
-      )}
-      {state.success && (
-        <p className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">{state.success}</p>
-      )}
+    <form action={formAction} className="space-y-5">
+      <p className="text-base font-medium">Change email</p>
+      <Alert state={state} />
 
-      <div className="space-y-1.5">
-        <label className="text-xs text-white/50">Current email</label>
-        <Input value={currentEmail} readOnly className="cursor-not-allowed opacity-50" />
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-white/50">Current email</label>
+        <Input value={currentEmail} readOnly className="h-12 text-base cursor-not-allowed opacity-40" />
       </div>
 
-      <div className="space-y-1.5">
-        <label className="text-xs text-white/50">New email</label>
-        <Input type="email" name="email" placeholder="new@example.com" required />
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-white/50">New email</label>
+        <Input type="email" name="email" placeholder="new@example.com" required className="h-12 text-base" />
       </div>
 
-      <p className="text-xs text-white/30">
-        You'll receive confirmation emails at both addresses to complete the change.
+      <p className="text-sm text-white/30">
+        Confirmation emails will be sent to both addresses.
       </p>
 
-      <Button type="submit" size="sm" loading={isPending}>
+      <Button type="submit" loading={isPending} className="h-11 px-6 text-base">
         Update email
       </Button>
     </form>
   );
+}
+
+function Alert({ state }: { state: { error: string; success: string } }) {
+  if (state.error) return (
+    <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-400">{state.error}</p>
+  );
+  if (state.success) return (
+    <p className="rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400">{state.success}</p>
+  );
+  return null;
 }

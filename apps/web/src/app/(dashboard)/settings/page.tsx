@@ -1,13 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Coins, CreditCard, User, Lock, Key, Trash2 } from "lucide-react";
 import { ProfileForm } from "./profile-form";
 import { EmailForm } from "./email-form";
 import { PasswordForm } from "./password-form";
 import { ApiKeysForm } from "./api-keys-form";
 import { DangerZone } from "./danger-zone";
-import { Button } from "@/components/ui/button";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -24,123 +22,112 @@ export default async function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <header className="border-b border-white/10 px-6 py-4">
-        <div className="mx-auto flex max-w-2xl items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Dashboard
-          </Link>
-          <span className="text-white/20">/</span>
-          <span className="text-sm font-medium">Settings</span>
-        </div>
+
+      {/* Top nav */}
+      <header className="px-8 pt-8 pb-2">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white/70 transition-colors"
+        >
+          <span className="material-symbols-rounded text-[18px]">arrow_back</span>
+          Dashboard
+        </Link>
       </header>
 
-      <main className="mx-auto max-w-2xl px-6 py-10 space-y-8">
+      <main className="mx-auto max-w-xl px-8 py-10 space-y-16">
 
-        {/* ── Profile ───────────────────────────────────────────────── */}
-        <section>
-          <SectionHeader icon={<User className="h-4 w-4" />} label="Profile" />
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-            <ProfileForm
-              initialName={profile?.full_name ?? ""}
-              email={user.email ?? ""}
-              initialAvatarUrl={profile?.avatar_url ?? ""}
-            />
-          </div>
-        </section>
+        {/* Page title */}
+        <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
 
-        {/* ── Email & Password ──────────────────────────────────────── */}
-        <section>
-          <SectionHeader icon={<Lock className="h-4 w-4" />} label="Email & Password" />
-          <div className="rounded-xl border border-white/10 bg-white/5 divide-y divide-white/[0.06]">
-            <div className="p-6">
-              <h3 className="mb-4 text-xs font-medium text-white/50">Email address</h3>
-              <EmailForm currentEmail={user.email ?? ""} />
-            </div>
+        {/* ── Profile ─────────────────────────────────────────────── */}
+        <Section title="Profile" icon="person">
+          <ProfileForm
+            initialName={profile?.full_name ?? ""}
+            email={user.email ?? ""}
+            initialAvatarUrl={profile?.avatar_url ?? ""}
+          />
+        </Section>
 
-            {!isOAuthUser && (
-              <div className="p-6">
-                <h3 className="mb-4 text-xs font-medium text-white/50">Change password</h3>
+        {/* ── Email & Password ────────────────────────────────────── */}
+        <Section title="Email & Password" icon="lock">
+          <div className="space-y-10">
+            <EmailForm currentEmail={user.email ?? ""} />
+
+            {!isOAuthUser ? (
+              <>
+                <div className="border-t border-white/[0.07]" />
                 <PasswordForm />
-              </div>
-            )}
-
-            {isOAuthUser && (
-              <div className="p-6">
-                <p className="text-xs text-white/30">
-                  Your account uses {user.app_metadata?.provider} for sign-in — password management is handled there.
-                </p>
-              </div>
+              </>
+            ) : (
+              <p className="text-sm text-white/30">
+                You signed in with {user.app_metadata?.provider} — password management is handled there.
+              </p>
             )}
           </div>
-        </section>
+        </Section>
 
-        {/* ── Credits & Billing ─────────────────────────────────────── */}
-        <section>
-          <SectionHeader icon={<CreditCard className="h-4 w-4" />} label="Credits & Billing" />
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/10">
-                <Coins className="h-5 w-5 text-yellow-400" />
-              </div>
+        {/* ── Credits & Billing ───────────────────────────────────── */}
+        <Section title="Credits & Billing" icon="toll">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold">{profile?.credits ?? 0} credits</p>
-                <p className="text-xs text-white/40">Each image costs 1 credit · each video clip costs 5 credits</p>
+                <p className="text-4xl font-semibold">{profile?.credits ?? 0}</p>
+                <p className="mt-1 text-sm text-white/40">credits remaining</p>
+              </div>
+              <div className="text-right text-sm text-white/30 space-y-0.5">
+                <p>1 credit per image</p>
+                <p>5 credits per video clip</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg border border-white/8 bg-white/[0.03] px-4 py-3">
-              <div>
-                <p className="text-sm font-medium">Buy more credits</p>
-                <p className="text-xs text-white/40">Top up your balance to keep generating</p>
-              </div>
-              <Button size="sm" disabled className="gap-1.5 opacity-60">
-                Coming soon
-              </Button>
-            </div>
+            <button
+              disabled
+              className="w-full flex items-center justify-between rounded-xl bg-white/5 px-5 py-4 opacity-50 cursor-not-allowed"
+            >
+              <span className="text-base font-medium">Buy credits</span>
+              <span className="text-sm text-white/40">Coming soon</span>
+            </button>
           </div>
-        </section>
+        </Section>
 
-        {/* ── API Keys ──────────────────────────────────────────────── */}
-        <section>
-          <SectionHeader icon={<Key className="h-4 w-4" />} label="API Keys" />
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-            <ApiKeysForm
-              initialFalKey={profile?.fal_api_key ?? ""}
-              initialOpenrouterKey={profile?.openrouter_api_key ?? ""}
-            />
-          </div>
-        </section>
+        {/* ── API Keys ────────────────────────────────────────────── */}
+        <Section title="API Keys" icon="key">
+          <ApiKeysForm
+            initialFalKey={profile?.fal_api_key ?? ""}
+            initialOpenrouterKey={profile?.openrouter_api_key ?? ""}
+          />
+        </Section>
 
-        {/* ── Danger Zone ───────────────────────────────────────────── */}
-        <section>
-          <SectionHeader icon={<Trash2 className="h-4 w-4 text-red-500/60" />} label="Danger Zone" danger />
-          <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-6">
-            <DangerZone />
-          </div>
-        </section>
+        {/* ── Danger Zone ─────────────────────────────────────────── */}
+        <Section title="Danger Zone" icon="delete_forever" danger>
+          <DangerZone />
+        </Section>
 
       </main>
     </div>
   );
 }
 
-function SectionHeader({
+function Section({
+  title,
   icon,
-  label,
   danger = false,
+  children,
 }: {
-  icon: React.ReactNode;
-  label: string;
+  title: string;
+  icon: string;
   danger?: boolean;
+  children: React.ReactNode;
 }) {
   return (
-    <div className={`mb-4 flex items-center gap-2 ${danger ? "text-red-500/60" : "text-white/40"}`}>
-      {icon}
-      <h2 className="text-sm font-semibold uppercase tracking-widest">{label}</h2>
-    </div>
+    <section className="space-y-6">
+      <div className={`flex items-center gap-3 ${danger ? "text-red-400/70" : "text-white/50"}`}>
+        <span className="material-symbols-rounded text-[22px]">{icon}</span>
+        <h2 className="text-base font-semibold">{title}</h2>
+      </div>
+      <div className={`rounded-2xl p-7 space-y-6 ${danger ? "bg-red-500/[0.04] ring-1 ring-red-500/15" : "bg-white/[0.04]"}`}>
+        {children}
+      </div>
+    </section>
   );
 }

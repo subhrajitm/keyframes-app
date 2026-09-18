@@ -8,25 +8,21 @@ export function DangerZone() {
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="flex items-start justify-between gap-4">
+    <div className="flex items-start justify-between gap-6">
       <div>
-        <p className="text-sm font-medium">Delete account</p>
-        <p className="mt-0.5 text-xs text-white/40">
-          Permanently delete your account, projects, and all generated assets. This cannot be undone.
+        <p className="text-base font-medium">Delete account</p>
+        <p className="mt-1.5 text-sm text-white/40 max-w-xs">
+          Permanently deletes your account, all projects, and every generated asset. This cannot be undone.
         </p>
       </div>
 
       {confirming ? (
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setConfirming(false)}
-          >
+        <div className="flex items-center gap-3 shrink-0">
+          <Button variant="ghost" onClick={() => setConfirming(false)} className="h-11 px-5 text-base">
             Cancel
           </Button>
           <form action={deleteAccount}>
-            <Button type="submit" variant="destructive" size="sm">
+            <Button type="submit" variant="destructive" className="h-11 px-5 text-base">
               Yes, delete
             </Button>
           </form>
@@ -34,8 +30,7 @@ export function DangerZone() {
       ) : (
         <Button
           variant="destructive"
-          size="sm"
-          className="shrink-0"
+          className="shrink-0 h-11 px-5 text-base"
           onClick={() => setConfirming(true)}
         >
           Delete account

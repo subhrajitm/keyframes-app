@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfile } from "./actions";
 import { Button } from "@/components/ui/button";
@@ -43,42 +42,36 @@ export function ProfileForm({ initialName, email, initialAvatarUrl }: Props) {
     : email[0]?.toUpperCase() ?? "?";
 
   return (
-    <form action={formAction} className="space-y-5">
-      {state.error && (
-        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">{state.error}</p>
-      )}
-      {state.success && (
-        <p className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">{state.success}</p>
-      )}
+    <form action={formAction} className="space-y-6">
+      <Alert state={state} />
 
       {/* Avatar */}
-      <div className="flex items-center gap-4">
-        <div className="relative h-16 w-16 shrink-0">
+      <div className="flex items-center gap-5">
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+          className="group relative h-20 w-20 shrink-0 rounded-full overflow-hidden focus:outline-none"
+        >
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" className="h-16 w-16 rounded-full object-cover" />
+            <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-600 text-xl font-semibold">
+            <div className="flex h-full w-full items-center justify-center bg-violet-600 text-2xl font-semibold">
               {initials}
             </div>
           )}
-          {uploading && (
-            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60">
-              <Loader2 className="h-5 w-5 animate-spin text-white" />
-            </div>
-          )}
-        </div>
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+            {uploading
+              ? <span className="material-symbols-rounded text-[22px] animate-spin">progress_activity</span>
+              : <span className="material-symbols-rounded text-[22px]">photo_camera</span>
+            }
+          </div>
+        </button>
+
         <div>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={uploading}
-            onClick={() => fileRef.current?.click()}
-          >
-            <Upload className="h-3.5 w-3.5" />
-            Change avatar
-          </Button>
-          <p className="mt-1 text-xs text-white/30">JPEG, PNG, WebP or GIF · max 5 MB</p>
+          <p className="text-base font-medium">{initialName || "Your name"}</p>
+          <p className="mt-1 text-sm text-white/40">{email}</p>
+          <p className="mt-2 text-xs text-white/25">Click avatar to change · JPEG, PNG, WebP · max 5 MB</p>
         </div>
         <input
           ref={fileRef}
@@ -89,20 +82,32 @@ export function ProfileForm({ initialName, email, initialAvatarUrl }: Props) {
         />
       </div>
 
-      <div className="space-y-1.5">
-        <label className="text-xs text-white/50">Display name</label>
-        <Input name="full_name" defaultValue={initialName} placeholder="Your name" required />
-      </div>
+      <Field label="Display name">
+        <Input name="full_name" defaultValue={initialName} placeholder="Your name" required className="h-12 text-base" />
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-xs text-white/50">Email</label>
-        <Input value={email} readOnly className="cursor-not-allowed opacity-50" />
-        <p className="text-xs text-white/30">Change your email in the Email &amp; Password section below</p>
-      </div>
-
-      <Button type="submit" size="sm" loading={isPending}>
+      <Button type="submit" loading={isPending} className="h-11 px-6 text-base">
         Save changes
       </Button>
     </form>
   );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-white/50">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function Alert({ state }: { state: { error: string; success: string } }) {
+  if (state.error) return (
+    <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-400">{state.error}</p>
+  );
+  if (state.success) return (
+    <p className="rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400">{state.success}</p>
+  );
+  return null;
 }

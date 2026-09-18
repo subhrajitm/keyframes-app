@@ -13,6 +13,8 @@ interface ProjectSettingsPanelProps {
 const ASPECT_RATIOS: { value: AspectRatio; label: string; desc: string }[] = [
   { value: "16:9", label: "16:9", desc: "Landscape" },
   { value: "9:16", label: "9:16", desc: "Portrait" },
+  { value: "4:3",  label: "4:3",  desc: "Classic" },
+  { value: "3:4",  label: "3:4",  desc: "Tall" },
   { value: "1:1",  label: "1:1",  desc: "Square" },
 ];
 
@@ -63,7 +65,7 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
         <div className="flex flex-col gap-6 overflow-y-auto p-4">
           {/* Aspect Ratio */}
           <Section label="Aspect Ratio">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {ASPECT_RATIOS.map((ar) => (
                 <button
                   key={ar.value}
