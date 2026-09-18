@@ -10,6 +10,8 @@ export type Database = {
           full_name: string | null;
           avatar_url: string | null;
           credits: number;
+          fal_api_key: string | null;
+          openrouter_api_key: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -19,6 +21,8 @@ export type Database = {
           full_name?: string | null;
           avatar_url?: string | null;
           credits?: number;
+          fal_api_key?: string | null;
+          openrouter_api_key?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -27,6 +31,8 @@ export type Database = {
           full_name?: string | null;
           avatar_url?: string | null;
           credits?: number;
+          fal_api_key?: string | null;
+          openrouter_api_key?: string | null;
           updated_at?: string;
         };
         Relationships: [];

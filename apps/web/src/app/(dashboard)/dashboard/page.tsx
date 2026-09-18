@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Plus, LogOut, Coins } from "lucide-react";
+import Link from "next/link";
+import { Plus, LogOut, Coins, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/dashboard/project-card";
 import { TemplateGallery } from "@/components/dashboard/template-gallery";
@@ -47,6 +48,12 @@ export default async function DashboardPage() {
             <span className="text-sm text-white/50">
               {profile?.full_name ?? user.email}
             </span>
+
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/settings">
+                <Settings className="h-4 w-4" />
+              </Link>
+            </Button>
 
             <form action={logout}>
               <Button type="submit" variant="ghost" size="icon">
