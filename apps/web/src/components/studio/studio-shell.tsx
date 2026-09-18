@@ -8,6 +8,8 @@ import { StudioLeftPanel } from "./studio-left-panel";
 import { StudioCanvas } from "./studio-canvas";
 import { NodeInspector } from "./node-inspector";
 import { ProjectSettingsPanel } from "./project-settings-panel";
+import { StudioTimeline } from "./studio-timeline";
+import { SaveTemplateModal } from "./save-template-modal";
 import { createClient } from "@/lib/supabase/client";
 import { useProjectStore, type KFNode, type KFEdge, type ProjectSettings } from "@/store/project-store";
 
@@ -21,6 +23,7 @@ interface StudioShellProps {
 
 export function StudioShell({ projectId, initialTitle, initialNodes, initialEdges, initialSettings }: StudioShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const supabase = createClient();
   const loadGraph = useProjectStore((s) => s.loadGraph);
 
@@ -40,6 +43,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
         initialTitle={initialTitle}
         onTitleChange={handleTitleChange}
         onSettingsOpen={() => setSettingsOpen(true)}
+        onSaveTemplate={() => setSaveTemplateOpen(true)}
       />
 
       <DirectorBar projectId={projectId} />
@@ -56,7 +60,16 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
         <NodeInspector projectId={projectId} />
       </div>
 
+      <StudioTimeline projectId={projectId} />
+
       <ProjectSettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      <SaveTemplateModal
+        open={saveTemplateOpen}
+        onClose={() => setSaveTemplateOpen(false)}
+        projectId={projectId}
+        projectTitle={initialTitle}
+      />
     </div>
   );
 }

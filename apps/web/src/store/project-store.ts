@@ -47,6 +47,10 @@ export interface ProjectSettings {
   videoModel: VideoModel;
   /** URL of a style reference image passed to fal.ai for visual consistency */
   styleRefUrl?: string;
+  /** Ordered shot IDs for final composition — set by the Timeline panel */
+  clipOrder?: string[];
+  /** Background music URL mixed in during compose */
+  musicUrl?: string;
 }
 
 export const DEFAULT_SETTINGS: ProjectSettings = {

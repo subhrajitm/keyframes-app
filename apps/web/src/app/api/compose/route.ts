@@ -13,14 +13,24 @@ export async function POST(req: NextRequest) {
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, graph_state")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
   if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
-  const handle = await tasks.trigger<typeof composeVideoTask>("compose-video", { projectId });
+  // Extract clipOrder and musicUrl from project settings
+  const graphState = project.graph_state as Record<string, unknown> | null;
+  const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
+  const clipOrder = settings?.["clipOrder"] as string[] | undefined;
+  const musicUrl = settings?.["musicUrl"] as string | undefined;
+
+  const handle = await tasks.trigger<typeof composeVideoTask>("compose-video", {
+    projectId,
+    clipOrder,
+    musicUrl,
+  });
 
   return NextResponse.json({ runId: handle.id });
 }

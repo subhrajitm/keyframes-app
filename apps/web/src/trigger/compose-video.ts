@@ -30,24 +30,45 @@ async function concatVideos(inputPaths: string[], outputPath: string): Promise<v
   });
 }
 
+async function mixAudio(videoPath: string, audioUrl: string, outputPath: string, tmpDir: string): Promise<void> {
+  const audioPath = path.join(tmpDir, "music.mp3");
+  await downloadFile(audioUrl, audioPath);
+
+  return new Promise((resolve, reject) => {
+    Ffmpeg()
+      .input(videoPath)
+      .input(audioPath)
+      .outputOptions([
+        "-c:v copy",
+        "-c:a aac",
+        "-map 0:v:0",
+        "-map 1:a:0",
+        "-shortest",
+      ])
+      .output(outputPath)
+      .on("error", reject)
+      .on("end", () => resolve())
+      .run();
+  });
+}
+
 export const composeVideoTask = task({
   id: "compose-video",
   maxDuration: 1800,
-  run: async (payload: { projectId: string }) => {
-    const { projectId } = payload;
+  run: async (payload: { projectId: string; clipOrder?: string[]; musicUrl?: string }) => {
+    const { projectId, clipOrder, musicUrl } = payload;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Mark project as generating
     await supabase
       .from("projects")
       .update({ status: "generating", updated_at: new Date().toISOString() })
       .eq("id", projectId);
 
-    // Fetch all completed shots in order
+    // Fetch all completed shots
     const { data: scenes } = await supabase
       .from("scenes")
       .select("id, order_index")
@@ -60,22 +81,30 @@ export const composeVideoTask = task({
       .from("shots")
       .select("id, order_index, scene_id, video_url, status")
       .eq("project_id", projectId)
-      .eq("status", "completed")
-      .order("order_index");
+      .eq("status", "completed");
 
     if (!shots?.length) throw new Error("No completed shots to compose");
 
-    // Sort shots by scene order then shot order
-    const sceneOrder = Object.fromEntries(scenes.map((s) => [s.id, s.order_index]));
-    const sorted = [...shots].sort((a, b) => {
-      const sceneDiff = (sceneOrder[a.scene_id] ?? 0) - (sceneOrder[b.scene_id] ?? 0);
-      return sceneDiff !== 0 ? sceneDiff : a.order_index - b.order_index;
-    });
+    // Apply custom clip order or fall back to scene/shot order
+    let sorted;
+    if (clipOrder?.length) {
+      const shotMap = Object.fromEntries(shots.map((s) => [s.id, s]));
+      sorted = clipOrder
+        .map((id) => shotMap[id])
+        .filter(Boolean)
+        .concat(shots.filter((s) => !clipOrder.includes(s.id)));
+    } else {
+      const sceneOrder = Object.fromEntries(scenes.map((s) => [s.id, s.order_index]));
+      sorted = [...shots].sort((a, b) => {
+        const diff = (sceneOrder[a.scene_id] ?? 0) - (sceneOrder[b.scene_id] ?? 0);
+        return diff !== 0 ? diff : a.order_index - b.order_index;
+      });
+    }
 
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "kf-compose-"));
 
     try {
-      // Download all video clips
+      // Download all clips
       const localPaths: string[] = [];
       for (const shot of sorted) {
         if (!shot.video_url) continue;
@@ -86,20 +115,26 @@ export const composeVideoTask = task({
 
       if (!localPaths.length) throw new Error("No video files downloaded");
 
-      // Concatenate
-      const outputPath = path.join(tmpDir, "final.mp4");
-      await concatVideos(localPaths, outputPath);
+      // Concatenate clips
+      const concatPath = path.join(tmpDir, "concat.mp4");
+      await concatVideos(localPaths, concatPath);
+
+      // Mix in background music if provided
+      const finalLocalPath = musicUrl
+        ? path.join(tmpDir, "final.mp4")
+        : concatPath;
+
+      if (musicUrl) {
+        await mixAudio(concatPath, musicUrl, finalLocalPath, tmpDir);
+      }
 
       // Upload to Supabase Storage
-      const fileBuffer = await fs.readFile(outputPath);
+      const fileBuffer = await fs.readFile(finalLocalPath);
       const storagePath = `projects/${projectId}/final.mp4`;
 
       const { error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(storagePath, fileBuffer, {
-          contentType: "video/mp4",
-          upsert: true,
-        });
+        .upload(storagePath, fileBuffer, { contentType: "video/mp4", upsert: true });
 
       if (uploadError) throw uploadError;
 
@@ -109,14 +144,10 @@ export const composeVideoTask = task({
 
       await supabase
         .from("projects")
-        .update({
-          status: "complete",
-          thumbnail_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ status: "complete", thumbnail_url: publicUrl, updated_at: new Date().toISOString() })
         .eq("id", projectId);
 
-      return { projectId, videoUrl: publicUrl };
+      return { projectId, videoUrl: publicUrl, clipCount: localPaths.length, hasMusicTrack: !!musicUrl };
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Check, Play, Film, Settings, Zap, Download } from "lucide-react";
+import { ChevronLeft, Loader2, Check, Play, Settings, Zap, BookTemplate } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
@@ -13,13 +13,13 @@ interface StudioToolbarProps {
   initialTitle: string;
   onTitleChange: (title: string) => Promise<void>;
   onSettingsOpen: () => void;
+  onSaveTemplate: () => void;
 }
 
-export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettingsOpen }: StudioToolbarProps) {
+export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettingsOpen, onSaveTemplate }: StudioToolbarProps) {
   const [title, setTitle] = useState(initialTitle);
   const [isTitleSaving, setIsTitleSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isComposing, setIsComposing] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const { isDirty, isSaving } = useProjectStore();
   const credits = useCredits();
@@ -51,28 +51,9 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
     }
   };
 
-  const handleCompose = async () => {
-    setIsComposing(true);
-    const tid = toast.loading("Composing final video…");
-    try {
-      const res = await fetch("/api/compose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Composition failed");
-      toast.success("Composition job started — check dashboard when complete", { id: tid });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Composition failed", { id: tid });
-    } finally {
-      setIsComposing(false);
-    }
-  };
-
   return (
     <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 bg-[#0a0a12] px-4">
-      {/* Left: back + title */}
+      {/* Left */}
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard"
@@ -81,9 +62,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
           <ChevronLeft className="h-3.5 w-3.5" />
           Dashboard
         </Link>
-
         <span className="text-white/20">/</span>
-
         <input
           ref={titleRef}
           value={title}
@@ -101,7 +80,6 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        {/* Save status */}
         {isSaving ? (
           <span className="flex items-center gap-1 text-xs text-white/30">
             <Loader2 className="h-3 w-3 animate-spin" /> Saving…
@@ -114,7 +92,6 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
           </span>
         )}
 
-        {/* Credits */}
         {credits !== null && (
           <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/50">
             <Zap className="h-3 w-3 text-yellow-400/70" />
@@ -135,23 +112,23 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
         <Button
           size="sm"
           variant="ghost"
+          className="h-7 gap-1.5 px-3 text-xs text-white/40 hover:bg-white/5 hover:text-white/60"
+          onClick={onSaveTemplate}
+          title="Save as template"
+        >
+          <BookTemplate className="h-3.5 w-3.5" />
+          Save template
+        </Button>
+
+        <Button
+          size="sm"
+          variant="ghost"
           className="h-7 gap-1.5 px-3 text-xs text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 disabled:opacity-40"
           onClick={handleGenerateAll}
           disabled={isGenerating}
         >
           {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
           {isGenerating ? "Generating…" : "Generate All"}
-        </Button>
-
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-7 gap-1.5 px-3 text-xs text-blue-300 hover:bg-blue-500/10 hover:text-blue-200 disabled:opacity-40"
-          onClick={handleCompose}
-          disabled={isComposing}
-        >
-          {isComposing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Film className="h-3 w-3" />}
-          {isComposing ? "Composing…" : "Compose"}
         </Button>
       </div>
     </header>
