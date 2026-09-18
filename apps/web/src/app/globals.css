@@ -30,6 +30,16 @@ body {
 }
 
 /* React Flow overrides */
+
+/* Strip the default white background/border/padding from every node wrapper */
+.react-flow__node {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
 .react-flow__controls button {
   background: #0f0f1a !important;
   border-color: rgba(255,255,255,0.1) !important;

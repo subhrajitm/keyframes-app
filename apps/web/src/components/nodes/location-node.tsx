@@ -6,36 +6,43 @@ import { NodeWrapper } from "./node-wrapper";
 import type { KFNode } from "@/store/project-store";
 
 export const LocationNode = memo(({ id, data }: NodeProps<KFNode>) => {
+  const imageUrl = data.locationImageUrl as string | undefined;
+
   return (
-    <NodeWrapper id={id} accentColor="#22c55e" icon="location_on" title="Location">
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex h-20 w-full overflow-hidden rounded-lg ring-1 ring-green-500/20">
-          {data.locationImageUrl ? (
+    <NodeWrapper
+      id={id}
+      title="Location"
+      icon="location_on"
+      avatarColor="#10b981"
+      avatarIcon="landscape"
+      imageSlot={
+        <div className="flex aspect-video w-full items-center justify-center overflow-hidden bg-white/[0.025]">
+          {imageUrl ? (
             <img
-              src={data.locationImageUrl as string}
+              src={imageUrl}
               alt={data.locationName ?? "Location"}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-green-500/10">
-              <span className="material-symbols-rounded text-[28px] text-green-400/60">location_on</span>
-            </div>
+            <span className="material-symbols-rounded text-[40px] text-white/[0.07]">landscape</span>
           )}
         </div>
-        <p className="text-center text-sm font-medium text-white/80">
-          {data.locationName || "Unnamed Location"}
+      }
+    >
+      <p className="text-[12px] text-white/45">
+        {(data.locationName as string) || "Unnamed location"}
+      </p>
+      {data.locationDescription ? (
+        <p className="mt-0.5 line-clamp-2 text-[11px] text-white/25">
+          {data.locationDescription as string}
         </p>
-        {data.locationDescription ? (
-          <p className="line-clamp-2 text-center text-xs text-white/40">
-            {data.locationDescription as string}
-          </p>
-        ) : null}
-      </div>
+      ) : null}
+
       <Handle
         type="source"
         position={Position.Right}
         id="location-out"
-        className="!h-3 !w-3 !rounded-full !border-2 !border-green-500 !bg-[#0f0f1a]"
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]"
       />
     </NodeWrapper>
   );

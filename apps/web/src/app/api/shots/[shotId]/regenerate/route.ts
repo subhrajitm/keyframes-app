@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { ShotSpec } from "@keyframe/types";
 import type { generateImageTask } from "@/trigger/generate-image";
 
+const REGEN_CREDITS = 4; // 1 image + 3 video
+
 export async function POST(
   _req: NextRequest,
-  { params }: { params: Promise<{ shotId: string }> }
+  { params }: { params: Promise<{ shotId: string }> },
 ) {
   const { shotId } = await params;
   const supabase = await createClient();
@@ -31,12 +34,13 @@ export async function POST(
 
   if (!project) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  // Check credits (1 image + 3 video)
-  const { data: userData } = await supabase
-    .from("users").select("credits").eq("id", user.id).single();
-  const credits = userData?.credits ?? 0;
-  if (credits < 4) {
-    return NextResponse.json({ error: "Insufficient credits (need 4)" }, { status: 402 });
+  // Atomic check-and-deduct — eliminates the manual check + update race condition
+  const { data: deducted } = await supabase.rpc("deduct_credits", { amount: REGEN_CREDITS });
+  if (!deducted) {
+    return NextResponse.json(
+      { error: `Insufficient credits (need ${REGEN_CREDITS})` },
+      { status: 402 },
+    );
   }
 
   // Extract asset refs from graph
@@ -55,26 +59,33 @@ export async function POST(
   const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
   const styleRefUrl = settings?.["styleRefUrl"] as string | undefined;
 
-  // Reset shot to idle then trigger
-  await supabase.from("shots")
+  await supabase
+    .from("shots")
     .update({ status: "image_pending", image_url: null, video_url: null, error: null })
     .eq("id", shotId);
 
   const base = shot.shot_spec as unknown as ShotSpec;
   const shotSpec: ShotSpec = {
     ...base,
-    characterRefs: characterRefs.length ? characterRefs : base.characterRefs ?? [],
+    characterRefs: characterRefs.length ? characterRefs : (base.characterRefs ?? []),
     locationRef: locationRef ?? base.locationRef,
     ...(styleRefUrl ? { styleRefUrl } : {}),
   };
 
-  const handle = await tasks.trigger<typeof generateImageTask>("generate-image", {
-    shotId,
-    shotSpec,
-  });
-
-  await supabase.from("shots").update({ trigger_run_id: handle.id }).eq("id", shotId);
-  await supabase.from("users").update({ credits: credits - 4 }).eq("id", user.id);
-
-  return NextResponse.json({ runId: handle.id });
+  try {
+    const handle = await tasks.trigger<typeof generateImageTask>("generate-image", {
+      shotId,
+      shotSpec,
+    });
+    await supabase.from("shots").update({ trigger_run_id: handle.id }).eq("id", shotId);
+    return NextResponse.json({ runId: handle.id });
+  } catch {
+    // Task enqueue failed — reset shot and refund
+    await supabase
+      .from("shots")
+      .update({ status: "idle", updated_at: new Date().toISOString() })
+      .eq("id", shotId);
+    await createAdminClient().rpc("increment_credits", { uid: user.id, amount: REGEN_CREDITS });
+    return NextResponse.json({ error: "Failed to enqueue generation task" }, { status: 500 });
+  }
 }

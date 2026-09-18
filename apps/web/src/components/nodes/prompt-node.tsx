@@ -6,23 +6,38 @@ import { NodeWrapper } from "./node-wrapper";
 import { useProjectStore } from "@/store/project-store";
 import type { KFNode } from "@/store/project-store";
 
+const MAX_CHARS = 300;
+
 export const PromptNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const updateNodeData = useProjectStore((s) => s.updateNodeData);
+  const prompt = data.promptText ?? "";
 
   return (
-    <NodeWrapper id={id} accentColor="#3b82f6" icon="edit" title="Prompt">
+    <NodeWrapper
+      id={id}
+      title="Base Prompt"
+      icon="edit_note"
+      avatarColor="#3b82f6"
+      avatarIcon="edit"
+      wide
+      charCount={prompt.length}
+      maxChars={MAX_CHARS}
+    >
       <textarea
-        className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-2 text-xs text-white placeholder:text-white/30 focus:border-blue-500/60 focus:outline-none"
-        rows={4}
-        placeholder="Describe the shot…"
-        value={data.promptText ?? ""}
+        className="nodrag w-full resize-none rounded-md border-0 bg-transparent p-0 text-[12px] leading-[1.65] text-white/55 placeholder:text-white/20 focus:outline-none focus:ring-0"
+        style={{ textAlign: "justify" }}
+        rows={5}
+        placeholder="Describe the shot in cinematic detail…"
+        value={prompt}
+        maxLength={MAX_CHARS}
         onChange={(e) => updateNodeData(id, { promptText: e.target.value })}
       />
+
       <Handle
         type="source"
         position={Position.Right}
         id="prompt-out"
-        className="!h-3 !w-3 !rounded-full !border-2 !border-blue-500 !bg-[#0f0f1a]"
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]"
       />
     </NodeWrapper>
   );

@@ -245,12 +245,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      rate_limits: {
+        Row: {
+          id: string;
+          user_id: string;
+          action: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action: string;
+          created_at?: string;
+        };
+        Update: {
+          action?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      increment_credits: {
+        Args: { uid: string; amount: number };
+        Returns: undefined;
+      };
+      deduct_credits: {
+        Args: { amount: number };
+        Returns: boolean;
+      };
+      check_rate_limit: {
+        Args: { p_action: string; p_max_calls: number; p_window_seconds: number };
+        Returns: boolean;
+      };
+      cleanup_rate_limits: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

@@ -18,6 +18,7 @@ import { ImageGenNode } from "@/components/nodes/image-gen-node";
 import { VideoGenNode } from "@/components/nodes/video-gen-node";
 import { OutputNode } from "@/components/nodes/output-node";
 import { useProjectStore, type NodeType, type KFNode, type KFEdge } from "@/store/project-store";
+import { NodeInspector } from "@/components/studio/node-inspector";
 import { createClient } from "@/lib/supabase/client";
 
 const NODE_TYPES: NodeTypes = {
@@ -44,6 +45,8 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
     markSaved,
     markSaving,
     isDirty,
+    selectedNodeId,
+    selectNode,
   } = useProjectStore();
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -111,7 +114,7 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
   }, []);
 
   return (
-    <div ref={reactFlowWrapper} className="h-full w-full">
+    <div ref={reactFlowWrapper} className="relative h-full w-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -120,19 +123,24 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
         onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        onPaneClick={() => selectNode(null)}
         nodeTypes={NODE_TYPES}
         fitView
-        fitViewOptions={{ padding: 0.2 }}
-        minZoom={0.2}
+        fitViewOptions={{ padding: 0.25 }}
+        minZoom={0.15}
         maxZoom={2}
         deleteKeyCode="Delete"
-style={{ backgroundColor: "#07070e" }}
+        defaultEdgeOptions={{
+          style: { stroke: "#6d28d9", strokeWidth: 1.5 },
+          animated: false,
+        }}
+        style={{ backgroundColor: "#07070e" }}
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={24}
+          gap={28}
           size={1}
-          color="#ffffff14"
+          color="#ffffff0e"
         />
         <Controls
           className="!border-white/10 !bg-[#0f0f1a] !text-white/60"
@@ -158,11 +166,20 @@ style={{ backgroundColor: "#07070e" }}
         {nodes.length === 0 && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-sm text-white/20">Drag nodes from the left panel onto the canvas</p>
+              <p className="text-sm text-white/20">Drag nodes from the left panel, or use the Director bar above</p>
             </div>
           </div>
         )}
       </ReactFlow>
+
+      {/* Slide-in node inspector overlay */}
+      <div
+        className={`pointer-events-none absolute inset-y-0 right-0 z-20 flex transition-transform duration-200 ease-out ${
+          selectedNodeId ? "translate-x-0 pointer-events-auto" : "translate-x-full"
+        }`}
+      >
+        <NodeInspector projectId={projectId} />
+      </div>
     </div>
   );
 }

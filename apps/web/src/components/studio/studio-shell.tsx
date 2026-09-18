@@ -6,7 +6,6 @@ import { StudioToolbar } from "./studio-toolbar";
 import { DirectorBar } from "./director-bar";
 import { StudioLeftPanel } from "./studio-left-panel";
 import { StudioCanvas } from "./studio-canvas";
-import { NodeInspector } from "./node-inspector";
 import { ProjectSettingsPanel } from "./project-settings-panel";
 import { StudioTimeline } from "./studio-timeline";
 import { SaveTemplateModal } from "./save-template-modal";
@@ -56,8 +55,6 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
             <StudioCanvas projectId={projectId} />
           </main>
         </ReactFlowProvider>
-
-        <NodeInspector projectId={projectId} />
       </div>
 
       <StudioTimeline projectId={projectId} />

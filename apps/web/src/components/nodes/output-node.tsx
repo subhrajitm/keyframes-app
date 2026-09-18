@@ -7,27 +7,38 @@ import type { KFNode } from "@/store/project-store";
 
 export const OutputNode = memo(({ id, data }: NodeProps<KFNode>) => {
   return (
-    <NodeWrapper id={id} accentColor="#eab308" icon="videocam" title="Output">
+    <NodeWrapper
+      id={id}
+      title="Output"
+      icon="videocam"
+      avatarColor="#6366f1"
+      avatarIcon="play_arrow"
+      imageSlot={
+        <div className="flex aspect-video w-full items-center justify-center overflow-hidden bg-white/[0.025]">
+          {data.outputUrl ? (
+            <video
+              src={data.outputUrl as string}
+              className="h-full w-full object-cover"
+              muted
+              loop
+            />
+          ) : (
+            <span className="material-symbols-rounded text-[40px] text-white/[0.07]">videocam</span>
+          )}
+        </div>
+      }
+    >
       <Handle
         type="target"
         position={Position.Left}
         id="video-in"
-        className="!h-3 !w-3 !rounded-full !border-2 !border-red-500 !bg-[#0f0f1a]"
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]"
       />
 
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex h-16 w-full items-center justify-center overflow-hidden rounded-lg bg-yellow-500/10 ring-1 ring-yellow-500/20">
-          {data.outputUrl ? (
-            <video src={data.outputUrl} className="h-full w-full object-cover" muted loop />
-          ) : (
-            <span className="material-symbols-rounded text-[24px] text-yellow-400/40">videocam</span>
-          )}
-        </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2 py-0.5">
-          <span className="text-xs text-yellow-400">
-            Clip #{(data.clipOrder ?? 0) + 1}
-          </span>
-        </div>
+      <div className="flex items-center gap-1.5">
+        <span className="text-[11px] text-white/35">
+          Clip {(data.clipOrder ?? 0) + 1}
+        </span>
       </div>
     </NodeWrapper>
   );

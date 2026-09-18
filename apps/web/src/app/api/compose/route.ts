@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { composeVideoTask } from "@/trigger/compose-video";
 
@@ -7,6 +8,15 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Rate limit: 5 compose calls per hour per user
+  const allowed = await checkRateLimit(supabase, "compose", 5, 3600);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many compose requests. Try again later." },
+      { status: 429 },
+    );
+  }
 
   const { projectId } = await req.json() as { projectId: string };
   if (!projectId) return NextResponse.json({ error: "projectId required" }, { status: 400 });
