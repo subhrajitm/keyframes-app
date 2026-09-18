@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Template } from "@keyframe/types";
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function TemplateGallery({ templates }: Props) {
+  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
@@ -39,8 +41,8 @@ export function TemplateGallery({ templates }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed");
-      toast.success("Project created — Director is planning your shots…", { id: tid });
-      window.location.href = `/studio/${data.projectId}`;
+      toast.success("Template loaded — use the Director bar to plan your shots", { id: tid });
+      router.push(`/studio/${data.projectId}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed", { id: tid });
       setLoadingId(null);

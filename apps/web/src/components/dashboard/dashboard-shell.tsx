@@ -48,14 +48,14 @@ export function DashboardShell({ user, projects, templates }: Props) {
           <span className="text-violet-400">Key</span>frame
         </span>
 
-        {/* Search */}
-        <div className="flex flex-1 items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 max-w-xl">
+        {/* Search — grows but doesn't push right items */}
+        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 max-w-lg">
           <span className="material-symbols-rounded text-[18px] text-white/30">search</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search projects…"
-            className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+            className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
           />
           {query && (
             <button onClick={() => setQuery("")} className="text-white/30 hover:text-white/60">
@@ -64,47 +64,55 @@ export function DashboardShell({ user, projects, templates }: Props) {
           )}
         </div>
 
-        {/* New Project */}
-        <form action={createProject}>
-          <button
-            type="submit"
-            className="flex items-center gap-2 rounded-full bg-violet-600 px-5 py-2.5 text-sm font-medium hover:bg-violet-500 transition-colors"
+        {/* Right-side controls — pushed to the far right */}
+        <div className="ml-auto flex items-center gap-3 shrink-0">
+          {/* New Project */}
+          <form action={createProject}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-full bg-violet-600 px-5 py-2.5 text-sm font-medium hover:bg-violet-500 transition-colors"
+            >
+              <span className="material-symbols-rounded text-[18px]">add</span>
+              New Project
+            </button>
+          </form>
+
+          {/* Credits */}
+          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm">
+            <span className="material-symbols-rounded text-[16px] text-yellow-400">toll</span>
+            <span className="text-white/70">{user.credits}</span>
+          </div>
+
+          {/* Settings */}
+          <Link
+            href="/settings"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white transition-colors"
           >
-            <span className="material-symbols-rounded text-[18px]">add</span>
-            New Project
-          </button>
-        </form>
+            <span className="material-symbols-rounded text-[20px]">settings</span>
+          </Link>
 
-        {/* Credits */}
-        <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm shrink-0">
-          <span className="material-symbols-rounded text-[16px] text-yellow-400">toll</span>
-          <span className="text-white/70">{user.credits}</span>
-        </div>
+          {/* Logout */}
+          <form action={logout}>
+            <button
+              type="submit"
+              title="Sign out"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white transition-colors"
+            >
+              <span className="material-symbols-rounded text-[20px]">logout</span>
+            </button>
+          </form>
 
-        {/* Settings */}
-        <Link
-          href="/settings"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white transition-colors"
-        >
-          <span className="material-symbols-rounded text-[20px]">settings</span>
-        </Link>
-
-        {/* Avatar + logout */}
-        <form action={logout}>
-          <button
-            type="submit"
-            title="Sign out"
-            className="h-9 w-9 overflow-hidden rounded-full shrink-0"
-          >
+          {/* Avatar → settings */}
+          <Link href="/settings" className="h-9 w-9 overflow-hidden rounded-full shrink-0 block">
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-violet-600 text-sm font-semibold">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-violet-600 text-sm font-semibold">
                 {initials}
               </div>
             )}
-          </button>
-        </form>
+          </Link>
+        </div>
       </header>
 
       <main className="px-8 pb-20 space-y-10">
