@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           theme="dark"
           position="bottom-right"
           toastOptions={{
-            style: { background: "#0f0f1a", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)" },
+            style: { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)" },
           }}
         />
       </body>

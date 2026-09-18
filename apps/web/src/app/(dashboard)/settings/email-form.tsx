@@ -38,10 +38,10 @@ export function EmailForm({ currentEmail }: { currentEmail: string }) {
 
 function Alert({ state }: { state: { error: string; success: string } }) {
   if (state.error) return (
-    <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-400">{state.error}</p>
+    <p className="rounded-md bg-red-500/10 px-4 py-3 text-sm text-red-400">{state.error}</p>
   );
   if (state.success) return (
-    <p className="rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400">{state.success}</p>
+    <p className="rounded-md bg-green-500/10 px-4 py-3 text-sm text-green-400">{state.success}</p>
   );
   return null;
 }

@@ -37,7 +37,7 @@ export const PromptNode = memo(({ id, data }: NodeProps<KFNode>) => {
         type="source"
         position={Position.Right}
         id="prompt-out"
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]"
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]"
       />
     </NodeWrapper>
   );

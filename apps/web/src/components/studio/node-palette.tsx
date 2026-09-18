@@ -19,7 +19,7 @@ export function NodePalette() {
   };
 
   return (
-    <aside className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]">
+    <aside className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#111111]">
       <div className="border-b border-white/10 px-4 py-3.5">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-white/30">Drag to canvas</p>
       </div>
@@ -30,7 +30,7 @@ export function NodePalette() {
             key={n.type}
             draggable
             onDragStart={(e) => onDragStart(e, n.type)}
-            className="flex cursor-grab items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-3 py-2.5 transition-colors hover:border-white/10 hover:bg-white/[0.06] active:cursor-grabbing"
+            className="flex cursor-grab items-center gap-3 rounded-md border border-white/[0.06] bg-white/[0.025] px-3 py-2.5 transition-colors hover:border-white/10 hover:bg-white/[0.06] active:cursor-grabbing"
           >
             <div
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"

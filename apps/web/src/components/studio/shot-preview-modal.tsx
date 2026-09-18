@@ -31,7 +31,7 @@ export function ShotPreviewModal({ shot, onClose, onPrev, onNext }: ShotPreviewM
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col gap-4 overflow-hidden rounded-xl border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl"
+        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col gap-4 overflow-hidden rounded-md border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

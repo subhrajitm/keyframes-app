@@ -58,7 +58,7 @@ export function DirectorBar({ projectId, initialDescription }: DirectorBarProps)
   };
 
   return (
-    <div className="flex items-center gap-3 border-b border-white/10 bg-[#080810] px-4 py-2.5">
+    <div className="flex items-center gap-3 border-b border-white/10 bg-[#0d0d0d] px-4 py-2.5">
       <span className="material-symbols-rounded text-[18px] shrink-0 text-violet-400/70">auto_awesome</span>
 
       <input

@@ -42,7 +42,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
   const { data, type } = node;
 
   return (
-    <aside className="flex h-full w-72 flex-col border-l border-white/10 bg-[#0a0a12]/95 shadow-2xl backdrop-blur-sm">
+    <aside className="flex h-full w-72 flex-col border-l border-white/10 bg-[#111111]/95 shadow-2xl backdrop-blur-sm">
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-2">

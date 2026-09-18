@@ -48,7 +48,7 @@ export function SaveTemplateModal({ open, onClose, projectId, projectTitle }: Sa
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl">
+      <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-md border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl">
         <div className="mb-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-rounded text-[18px] text-violet-400">library_books</span>

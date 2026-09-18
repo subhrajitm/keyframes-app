@@ -40,7 +40,7 @@ export function NodeWrapper({
   return (
     <div
       className={cn(
-        "relative overflow-visible rounded-2xl border bg-[#0d1018] text-white shadow-2xl transition-all duration-150 cursor-pointer",
+        "relative overflow-visible rounded-lg border bg-[#161616] text-white shadow-2xl transition-all duration-150 cursor-pointer",
         wide ? "w-[300px]" : "w-[260px]",
         isSelected
           ? "border-violet-500/50 shadow-[0_0_0_1px_rgb(139_92_246_/_0.15)]"
@@ -73,7 +73,7 @@ export function NodeWrapper({
 
         {menuOpen && (
           <div
-            className="absolute right-0 top-8 z-50 min-w-[130px] overflow-hidden rounded-xl border border-white/[0.08] bg-[#131720] py-1 shadow-2xl"
+            className="absolute right-0 top-8 z-50 min-w-[130px] overflow-hidden rounded-md border border-white/[0.08] bg-[#1e1e1e] py-1 shadow-2xl"
             onMouseLeave={() => setMenuOpen(false)}
           >
             <button

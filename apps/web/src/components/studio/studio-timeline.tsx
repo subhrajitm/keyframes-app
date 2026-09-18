@@ -119,7 +119,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
   const totalCount = orderedShots.length;
 
   return (
-    <div className={`shrink-0 border-t border-white/10 bg-[#080810] transition-all ${collapsed ? "h-8" : "h-44"}`}>
+    <div className={`shrink-0 border-t border-white/10 bg-[#0d0d0d] transition-all ${collapsed ? "h-8" : "h-44"}`}>
       {/* Header bar */}
       <div className="flex h-8 items-center justify-between border-b border-white/5 px-3">
         <div className="flex items-center gap-2">

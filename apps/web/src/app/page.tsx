@@ -61,14 +61,14 @@ const TECH = ["fal.ai", "OpenRouter", "Trigger.dev", "FFmpeg", "Supabase"];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white" style={{ fontFamily: "var(--font-geist-sans), sans-serif" }}>
+    <div className="min-h-screen bg-[#0a0a0a] text-white" style={{ fontFamily: "var(--font-geist-sans), sans-serif" }}>
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
       <section className="relative flex h-screen min-h-[640px] flex-col overflow-hidden">
 
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="h-full w-full bg-[#0a0a0f]"
+          <div className="h-full w-full bg-[#0a0a0a]"
             style={{
               backgroundImage:
                 "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
@@ -142,7 +142,7 @@ export default function LandingPage() {
 
             {/* Right — floating preview card */}
             <div className="hidden lg:block shrink-0">
-              <div className="w-64 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm">
+              <div className="w-64 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] backdrop-blur-sm">
                 {/* Preview thumbnail */}
                 <div className="relative aspect-video w-full bg-gradient-to-br from-violet-900/60 via-purple-900/30 to-black">
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -160,7 +160,7 @@ export default function LandingPage() {
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex -space-x-1.5">
                       {["bg-violet-500", "bg-blue-500", "bg-pink-500"].map((c, i) => (
-                        <div key={i} className={`h-5 w-5 rounded-full border border-[#0a0a0f] ${c}`} />
+                        <div key={i} className={`h-5 w-5 rounded-full border border-[#0a0a0a] ${c}`} />
                       ))}
                     </div>
                     <p className="text-[11px] text-white/40">Used by creators worldwide</p>
@@ -207,7 +207,7 @@ export default function LandingPage() {
         {/* Stats */}
         <div className="mt-16 grid grid-cols-1 gap-px border border-white/[0.06] sm:grid-cols-3">
           {STATS.map((s) => (
-            <div key={s.value} className="bg-[#0a0a0f] px-10 py-10">
+            <div key={s.value} className="bg-[#0a0a0a] px-10 py-10">
               <p className="text-6xl font-bold tracking-tight text-white md:text-7xl">{s.value}</p>
               <p className="mt-6 text-sm leading-relaxed text-white/30" style={{ whiteSpace: "pre-line" }}>
                 {s.label}
@@ -273,7 +273,7 @@ export default function LandingPage() {
             { icon: "bolt",          title: "Parallel Jobs",     desc: "All shots generate simultaneously. A 30-second film finishes in minutes." },
             { icon: "compress",      title: "Auto Compose",      desc: "Clips are stitched into a final MP4 with music the moment all shots are ready." },
           ].map((f) => (
-            <div key={f.title} className="group bg-[#0a0a0f] p-8 hover:bg-white/[0.02] transition-colors">
+            <div key={f.title} className="group bg-[#0a0a0a] p-8 hover:bg-white/[0.02] transition-colors">
               <span className="material-symbols-rounded text-[28px] text-white/20 group-hover:text-violet-400 transition-colors">
                 {f.icon}
               </span>
@@ -300,7 +300,7 @@ export default function LandingPage() {
           {PRICING.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col rounded-2xl p-8 ${
+              className={`relative flex flex-col rounded-lg p-8 ${
                 plan.highlight
                   ? "bg-violet-600/10 ring-1 ring-violet-500/30"
                   : "bg-white/[0.03] ring-1 ring-white/[0.06]"

@@ -12,7 +12,7 @@ export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(signupWithEmail, initialState);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0f] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white">Create account</h1>

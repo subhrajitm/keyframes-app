@@ -15,7 +15,7 @@ export function StudioLeftPanel({ projectId }: StudioLeftPanelProps) {
   const [tab, setTab] = useState<Tab>("scenes");
 
   return (
-    <div className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]">
+    <div className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#111111]">
       {/* Tab bar */}
       <div className="flex shrink-0 border-b border-white/10">
         <TabButton active={tab === "scenes"} onClick={() => setTab("scenes")} icon="movie" label="Scenes" />

@@ -32,7 +32,7 @@ export const OutputNode = memo(({ id, data }: NodeProps<KFNode>) => {
         type="target"
         position={Position.Left}
         id="video-in"
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]"
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]"
       />
 
       <div className="flex items-center gap-1.5">

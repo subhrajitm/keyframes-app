@@ -74,11 +74,11 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
     >
       {/* Handles */}
       <Handle type="target" position={Position.Left} id="character-in" style={{ top: "28%" }}
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]" />
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
       <Handle type="target" position={Position.Left} id="location-in" style={{ top: "50%" }}
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]" />
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
       <Handle type="target" position={Position.Left} id="prompt-in" style={{ top: "72%" }}
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]" />
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
 
       {/* Status + regen */}
       <div className="flex items-center justify-between">
@@ -102,7 +102,7 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
       </div>
 
       <Handle type="source" position={Position.Right} id="image-out"
-        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#0d1018]" />
+        className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
     </NodeWrapper>
   );
 });

@@ -35,7 +35,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
   const current = NAV.find((n) => n.id === active)!;
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0f] text-white">
+    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
 
       {/* ── Sidebar ─────────────────────────────────────────────── */}
       <aside className="flex w-56 shrink-0 flex-col border-r border-white/[0.06] px-3 py-8">
@@ -56,7 +56,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
             <button
               key={item.id}
               onClick={() => setActive(item.id)}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-left transition-colors ${
+              className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-left transition-colors ${
                 active === item.id
                   ? item.danger
                     ? "bg-red-500/10 text-red-400"
@@ -103,7 +103,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
 
         {active === "billing" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between rounded-2xl bg-white/[0.04] px-8 py-7">
+            <div className="flex items-center justify-between rounded-lg bg-white/[0.04] px-8 py-7">
               <div>
                 <p className="text-5xl font-semibold">{profile.credits}</p>
                 <p className="mt-1.5 text-sm text-white/40">credits remaining</p>
@@ -116,7 +116,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
 
             <button
               disabled
-              className="w-full flex items-center justify-between rounded-2xl bg-white/[0.04] px-7 py-5 opacity-50 cursor-not-allowed"
+              className="w-full flex items-center justify-between rounded-lg bg-white/[0.04] px-7 py-5 opacity-50 cursor-not-allowed"
             >
               <div className="text-left">
                 <p className="text-base font-medium">Buy credits</p>
@@ -137,7 +137,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
         )}
 
         {active === "danger" && (
-          <div className="rounded-2xl bg-red-500/[0.04] ring-1 ring-red-500/15 p-7">
+          <div className="rounded-lg bg-red-500/[0.04] ring-1 ring-red-500/15 p-7">
             <DangerZone />
           </div>
         )}

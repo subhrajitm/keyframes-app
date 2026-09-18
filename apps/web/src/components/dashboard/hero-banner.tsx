@@ -20,7 +20,7 @@ export function HeroBanner() {
   if (!visible) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-white/[0.04] border border-white/[0.06]">
+    <div className="relative overflow-hidden rounded-lg bg-white/[0.04] border border-white/[0.06]">
       <button
         onClick={dismiss}
         className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-white/40 hover:bg-white/10 hover:text-white transition-colors"
@@ -30,7 +30,7 @@ export function HeroBanner() {
 
       <div className="flex flex-col gap-8 p-10 sm:flex-row sm:items-center">
         {/* Decorative visual */}
-        <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-violet-900/60 via-purple-900/40 to-black sm:h-56 sm:w-72">
+        <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-violet-900/60 via-purple-900/40 to-black sm:h-56 sm:w-72">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col gap-2 opacity-30">
               {[...Array(5)].map((_, i) => (

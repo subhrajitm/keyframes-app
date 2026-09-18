@@ -39,7 +39,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
   };
 
   return (
-    <div className="flex h-screen flex-col bg-[#07070e] text-white">
+    <div className="flex h-screen flex-col bg-[#080808] text-white">
       <StudioToolbar
         projectId={projectId}
         initialTitle={initialTitle}

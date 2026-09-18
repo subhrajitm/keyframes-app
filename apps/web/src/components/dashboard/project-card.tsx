@@ -30,7 +30,7 @@ export function ProjectCard({ project }: { project: Project }) {
                   project.thumbnail_url?.includes("/videos/");
 
   return (
-    <div className={`group relative overflow-hidden rounded-2xl bg-white/[0.04] transition-colors hover:bg-white/[0.07] ${menuOpen ? "bg-white/[0.07]" : ""}`}>
+    <div className={`group relative overflow-hidden rounded-lg bg-white/[0.04] transition-colors hover:bg-white/[0.07] ${menuOpen ? "bg-white/[0.07]" : ""}`}>
       {/* Thumbnail */}
       <Link href={`/studio/${project.id}`}>
         <div className="aspect-video w-full overflow-hidden bg-white/[0.03]">
@@ -63,7 +63,7 @@ export function ProjectCard({ project }: { project: Project }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="z-50 min-w-[140px] rounded-xl border border-white/10 bg-[#1a1a2e] p-1 text-sm text-white shadow-xl"
+          className="z-50 min-w-[140px] rounded-md border border-white/10 bg-[#1a1a2e] p-1 text-sm text-white shadow-xl"
         >
           <DropdownMenuItem
             className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-red-400 outline-none hover:bg-white/5"

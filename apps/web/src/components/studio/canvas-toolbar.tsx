@@ -77,7 +77,7 @@ export function CanvasToolbar({
 
         {/* ── Add popup ── */}
         {addOpen && (
-          <div className="w-72 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0d1018] shadow-2xl">
+          <div className="w-72 overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616] shadow-2xl">
             <div className="border-b border-white/[0.06] px-4 py-3">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">Add to canvas</p>
             </div>
@@ -92,10 +92,10 @@ export function CanvasToolbar({
                     <button
                       key={n.type}
                       onClick={() => handleAddNode(n.type)}
-                      className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-white/[0.05]"
+                      className="flex w-full items-center gap-3 rounded-md px-2 py-2.5 text-left transition-colors hover:bg-white/[0.05]"
                     >
                       <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
                         style={{ backgroundColor: `${n.color}18` }}
                       >
                         <span
@@ -118,7 +118,7 @@ export function CanvasToolbar({
         )}
 
         {/* ── Toolbar pill ── */}
-        <div className="flex items-center gap-0.5 rounded-2xl border border-white/[0.08] bg-[#0d1018]/90 p-1.5 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center gap-0.5 rounded-lg border border-white/[0.08] bg-[#161616]/90 p-1.5 shadow-2xl backdrop-blur-xl">
 
           {/* Panel toggle */}
           <ToolBtn
@@ -150,7 +150,7 @@ export function CanvasToolbar({
           <button
             onClick={() => setAddOpen((o) => !o)}
             className={cn(
-              "flex h-9 items-center gap-1.5 rounded-xl px-4 text-sm font-semibold transition-all",
+              "flex h-9 items-center gap-1.5 rounded-md px-4 text-sm font-semibold transition-all",
               addOpen
                 ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
                 : "bg-white/[0.07] text-white/65 hover:bg-white/[0.11] hover:text-white",
@@ -181,7 +181,7 @@ function ToolBtn({
       onClick={onClick}
       title={title}
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
+        "flex h-9 w-9 items-center justify-center rounded-md transition-colors",
         active
           ? "bg-violet-600/20 text-violet-300"
           : "text-white/35 hover:bg-white/[0.06] hover:text-white/70",

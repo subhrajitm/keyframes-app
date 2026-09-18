@@ -112,7 +112,7 @@ export function AssetLibrary() {
                 key={asset.id}
                 draggable
                 onDragStart={(e) => onDragStart(e, asset)}
-                className="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1.5 transition-colors hover:border-white/10 hover:bg-white/[0.05] active:cursor-grabbing"
+                className="group flex cursor-grab flex-col gap-1.5 rounded-md border border-white/[0.06] bg-white/[0.025] p-1.5 transition-colors hover:border-white/10 hover:bg-white/[0.05] active:cursor-grabbing"
                 title={`Drag to canvas — ${asset.name}`}
               >
                 {/* Thumbnail */}

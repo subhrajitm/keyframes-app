@@ -18,8 +18,11 @@
 }
 
 :root {
-  --background: #0a0a0f;
+  --background: #0a0a0a;
   --foreground: #ffffff;
+  --surface: #111111;
+  --surface-raised: #161616;
+  --border: rgba(255, 255, 255, 0.08);
 }
 
 body {
@@ -40,24 +43,33 @@ body {
   box-shadow: none !important;
 }
 
+.react-flow__controls {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 .react-flow__controls button {
-  background: #0f0f1a !important;
-  border-color: rgba(255,255,255,0.1) !important;
-  color: rgba(255,255,255,0.5) !important;
-  fill: rgba(255,255,255,0.5) !important;
+  background: #161616 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: rgba(255,255,255,0.4) !important;
+  fill: rgba(255,255,255,0.4) !important;
+  border-radius: 8px !important;
+  margin-bottom: 2px !important;
 }
 .react-flow__controls button:hover {
-  background: rgba(255,255,255,0.05) !important;
+  background: #1e1e1e !important;
+  color: rgba(255,255,255,0.7) !important;
+  fill: rgba(255,255,255,0.7) !important;
 }
 .react-flow__edge-path {
-  stroke: #7c3aed;
-  stroke-width: 2;
+  stroke: #6d28d9;
+  stroke-width: 1.5;
 }
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #a855f7;
+  stroke: #8b5cf6;
 }
 .react-flow__connection-line {
-  stroke: #7c3aed;
-  stroke-width: 2;
+  stroke: #6d28d9;
+  stroke-width: 1.5;
   stroke-dasharray: 5 5;
 }

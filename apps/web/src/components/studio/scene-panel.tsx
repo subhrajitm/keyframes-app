@@ -67,7 +67,7 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
 
   const wrapper = embedded
     ? "flex flex-1 flex-col overflow-hidden"
-    : "flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]";
+    : "flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#111111]";
 
   return (
     <>
@@ -112,7 +112,7 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
                     <button
                       key={shot.id}
                       onClick={() => setPreviewShot(shot)}
-                      className="group/shot flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-2.5 py-2 text-left transition-colors hover:border-white/10 hover:bg-white/[0.05]"
+                      className="group/shot flex items-center gap-3 rounded-md border border-white/[0.06] bg-white/[0.025] px-2.5 py-2 text-left transition-colors hover:border-white/10 hover:bg-white/[0.05]"
                     >
                       {/* Thumbnail */}
                       {shot.video_url ? (

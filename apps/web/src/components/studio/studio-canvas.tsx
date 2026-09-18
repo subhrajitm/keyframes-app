@@ -138,7 +138,7 @@ export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen
           style: { stroke: "#6d28d9", strokeWidth: 1.5 },
           animated: false,
         }}
-        style={{ backgroundColor: "#07070e" }}
+        style={{ backgroundColor: "#080808" }}
       >
         <Background
           variant={BackgroundVariant.Dots}
@@ -147,7 +147,7 @@ export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen
           color="#ffffff0e"
         />
         <Controls
-          className="!border-white/10 !bg-[#0d1018] !text-white/40 !shadow-none"
+          className="!border-white/10 !bg-[#161616] !text-white/40 !shadow-none"
           showInteractive={false}
           position="bottom-left"
           style={{ bottom: 80 }}

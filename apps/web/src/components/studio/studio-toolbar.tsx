@@ -51,7 +51,7 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
   };
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#0a0a12] px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#111111] px-4">
       {/* Left */}
       <div className="flex items-center gap-3">
         <Link

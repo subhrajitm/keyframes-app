@@ -40,7 +40,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
     : user.email[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
 
       {/* ── Header ──────────────────────────────────────────────── */}
       <header className="flex items-center gap-4 px-8 py-5">
@@ -142,7 +142,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-white/[0.03] py-24 text-center">
+            <div className="flex flex-col items-center justify-center rounded-lg bg-white/[0.03] py-24 text-center">
               <span className="material-symbols-rounded text-[48px] text-white/10 mb-4">movie</span>
               <p className="text-base font-medium text-white/50">
                 {query ? "No projects match your search" : "No projects yet"}
@@ -175,8 +175,8 @@ export function DashboardShell({ user, projects, templates }: Props) {
 
 function QuickActionCard({ icon, label, desc, action }: typeof QUICK_ACTIONS[number]) {
   const inner = (
-    <div className="flex items-center gap-4 rounded-2xl bg-white/[0.04] px-5 py-4 hover:bg-white/[0.07] transition-colors cursor-pointer w-full text-left border border-transparent hover:border-white/10">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-600/80">
+    <div className="flex items-center gap-4 rounded-lg bg-white/[0.04] px-5 py-4 hover:bg-white/[0.07] transition-colors cursor-pointer w-full text-left border border-transparent hover:border-white/10">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-violet-600/80">
         <span className="material-symbols-rounded text-[20px] text-white">{icon}</span>
       </div>
       <div className="min-w-0">
