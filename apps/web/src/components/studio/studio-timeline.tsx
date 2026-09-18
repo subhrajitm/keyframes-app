@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { ChevronDown, ChevronUp, Music, X, Play, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useSceneStore } from "@/store/scene-store";
 import { useProjectStore } from "@/store/project-store";
@@ -125,11 +124,11 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
       <div className="flex h-8 items-center justify-between border-b border-white/5 px-3">
         <div className="flex items-center gap-2">
           <button onClick={() => setCollapsed((c) => !c)} className="text-white/30 hover:text-white/60">
-            {collapsed ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            {collapsed ? <span className="material-symbols-rounded text-[14px]">expand_less</span> : <span className="material-symbols-rounded text-[14px]">expand_more</span>}
           </button>
           <span className="text-xs font-medium text-white/50">Timeline</span>
           {totalCount > 0 && (
-            <span className="text-[10px] text-white/25">{completedCount}/{totalCount} ready</span>
+            <span className="text-xs text-white/40">{completedCount}/{totalCount} ready</span>
           )}
         </div>
 
@@ -138,22 +137,22 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
             {/* Music */}
             {settings.musicUrl ? (
               <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
-                <Music className="h-2.5 w-2.5 text-purple-400" />
-                <span className="max-w-[80px] truncate text-[10px] text-white/40">Music added</span>
+                <span className="material-symbols-rounded text-[16px] text-purple-400">music_note</span>
+                <span className="max-w-[100px] truncate text-xs text-white/50">Music added</span>
                 <button
                   onClick={() => updateSettings({ musicUrl: undefined })}
                   className="text-white/20 hover:text-white/50"
                 >
-                  <X className="h-2.5 w-2.5" />
+                  <span className="material-symbols-rounded text-[16px]">close</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => musicInputRef.current?.click()}
                 disabled={isUploadingMusic}
-                className="flex items-center gap-1.5 rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-white/30 hover:border-purple-500/30 hover:text-purple-300"
+                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-xs text-white/40 hover:border-purple-500/30 hover:text-purple-300"
               >
-                {isUploadingMusic ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Music className="h-2.5 w-2.5" />}
+                {isUploadingMusic ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">music_note</span>}
                 Add music
               </button>
             )}
@@ -161,9 +160,9 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
             <button
               onClick={handleCompose}
               disabled={isComposing || completedCount === 0}
-              className="flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-[11px] font-medium text-blue-300 hover:bg-blue-500/20 disabled:opacity-40"
+              className="flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300 hover:bg-blue-500/20 disabled:opacity-40"
             >
-              {isComposing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
+              {isComposing ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">play_arrow</span>}
               {isComposing ? "Composing…" : "Compose Film"}
             </button>
           </div>
@@ -184,7 +183,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
         <div className="flex h-[calc(100%-2rem)] items-start gap-2 overflow-x-auto overflow-y-hidden px-3 py-2">
           {orderedShots.length === 0 ? (
             <div className="flex flex-1 items-center justify-center text-center">
-              <p className="text-[11px] text-white/20">
+              <p className="text-xs text-white/30">
                 Run the Director to create a shot plan, then Generate All to produce clips
               </p>
             </div>
@@ -241,12 +240,12 @@ function ClipCard({ shot, index, isHovered, onDragStart, onDragOver, onDrop, onD
           <img src={shot.image_url} alt={shot.title} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <span className="text-[10px] text-white/15">No clip yet</span>
+            <span className="text-xs text-white/30">No clip yet</span>
           </div>
         )}
 
         {/* Index badge */}
-        <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-[9px] text-white/60">
+        <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-xs text-white/70">
           {index + 1}
         </span>
 
@@ -256,7 +255,7 @@ function ClipCard({ shot, index, isHovered, onDragStart, onDragOver, onDrop, onD
 
       {/* Title bar */}
       <div className="shrink-0 bg-[#0a0a14] px-1.5 py-1">
-        <p className="truncate text-[9px] text-white/40">{shot.title}</p>
+        <p className="truncate text-xs text-white/50">{shot.title}</p>
       </div>
     </div>
   );

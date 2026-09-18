@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { Move } from "lucide-react";
 
 interface PanoramaViewerProps {
   url: string;
@@ -76,7 +75,7 @@ export function PanoramaViewer({ url, className = "" }: PanoramaViewerProps) {
 
       {/* Pan hint */}
       <div className="pointer-events-none absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-black/50 px-2 py-1 text-[10px] text-white/60">
-        <Move className="h-2.5 w-2.5" />
+        <span className="material-symbols-rounded text-[11px]">open_with</span>
         drag to pan
       </div>
     </div>

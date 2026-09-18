@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, RefreshCw, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useProjectStore } from "@/store/project-store";
 
@@ -58,9 +57,9 @@ export function CharacterSheetPanel({
         className="flex items-center justify-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 py-2 text-xs font-medium text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/20 disabled:opacity-40"
       >
         {isGenerating ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <span className="material-symbols-rounded text-[14px] animate-spin">progress_activity</span>
         ) : (
-          <RefreshCw className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[14px]">refresh</span>
         )}
         {isGenerating ? "Generating…" : views?.length ? "Regenerate Sheet" : "Generate Reference Sheet"}
       </button>
@@ -77,7 +76,7 @@ export function CharacterSheetPanel({
             >
               <img src={url} alt={VIEW_LABELS[i]} className="aspect-[3/4] w-full object-cover" />
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <Check className="h-4 w-4 text-white" />
+                <span className="material-symbols-rounded text-[18px] text-white">check</span>
                 <span className="text-[10px] text-white">Use</span>
               </div>
               <span className="absolute bottom-1 left-0 right-0 text-center text-[9px] text-white/50">

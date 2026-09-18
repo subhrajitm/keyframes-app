@@ -1,6 +1,5 @@
 "use client";
 
-import { Trash2, X } from "lucide-react";
 import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +41,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
           onClick={() => selectNode(null)}
           className="text-white/30 hover:text-white/60"
         >
-          <X className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[18px]">close</span>
         </button>
       </div>
 
@@ -167,7 +166,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
         )}
 
         <Field label="Node ID">
-          <p className="truncate font-mono text-[10px] text-white/20">{node.id}</p>
+          <p className="truncate font-mono text-xs text-white/30">{node.id}</p>
         </Field>
       </div>
 
@@ -179,7 +178,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
           className="w-full"
           onClick={() => deleteNode(node.id)}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[18px]">delete</span>
           Delete Node
         </Button>
       </div>
@@ -190,7 +189,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[10px] font-semibold uppercase tracking-wider text-white/30">
+      <label className="text-xs font-semibold uppercase tracking-wider text-white/40">
         {label}
       </label>
       {children}

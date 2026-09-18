@@ -1,6 +1,5 @@
 "use client";
 
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Shot } from "@keyframe/types";
 
 interface ShotPreviewModalProps {
@@ -44,7 +43,7 @@ export function ShotPreviewModal({ shot, onClose, onPrev, onNext }: ShotPreviewM
             </p>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white/60">
-            <X className="h-5 w-5" />
+            <span className="material-symbols-rounded text-[20px]">close</span>
           </button>
         </div>
 
@@ -84,14 +83,14 @@ export function ShotPreviewModal({ shot, onClose, onPrev, onNext }: ShotPreviewM
               disabled={!onPrev}
               className="flex items-center gap-1 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 hover:border-white/20 hover:text-white/80 disabled:opacity-20"
             >
-              <ChevronLeft className="h-3.5 w-3.5" /> Previous
+              <span className="material-symbols-rounded text-[14px]">chevron_left</span> Previous
             </button>
             <button
               onClick={onNext}
               disabled={!onNext}
               className="flex items-center gap-1 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 hover:border-white/20 hover:text-white/80 disabled:opacity-20"
             >
-              Next <ChevronRight className="h-3.5 w-3.5" />
+              Next <span className="material-symbols-rounded text-[14px]">chevron_right</span>
             </button>
           </div>
         )}

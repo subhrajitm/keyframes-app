@@ -2,13 +2,12 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { MapPin } from "lucide-react";
 import { NodeWrapper } from "./node-wrapper";
 import type { KFNode } from "@/store/project-store";
 
 export const LocationNode = memo(({ id, data }: NodeProps<KFNode>) => {
   return (
-    <NodeWrapper id={id} accentColor="#22c55e" icon="🗺" title="Location">
+    <NodeWrapper id={id} accentColor="#22c55e" icon="location_on" title="Location">
       <div className="flex flex-col items-center gap-2">
         <div className="flex h-20 w-full overflow-hidden rounded-lg ring-1 ring-green-500/20">
           {data.locationImageUrl ? (
@@ -19,7 +18,7 @@ export const LocationNode = memo(({ id, data }: NodeProps<KFNode>) => {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-green-500/10">
-              <MapPin className="h-7 w-7 text-green-400/60" />
+              <span className="material-symbols-rounded text-[28px] text-green-400/60">location_on</span>
             </div>
           )}
         </div>

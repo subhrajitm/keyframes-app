@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Check, Play, Settings, Zap, BookTemplate } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
@@ -52,14 +51,14 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
   };
 
   return (
-    <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 bg-[#0a0a12] px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#0a0a12] px-4">
       {/* Left */}
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="flex items-center gap-1 text-xs text-white/40 transition-colors hover:text-white/70"
+          className="flex items-center gap-1.5 text-sm text-white/40 transition-colors hover:text-white/70"
         >
-          <ChevronLeft className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[18px]">chevron_left</span>
           Dashboard
         </Link>
         <span className="text-white/20">/</span>
@@ -72,29 +71,29 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
             if (e.key === "Enter") titleRef.current?.blur();
             if (e.key === "Escape") { setTitle(initialTitle); titleRef.current?.blur(); }
           }}
-          className="bg-transparent text-sm font-medium text-white/80 outline-none focus:text-white"
+          className="bg-transparent text-base font-medium text-white/80 outline-none focus:text-white"
           style={{ width: `${Math.max(title.length, 8)}ch` }}
         />
-        {isTitleSaving && <Loader2 className="h-3 w-3 animate-spin text-white/30" />}
+        {isTitleSaving && <span className="material-symbols-rounded text-[16px] animate-spin text-white/30">progress_activity</span>}
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-2">
         {isSaving ? (
-          <span className="flex items-center gap-1 text-xs text-white/30">
-            <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+          <span className="flex items-center gap-1.5 text-sm text-white/30">
+            <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> Saving…
           </span>
         ) : isDirty ? (
-          <span className="text-xs text-white/30">Unsaved</span>
+          <span className="text-sm text-white/30">Unsaved</span>
         ) : (
-          <span className="flex items-center gap-1 text-xs text-white/20">
-            <Check className="h-3 w-3" /> Saved
+          <span className="flex items-center gap-1.5 text-sm text-white/30">
+            <span className="material-symbols-rounded text-[16px]">check</span> Saved
           </span>
         )}
 
         {credits !== null && (
-          <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/50">
-            <Zap className="h-3 w-3 text-yellow-400/70" />
+          <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/60">
+            <span className="material-symbols-rounded text-[16px] text-yellow-400/70">bolt</span>
             {credits}
           </span>
         )}
@@ -102,32 +101,32 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 w-7 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
+          className="h-8 w-8 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
           onClick={onSettingsOpen}
           title="Project settings"
         >
-          <Settings className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[18px]">settings</span>
         </Button>
 
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 gap-1.5 px-3 text-xs text-white/40 hover:bg-white/5 hover:text-white/60"
+          className="h-8 gap-1.5 px-3 text-sm text-white/40 hover:bg-white/5 hover:text-white/60"
           onClick={onSaveTemplate}
           title="Save as template"
         >
-          <BookTemplate className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[18px]">library_books</span>
           Save template
         </Button>
 
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 gap-1.5 px-3 text-xs text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 disabled:opacity-40"
+          className="h-8 gap-1.5 px-3 text-sm text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 disabled:opacity-40"
           onClick={handleGenerateAll}
           disabled={isGenerating}
         >
-          {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
+          {isGenerating ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">play_arrow</span>}
           {isGenerating ? "Generating…" : "Generate All"}
         </Button>
       </div>

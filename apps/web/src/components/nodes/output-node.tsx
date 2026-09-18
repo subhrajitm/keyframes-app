@@ -2,13 +2,12 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { Film } from "lucide-react";
 import { NodeWrapper } from "./node-wrapper";
 import type { KFNode } from "@/store/project-store";
 
 export const OutputNode = memo(({ id, data }: NodeProps<KFNode>) => {
   return (
-    <NodeWrapper id={id} accentColor="#eab308" icon="🎥" title="Output">
+    <NodeWrapper id={id} accentColor="#eab308" icon="videocam" title="Output">
       <Handle
         type="target"
         position={Position.Left}
@@ -21,7 +20,7 @@ export const OutputNode = memo(({ id, data }: NodeProps<KFNode>) => {
           {data.outputUrl ? (
             <video src={data.outputUrl} className="h-full w-full object-cover" muted loop />
           ) : (
-            <Film className="h-6 w-6 text-yellow-400/40" />
+            <span className="material-symbols-rounded text-[24px] text-yellow-400/40">videocam</span>
           )}
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2 py-0.5">

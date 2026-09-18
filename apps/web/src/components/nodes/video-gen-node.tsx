@@ -2,7 +2,6 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { Video, Loader2 } from "lucide-react";
 import { NodeWrapper } from "./node-wrapper";
 import { useSceneStore } from "@/store/scene-store";
 import type { KFNode } from "@/store/project-store";
@@ -30,7 +29,7 @@ export const VideoGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const isProcessing = ["video_pending", "video_processing"].includes(shotStatus);
 
   return (
-    <NodeWrapper id={id} accentColor="#ef4444" icon="🎬" title="Video Gen">
+    <NodeWrapper id={id} accentColor="#ef4444" icon="movie" title="Video Gen">
       <Handle type="target" position={Position.Left} id="image-in" style={{ top: "40%" }}
         className="!h-3 !w-3 !rounded-full !border-2 !border-orange-500 !bg-[#0f0f1a]" />
       <Handle type="target" position={Position.Left} id="prompt-in" style={{ top: "65%" }}
@@ -41,9 +40,9 @@ export const VideoGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
           {videoUrl ? (
             <video src={videoUrl} className="h-full w-full object-cover" muted loop autoPlay playsInline />
           ) : isProcessing ? (
-            <Loader2 className="h-6 w-6 animate-spin text-red-400" />
+            <span className="material-symbols-rounded text-[24px] animate-spin text-red-400">progress_activity</span>
           ) : (
-            <Video className="h-6 w-6 text-red-400/40" />
+            <span className="material-symbols-rounded text-[24px] text-red-400/40">movie</span>
           )}
         </div>
 

@@ -10,7 +10,7 @@ export const PromptNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const updateNodeData = useProjectStore((s) => s.updateNodeData);
 
   return (
-    <NodeWrapper id={id} accentColor="#3b82f6" icon="✏️" title="Prompt">
+    <NodeWrapper id={id} accentColor="#3b82f6" icon="edit" title="Prompt">
       <textarea
         className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-2 text-xs text-white placeholder:text-white/30 focus:border-blue-500/60 focus:outline-none"
         rows={4}

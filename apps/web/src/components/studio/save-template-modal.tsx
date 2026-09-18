@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Loader2, BookTemplate } from "lucide-react";
+
 import { toast } from "sonner";
 import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
@@ -51,11 +51,11 @@ export function SaveTemplateModal({ open, onClose, projectId, projectTitle }: Sa
       <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl">
         <div className="mb-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BookTemplate className="h-4 w-4 text-violet-400" />
+            <span className="material-symbols-rounded text-[18px] text-violet-400">library_books</span>
             <h2 className="text-sm font-semibold text-white/90">Save as Template</h2>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white/60">
-            <X className="h-4 w-4" />
+            <span className="material-symbols-rounded text-[18px]">close</span>
           </button>
         </div>
 
@@ -118,7 +118,7 @@ export function SaveTemplateModal({ open, onClose, projectId, projectTitle }: Sa
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="ghost" size="sm" onClick={onClose}>Cancel</Button>
           <Button size="sm" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <BookTemplate className="h-3.5 w-3.5" />}
+            {isSaving ? <span className="material-symbols-rounded text-[14px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[14px]">library_books</span>}
             {isSaving ? "Saving…" : "Save Template"}
           </Button>
         </div>

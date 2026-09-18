@@ -1,6 +1,5 @@
 "use client";
 
-import { X } from "lucide-react";
 import { useProjectStore, type ProjectSettings } from "@/store/project-store";
 import { ImageUpload } from "@/components/ui/image-upload";
 import type { AspectRatio, ImageModel, VideoModel } from "@keyframe/types";
@@ -58,7 +57,7 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
         <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
           <p className="text-sm font-semibold text-white/80">Project Settings</p>
           <button onClick={onClose} className="text-white/30 hover:text-white/60">
-            <X className="h-4 w-4" />
+            <span className="material-symbols-rounded text-[18px]">close</span>
           </button>
         </div>
 

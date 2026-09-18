@@ -4,12 +4,12 @@ import { type DragEvent } from "react";
 import type { NodeType } from "@/store/project-store";
 
 const NODE_TYPES: { type: NodeType; icon: string; label: string; description: string; color: string }[] = [
-  { type: "character", icon: "🎭", label: "Character", description: "Reference a character", color: "#a855f7" },
-  { type: "location", icon: "🗺", label: "Location", description: "Set the scene", color: "#22c55e" },
-  { type: "prompt", icon: "✏️", label: "Prompt", description: "Describe a shot", color: "#3b82f6" },
-  { type: "imageGen", icon: "🖼", label: "Image Gen", description: "Generate an image", color: "#f97316" },
-  { type: "videoGen", icon: "🎬", label: "Video Gen", description: "Animate a frame", color: "#ef4444" },
-  { type: "output", icon: "🎥", label: "Output", description: "Collect a final clip", color: "#eab308" },
+  { type: "character", icon: "person",     label: "Character", description: "Reference a character", color: "#a855f7" },
+  { type: "location",  icon: "location_on",label: "Location",  description: "Set the scene",         color: "#22c55e" },
+  { type: "prompt",    icon: "edit",        label: "Prompt",    description: "Describe a shot",       color: "#3b82f6" },
+  { type: "imageGen",  icon: "image",       label: "Image Gen", description: "Generate an image",     color: "#f97316" },
+  { type: "videoGen",  icon: "movie",       label: "Video Gen", description: "Animate a frame",       color: "#ef4444" },
+  { type: "output",    icon: "videocam",    label: "Output",    description: "Collect a final clip",  color: "#eab308" },
 ];
 
 export function NodePalette() {
@@ -32,7 +32,7 @@ export function NodePalette() {
             onDragStart={(e) => onDragStart(e, n.type)}
             className="flex cursor-grab items-center gap-2.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-2 transition-colors hover:border-white/10 hover:bg-white/10 active:cursor-grabbing"
           >
-            <span className="text-lg">{n.icon}</span>
+            <span className="material-symbols-rounded text-[18px]" style={{ color: n.color }}>{n.icon}</span>
             <div className="min-w-0">
               <p className="text-xs font-medium text-white/80">{n.label}</p>
               <p className="truncate text-[10px] text-white/30">{n.description}</p>

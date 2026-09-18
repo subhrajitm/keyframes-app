@@ -2,7 +2,6 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { User } from "lucide-react";
 import { NodeWrapper } from "./node-wrapper";
 import type { KFNode } from "@/store/project-store";
 
@@ -12,7 +11,7 @@ export const CharacterNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const views = data.characterViews as string[] | undefined;
 
   return (
-    <NodeWrapper id={id} accentColor="#a855f7" icon="🎭" title="Character">
+    <NodeWrapper id={id} accentColor="#a855f7" icon="person" title="Character">
       <div className="flex flex-col items-center gap-2">
         {views?.length ? (
           // Multi-view sheet grid
@@ -38,7 +37,7 @@ export const CharacterNode = memo(({ id, data }: NodeProps<KFNode>) => {
           />
         ) : (
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-violet-500/10 ring-2 ring-violet-500/20">
-            <User className="h-8 w-8 text-violet-400/60" />
+            <span className="material-symbols-rounded text-[32px] text-violet-400/60">person</span>
           </div>
         )}
 

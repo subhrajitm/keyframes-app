@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { Upload, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface ImageUploadProps {
@@ -84,17 +83,17 @@ export function ImageUpload({
                 onClick={(e) => { e.stopPropagation(); onClear(); }}
                 className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white/70 hover:bg-black/80 hover:text-white"
               >
-                <X className="h-3 w-3" />
+                <span className="material-symbols-rounded text-[12px]">close</span>
               </button>
             )}
           </>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-1 p-3">
             {isUploading ? (
-              <Loader2 className="h-5 w-5 animate-spin text-white/30" />
+              <span className="material-symbols-rounded text-[20px] animate-spin text-white/30">progress_activity</span>
             ) : (
               <>
-                <Upload className="h-4 w-4 text-white/20" />
+                <span className="material-symbols-rounded text-[18px] text-white/20">upload</span>
                 <p className="text-center text-[10px] text-white/20">{label}</p>
               </>
             )}
@@ -104,7 +103,7 @@ export function ImageUpload({
         {/* Uploading overlay */}
         {isUploading && value && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <Loader2 className="h-5 w-5 animate-spin text-white" />
+            <span className="material-symbols-rounded text-[20px] animate-spin text-white">progress_activity</span>
           </div>
         )}
       </div>

@@ -1,20 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, CheckCircle2, XCircle, Clock, Film, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { useSceneStore } from "@/store/scene-store";
 import { ShotPreviewModal } from "./shot-preview-modal";
 import type { Shot } from "@keyframe/types";
 
+const mi = (name: string, spin = false) => (
+  <span className={`material-symbols-rounded text-[16px]${spin ? " animate-spin" : ""}`}>{name}</span>
+);
+
 const STATUS_CONFIG: Record<Shot["status"], { label: string; color: string; icon: React.ReactNode }> = {
-  idle:             { label: "Idle",    color: "text-white/30",     icon: <Clock className="h-3 w-3" /> },
-  image_pending:    { label: "Queued",  color: "text-yellow-400/60",icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  image_processing: { label: "Image…",  color: "text-orange-400",   icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  video_pending:    { label: "Queued",  color: "text-yellow-400/60",icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  video_processing: { label: "Video…",  color: "text-blue-400",     icon: <Loader2 className="h-3 w-3 animate-spin" /> },
-  completed:        { label: "Done",    color: "text-green-400",     icon: <CheckCircle2 className="h-3 w-3" /> },
-  failed:           { label: "Failed",  color: "text-red-400",       icon: <XCircle className="h-3 w-3" /> },
+  idle:             { label: "Idle",    color: "text-white/30",      icon: mi("schedule") },
+  image_pending:    { label: "Queued",  color: "text-yellow-400/60", icon: mi("progress_activity", true) },
+  image_processing: { label: "Image…",  color: "text-orange-400",    icon: mi("progress_activity", true) },
+  video_pending:    { label: "Queued",  color: "text-yellow-400/60", icon: mi("progress_activity", true) },
+  video_processing: { label: "Video…",  color: "text-blue-400",      icon: mi("progress_activity", true) },
+  completed:        { label: "Done",    color: "text-green-400",      icon: mi("check_circle") },
+  failed:           { label: "Failed",  color: "text-red-400",        icon: mi("cancel") },
 };
 
 interface ScenePanelProps {
@@ -72,20 +75,20 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
         {!embedded && (
           <div className="flex items-center justify-between border-b border-white/10 px-3 py-3">
             <p className="text-xs font-semibold uppercase tracking-wider text-white/30">Scenes</p>
-            {isLoading && <Loader2 className="h-3 w-3 animate-spin text-white/30" />}
+            {isLoading && <span className="material-symbols-rounded text-[16px] animate-spin text-white/30">progress_activity</span>}
           </div>
         )}
         {embedded && isLoading && (
           <div className="flex justify-end px-3 py-1">
-            <Loader2 className="h-3 w-3 animate-spin text-white/30" />
+            <span className="material-symbols-rounded text-[16px] animate-spin text-white/30">progress_activity</span>
           </div>
         )}
 
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2">
           {scenes.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
-              <Film className="h-6 w-6 text-white/10" />
-              <p className="text-[10px] text-white/20">
+              <span className="material-symbols-rounded text-[24px] text-white/10">movie</span>
+              <p className="text-xs text-white/30">
                 Use the Director bar above to generate a shot plan
               </p>
             </div>
@@ -94,10 +97,10 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
           {scenes.map((scene, si) => (
             <div key={scene.id} className="flex flex-col gap-1">
               <div className="flex items-center gap-2 px-1 pt-1">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-[9px] font-bold text-white/30 ring-1 ring-white/10">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-xs font-bold text-white/40 ring-1 ring-white/10">
                   {si + 1}
                 </span>
-                <p className="truncate text-[11px] font-medium text-white/60">{scene.title}</p>
+                <p className="truncate text-sm font-medium text-white/70">{scene.title}</p>
               </div>
 
               {scene.shots.map((shot) => {
@@ -117,10 +120,10 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
                     )}
 
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[10px] font-medium text-white/60">{shot.title}</p>
+                      <p className="truncate text-xs font-medium text-white/70">{shot.title}</p>
                       <div className={`flex items-center gap-1 ${cfg.color}`}>
                         {cfg.icon}
-                        <span className="text-[9px]">{cfg.label}</span>
+                        <span className="text-xs">{cfg.label}</span>
                       </div>
                     </div>
 
@@ -132,7 +135,7 @@ export function ScenePanel({ projectId, embedded = false }: ScenePanelProps) {
                         className="shrink-0 rounded p-0.5 text-white/20 opacity-0 transition-opacity hover:text-white/60 group-hover/shot:opacity-100 disabled:cursor-not-allowed"
                         title="Regenerate shot"
                       >
-                        <RefreshCw className={`h-3 w-3 ${regeneratingId === shot.id ? "animate-spin" : ""}`} />
+                        <span className={`material-symbols-rounded text-[16px] ${regeneratingId === shot.id ? "animate-spin" : ""}`}>refresh</span>
                       </button>
                     )}
                   </button>

@@ -32,7 +32,7 @@ export function NodeWrapper({ id, accentColor, icon, title, children, className 
         className="flex items-center gap-2 rounded-t-xl px-3 py-2"
         style={{ backgroundColor: `${accentColor}20`, borderBottom: `1px solid ${accentColor}30` }}
       >
-        <span className="text-base">{icon}</span>
+        <span className="material-symbols-rounded text-[16px]" style={{ color: accentColor }}>{icon}</span>
         <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: accentColor }}>
           {title}
         </span>

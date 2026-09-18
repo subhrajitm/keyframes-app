@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Loader2, ImageIcon, User, MapPin, Video, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { Asset } from "@keyframe/types";
 
 type AssetFilter = "all" | "character" | "location" | "image" | "video";
 
-const TYPE_ICONS: Record<string, React.ReactNode> = {
-  character: <User className="h-4 w-4" />,
-  location:  <MapPin className="h-4 w-4" />,
-  image:     <ImageIcon className="h-4 w-4" />,
-  video:     <Video className="h-4 w-4" />,
+const TYPE_ICONS: Record<string, string> = {
+  character: "person",
+  location:  "location_on",
+  image:     "image",
+  video:     "videocam",
 };
 
 const TYPE_NODE: Record<string, string> = {
@@ -84,7 +83,7 @@ export function AssetLibrary() {
           className="ml-auto shrink-0 rounded-md p-1 text-white/20 hover:text-white/50"
           title="Refresh"
         >
-          <RefreshCw className="h-3 w-3" />
+          <span className="material-symbols-rounded text-[13px]">refresh</span>
         </button>
       </div>
 
@@ -92,11 +91,11 @@ export function AssetLibrary() {
       <div className="flex-1 overflow-y-auto p-2">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-5 w-5 animate-spin text-white/20" />
+            <span className="material-symbols-rounded text-[20px] animate-spin text-white/20">progress_activity</span>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
-            <ImageIcon className="h-6 w-6 text-white/10" />
+            <span className="material-symbols-rounded text-[24px] text-white/10">image</span>
             <p className="text-[10px] text-white/20">
               {filter === "all"
                 ? "No assets yet — upload reference images or generate locations"
@@ -133,7 +132,7 @@ export function AssetLibrary() {
 
                   {/* Type badge */}
                   <div className="absolute left-1 top-1 flex items-center gap-0.5 rounded bg-black/60 p-0.5 text-white/60">
-                    {TYPE_ICONS[asset.type]}
+                    <span className="material-symbols-rounded text-[14px]">{TYPE_ICONS[asset.type] ?? "image"}</span>
                   </div>
 
                   {/* Drag hint on hover */}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Wand2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
@@ -58,11 +57,11 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 border-b border-white/10 bg-[#080810] px-3 py-2">
-      <Wand2 className="h-3.5 w-3.5 shrink-0 text-violet-400/70" />
+    <div className="flex items-center gap-3 border-b border-white/10 bg-[#080810] px-4 py-2.5">
+      <span className="material-symbols-rounded text-[18px] shrink-0 text-violet-400/70">auto_awesome</span>
 
       <input
-        className="min-w-0 flex-1 bg-transparent text-xs text-white/70 placeholder:text-white/20 focus:outline-none"
+        className="min-w-0 flex-1 bg-transparent text-sm text-white/70 placeholder:text-white/30 focus:outline-none"
         placeholder={'Describe your video… e.g. "A 30-second coffee brand promo, warm cinematic tones, 3 scenes"'}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
@@ -78,14 +77,14 @@ export function DirectorBar({ projectId }: DirectorBarProps) {
       <Button
         size="sm"
         variant="ghost"
-        className="shrink-0 h-7 gap-1.5 px-3 text-xs text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 disabled:opacity-40"
+        className="shrink-0 h-8 gap-1.5 px-3 text-sm text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 disabled:opacity-40"
         onClick={handleRun}
         disabled={!description.trim() || isRunning}
       >
         {isRunning ? (
-          <Loader2 className="h-3 w-3 animate-spin" />
+          <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span>
         ) : (
-          <Wand2 className="h-3 w-3" />
+          <span className="material-symbols-rounded text-[16px]">auto_awesome</span>
         )}
         {isRunning ? "Directing…" : "Direct"}
       </Button>

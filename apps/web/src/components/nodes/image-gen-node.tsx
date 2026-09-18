@@ -2,7 +2,6 @@
 
 import { memo, useState } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { ImageIcon, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { NodeWrapper } from "./node-wrapper";
 import { useSceneStore } from "@/store/scene-store";
@@ -49,7 +48,7 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
   };
 
   return (
-    <NodeWrapper id={id} accentColor="#f97316" icon="🖼" title="Image Gen">
+    <NodeWrapper id={id} accentColor="#f97316" icon="image" title="Image Gen">
       <Handle type="target" position={Position.Left} id="character-in" style={{ top: "35%" }}
         className="!h-3 !w-3 !rounded-full !border-2 !border-violet-500 !bg-[#0f0f1a]" />
       <Handle type="target" position={Position.Left} id="location-in" style={{ top: "55%" }}
@@ -62,9 +61,9 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
           {imageUrl ? (
             <img src={imageUrl} alt="Generated" className="h-full w-full object-cover" />
           ) : isProcessing ? (
-            <Loader2 className="h-6 w-6 animate-spin text-orange-400" />
+            <span className="material-symbols-rounded text-[24px] animate-spin text-orange-400">progress_activity</span>
           ) : (
-            <ImageIcon className="h-6 w-6 text-orange-400/40" />
+            <span className="material-symbols-rounded text-[24px] text-orange-400/40">image</span>
           )}
         </div>
 
@@ -86,7 +85,7 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
               className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] text-white/30 transition-colors hover:bg-orange-500/10 hover:text-orange-300 disabled:opacity-40"
               title={isDone ? "Regenerate" : "Generate"}
             >
-              <RefreshCw className={`h-2.5 w-2.5 ${isTriggering ? "animate-spin" : ""}`} />
+              <span className={`material-symbols-rounded text-[12px] ${isTriggering ? "animate-spin" : ""}`}>refresh</span>
               {isDone ? "Regen" : "Gen"}
             </button>
           )}

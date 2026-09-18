@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { useProjectStore } from "@/store/project-store";
 import { PanoramaViewer } from "@/components/ui/panorama-viewer";
@@ -92,9 +91,9 @@ export function LocationBuilderPanel({
         className="flex items-center justify-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 py-2 text-xs font-medium text-green-300 transition-colors hover:border-green-500/50 hover:bg-green-500/20 disabled:opacity-40"
       >
         {isGenerating ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <span className="material-symbols-rounded text-[14px] animate-spin">progress_activity</span>
         ) : (
-          <MapPin className="h-3.5 w-3.5" />
+          <span className="material-symbols-rounded text-[14px]">location_on</span>
         )}
         {isGenerating ? "Generating…" : panoramaUrl ? "Regenerate Location" : "Generate Location"}
       </button>
