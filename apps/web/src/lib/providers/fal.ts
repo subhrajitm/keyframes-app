@@ -52,6 +52,11 @@ export class FalProvider implements AIProvider {
       input["ip_adapter_scale"] = 0.6;
     }
 
+    if (req.styleRefUrl) {
+      input["style_image_url"] = req.styleRefUrl;
+      input["style_image_strength"] = 0.5;
+    }
+
     const result = await fal.run(modelId, { input }) as { images?: Array<{ url: string }> };
     const url = result?.images?.[0]?.url;
     if (!url) throw new Error("fal.ai returned no image URL");

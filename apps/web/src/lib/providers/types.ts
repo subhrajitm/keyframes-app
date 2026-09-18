@@ -5,6 +5,7 @@ export interface ImageGenerationRequest {
   height: number;
   characterRefUrls?: string[];
   locationRefUrl?: string;
+  styleRefUrl?: string;
   style?: string;
   modelId: string;
 }

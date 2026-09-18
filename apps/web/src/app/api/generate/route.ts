@@ -58,6 +58,8 @@ export async function POST(req: NextRequest) {
     .filter((n) => n["type"] === "location")
     .map((n) => (n["data"] as Record<string, unknown>)?.["locationImageUrl"] as string)
     .find(Boolean);
+  const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
+  const styleRefUrl = settings?.["styleRefUrl"] as string | undefined;
 
   // Fetch idle shots
   let query = supabase.from("shots").select("id, shot_spec")
@@ -70,13 +72,13 @@ export async function POST(req: NextRequest) {
   const runs: { shotId: string; runId: string }[] = [];
 
   for (const shot of shots) {
+    const base = shot.shot_spec as unknown as ShotSpec;
     const shotSpec: ShotSpec = {
-      ...(shot.shot_spec as unknown as ShotSpec),
-      // Merge uploaded asset refs from the graph into the spec
-      characterRefs: characterRefs.length
-        ? characterRefs
-        : (shot.shot_spec as unknown as ShotSpec).characterRefs ?? [],
-      locationRef: locationRef ?? (shot.shot_spec as unknown as ShotSpec).locationRef,
+      ...base,
+      characterRefs: characterRefs.length ? characterRefs : base.characterRefs ?? [],
+      locationRef: locationRef ?? base.locationRef,
+      // Style reference from project settings
+      ...(styleRefUrl ? { styleRefUrl } : {}),
     };
 
     await supabase.from("shots")

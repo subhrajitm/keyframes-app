@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useProjectStore, type ProjectSettings } from "@/store/project-store";
+import { ImageUpload } from "@/components/ui/image-upload";
 import type { AspectRatio, ImageModel, VideoModel } from "@keyframe/types";
 
 interface ProjectSettingsPanelProps {
@@ -163,6 +164,20 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
                 Premium model — ~$0.30/s (~$1.50 per 5s clip)
               </p>
             )}
+          </Section>
+
+          {/* Style Reference Image */}
+          <Section label="Style Reference (optional)">
+            <ImageUpload
+              value={settings.styleRefUrl}
+              onChange={(url) => set("styleRefUrl", url)}
+              onClear={() => updateSettings({ styleRefUrl: undefined })}
+              projectId="global"
+              assetType="location"
+              shape="rect"
+              label="Drop a style reference image"
+            />
+            <p className="text-[10px] text-white/25">Passed to every image generation for visual consistency</p>
           </Section>
 
           {/* Cost estimate */}

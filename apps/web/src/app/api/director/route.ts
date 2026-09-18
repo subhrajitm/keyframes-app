@@ -55,6 +55,8 @@ export async function POST(req: NextRequest) {
           order_index: shi,
           title: shot.title,
           shot_spec: shot as unknown as Json,
+          // Links this shot to the imageGen node created by the graph compiler
+          node_id: `s${si}_sh${shi}_img`,
           status: "idle",
         });
       }

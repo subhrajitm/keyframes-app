@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Plus, LogOut, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/dashboard/project-card";
+import { TemplateGallery } from "@/components/dashboard/template-gallery";
 import { createProject, logout } from "./actions";
 
 export default async function DashboardPage() {
@@ -10,7 +11,7 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: projects }, { data: profile }] = await Promise.all([
+  const [{ data: projects }, { data: profile }, { data: templates }] = await Promise.all([
     supabase
       .from("projects")
       .select("*")
@@ -21,6 +22,11 @@ export default async function DashboardPage() {
       .select("full_name, credits")
       .eq("id", user.id)
       .single(),
+    supabase
+      .from("templates")
+      .select("*")
+      .order("is_featured", { ascending: false })
+      .limit(5),
   ]);
 
   return (
@@ -62,6 +68,13 @@ export default async function DashboardPage() {
             </Button>
           </form>
         </div>
+
+        {/* Template gallery */}
+        {templates && templates.length > 0 && (
+          <div className="mb-10">
+            <TemplateGallery templates={templates} />
+          </div>
+        )}
 
         {!projects || projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 py-24 text-center">

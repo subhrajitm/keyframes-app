@@ -31,6 +31,8 @@ export interface ShotSpec {
   characterRefs: string[];
   /** URL of location reference image */
   locationRef?: string;
+  /** URL of a visual style reference image applied to all shots */
+  styleRefUrl?: string;
 
   style?: string;
   /** Shot duration in seconds */

@@ -38,6 +38,7 @@ export const generateImageTask = task({
         height: dims.height,
         characterRefUrls: shotSpec.characterRefs,
         locationRefUrl: shotSpec.locationRef,
+        styleRefUrl: (shotSpec as ShotSpec & { styleRefUrl?: string }).styleRefUrl,
         style: shotSpec.style,
         modelId: shotSpec.imageModel,
       });

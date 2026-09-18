@@ -43,6 +43,8 @@ export interface ProjectSettings {
   numScenes: number;
   imageModel: ImageModel;
   videoModel: VideoModel;
+  /** URL of a style reference image passed to fal.ai for visual consistency */
+  styleRefUrl?: string;
 }
 
 export const DEFAULT_SETTINGS: ProjectSettings = {
