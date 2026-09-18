@@ -63,15 +63,15 @@ export function AssetLibrary() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Filter tabs */}
-      <div className="flex shrink-0 gap-0.5 overflow-x-auto border-b border-white/10 px-2 py-1.5 scrollbar-none">
+      <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-white/10 px-3 py-2.5 scrollbar-none">
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.value}
             onClick={() => setFilter(tab.value)}
-            className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-medium transition-colors ${
+            className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               filter === tab.value
-                ? "bg-white/10 text-white/80"
-                : "text-white/30 hover:text-white/50"
+                ? "bg-white/10 text-white/85"
+                : "text-white/40 hover:text-white/65"
             }`}
           >
             {tab.label}
@@ -80,46 +80,45 @@ export function AssetLibrary() {
 
         <button
           onClick={load}
-          className="ml-auto shrink-0 rounded-md p-1 text-white/20 hover:text-white/50"
+          className="ml-auto shrink-0 rounded-lg p-1.5 text-white/30 hover:text-white/60 transition-colors"
           title="Refresh"
         >
-          <span className="material-symbols-rounded text-[13px]">refresh</span>
+          <span className="material-symbols-rounded text-[16px]">refresh</span>
         </button>
       </div>
 
       {/* Assets grid */}
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-3">
         {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <span className="material-symbols-rounded text-[20px] animate-spin text-white/20">progress_activity</span>
+          <div className="flex items-center justify-center py-10">
+            <span className="material-symbols-rounded animate-spin text-[20px] text-white/20">progress_activity</span>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
-            <span className="material-symbols-rounded text-[24px] text-white/10">image</span>
-            <p className="text-[10px] text-white/20">
+          <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+            <span className="material-symbols-rounded text-[32px] text-white/10">image</span>
+            <p className="text-sm leading-relaxed text-white/30">
               {filter === "all"
-                ? "No assets yet — upload reference images or generate locations"
+                ? "No assets yet"
                 : `No ${filter} assets yet`}
             </p>
+            {filter === "all" && (
+              <p className="text-xs text-white/20">Upload reference images or generate locations</p>
+            )}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             {filtered.map((asset) => (
               <div
                 key={asset.id}
                 draggable
                 onDragStart={(e) => onDragStart(e, asset)}
-                className="group flex cursor-grab flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-1.5 transition-colors hover:border-white/10 hover:bg-white/[0.05] active:cursor-grabbing"
+                className="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1.5 transition-colors hover:border-white/10 hover:bg-white/[0.05] active:cursor-grabbing"
                 title={`Drag to canvas — ${asset.name}`}
               >
                 {/* Thumbnail */}
-                <div className="relative overflow-hidden rounded bg-white/5">
+                <div className="relative overflow-hidden rounded-lg bg-white/[0.04]">
                   {asset.type === "video" ? (
-                    <video
-                      src={asset.url}
-                      className="aspect-video w-full object-cover"
-                      muted
-                    />
+                    <video src={asset.url} className="aspect-video w-full object-cover" muted />
                   ) : (
                     <img
                       src={asset.url}
@@ -131,17 +130,17 @@ export function AssetLibrary() {
                   )}
 
                   {/* Type badge */}
-                  <div className="absolute left-1 top-1 flex items-center gap-0.5 rounded bg-black/60 p-0.5 text-white/60">
-                    <span className="material-symbols-rounded text-[14px]">{TYPE_ICONS[asset.type] ?? "image"}</span>
+                  <div className="absolute left-1.5 top-1.5 flex items-center gap-0.5 rounded-md bg-black/60 px-1 py-0.5 text-white/60 backdrop-blur-sm">
+                    <span className="material-symbols-rounded text-[12px]">{TYPE_ICONS[asset.type] ?? "image"}</span>
                   </div>
 
-                  {/* Drag hint on hover */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                    <p className="text-[10px] text-white/80">Drag to canvas</p>
+                  {/* Drag hint */}
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                    <span className="material-symbols-rounded text-[18px] text-white/70">drag_indicator</span>
                   </div>
                 </div>
 
-                <p className="truncate text-[10px] text-white/50">{asset.name}</p>
+                <p className="truncate px-0.5 text-xs text-white/50">{asset.name}</p>
               </div>
             ))}
           </div>

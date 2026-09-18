@@ -9,10 +9,11 @@ import type { DirectorInput } from "@keyframe/types";
 
 interface DirectorBarProps {
   projectId: string;
+  initialDescription?: string;
 }
 
-export function DirectorBar({ projectId }: DirectorBarProps) {
-  const [description, setDescription] = useState("");
+export function DirectorBar({ projectId, initialDescription }: DirectorBarProps) {
+  const [description, setDescription] = useState(initialDescription ?? "");
   const [isRunning, setIsRunning] = useState(false);
 
   const loadGraph = useProjectStore((s) => s.loadGraph);

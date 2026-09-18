@@ -44,6 +44,7 @@ export default async function StudioPage({ params }: StudioPageProps) {
       initialNodes={nodes}
       initialEdges={edges}
       initialSettings={settings}
+      initialDescription={project.description ?? undefined}
     />
   );
 }

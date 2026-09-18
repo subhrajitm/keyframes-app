@@ -19,29 +19,35 @@ export function NodePalette() {
   };
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]">
-      <div className="border-b border-white/10 px-3 py-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-white/30">Nodes</p>
+    <aside className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#0a0a12]">
+      <div className="border-b border-white/10 px-4 py-3.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-white/30">Drag to canvas</p>
       </div>
 
-      <div className="flex flex-col gap-1 overflow-y-auto p-2">
+      <div className="flex flex-col gap-2 overflow-y-auto p-3">
         {NODE_TYPES.map((n) => (
           <div
             key={n.type}
             draggable
             onDragStart={(e) => onDragStart(e, n.type)}
-            className="flex cursor-grab items-center gap-2.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-2 transition-colors hover:border-white/10 hover:bg-white/10 active:cursor-grabbing"
+            className="flex cursor-grab items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-3 py-2.5 transition-colors hover:border-white/10 hover:bg-white/[0.06] active:cursor-grabbing"
           >
-            <span className="material-symbols-rounded text-[18px]" style={{ color: n.color }}>{n.icon}</span>
+            <div
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+              style={{ backgroundColor: `${n.color}18` }}
+            >
+              <span className="material-symbols-rounded text-[18px]" style={{ color: n.color }}>{n.icon}</span>
+            </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-white/80">{n.label}</p>
+              <p className="text-xs font-semibold text-white/75">{n.label}</p>
               <p className="truncate text-[10px] text-white/30">{n.description}</p>
             </div>
+            <span className="material-symbols-rounded ml-auto shrink-0 text-[14px] text-white/15">drag_indicator</span>
           </div>
         ))}
       </div>
 
-      <div className="mt-auto border-t border-white/10 p-3">
+      <div className="mt-auto border-t border-white/[0.06] px-4 py-3">
         <p className="text-[10px] text-white/20">Drag a node onto the canvas to add it</p>
       </div>
     </aside>

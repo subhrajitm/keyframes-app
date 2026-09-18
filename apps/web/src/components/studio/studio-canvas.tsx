@@ -6,7 +6,6 @@ import {
   Background,
   BackgroundVariant,
   Controls,
-  MiniMap,
   type NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -19,6 +18,7 @@ import { VideoGenNode } from "@/components/nodes/video-gen-node";
 import { OutputNode } from "@/components/nodes/output-node";
 import { useProjectStore, type NodeType, type KFNode, type KFEdge } from "@/store/project-store";
 import { NodeInspector } from "@/components/studio/node-inspector";
+import { CanvasToolbar } from "@/components/studio/canvas-toolbar";
 import { createClient } from "@/lib/supabase/client";
 
 const NODE_TYPES: NodeTypes = {
@@ -32,9 +32,13 @@ const NODE_TYPES: NodeTypes = {
 
 interface StudioCanvasProps {
   projectId: string;
+  panelOpen: boolean;
+  onTogglePanel: () => void;
+  timelineOpen: boolean;
+  onToggleTimeline: () => void;
 }
 
-export function StudioCanvas({ projectId }: StudioCanvasProps) {
+export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen, onToggleTimeline }: StudioCanvasProps) {
   const {
     nodes,
     edges,
@@ -143,34 +147,27 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
           color="#ffffff0e"
         />
         <Controls
-          className="!border-white/10 !bg-[#0f0f1a] !text-white/60"
+          className="!border-white/10 !bg-[#0d1018] !text-white/40 !shadow-none"
           showInteractive={false}
-        />
-        <MiniMap
-          nodeColor={(n) => {
-            const colors: Record<string, string> = {
-              character: "#a855f7",
-              location: "#22c55e",
-              prompt: "#3b82f6",
-              imageGen: "#f97316",
-              videoGen: "#ef4444",
-              output: "#eab308",
-            };
-            return colors[n.type ?? ""] ?? "#ffffff20";
-          }}
-          maskColor="#07070ecc"
-          className="!border-white/10 !bg-[#0f0f1a]"
+          position="bottom-left"
+          style={{ bottom: 80 }}
         />
 
-        {/* Empty state hint */}
+        {/* Empty state */}
         {nodes.length === 0 && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-sm text-white/20">Drag nodes from the left panel, or use the Director bar above</p>
-            </div>
+            <p className="text-sm text-white/15">Use the Director bar above, or press <span className="font-semibold text-white/25">+ Add</span> below</p>
           </div>
         )}
       </ReactFlow>
+
+      {/* Floating bottom toolbar */}
+      <CanvasToolbar
+        panelOpen={panelOpen}
+        onTogglePanel={onTogglePanel}
+        timelineOpen={timelineOpen}
+        onToggleTimeline={onToggleTimeline}
+      />
 
       {/* Slide-in node inspector overlay */}
       <div

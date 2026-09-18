@@ -18,11 +18,14 @@ interface StudioShellProps {
   initialNodes: KFNode[];
   initialEdges: KFEdge[];
   initialSettings?: Partial<ProjectSettings>;
+  initialDescription?: string;
 }
 
-export function StudioShell({ projectId, initialTitle, initialNodes, initialEdges, initialSettings }: StudioShellProps) {
+export function StudioShell({ projectId, initialTitle, initialNodes, initialEdges, initialSettings, initialDescription }: StudioShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [timelineOpen, setTimelineOpen] = useState(false);
   const supabase = createClient();
   const loadGraph = useProjectStore((s) => s.loadGraph);
 
@@ -45,19 +48,25 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
         onSaveTemplate={() => setSaveTemplateOpen(true)}
       />
 
-      <DirectorBar projectId={projectId} />
+      <DirectorBar projectId={projectId} initialDescription={initialDescription} />
 
       <div className="flex flex-1 overflow-hidden">
-        <StudioLeftPanel projectId={projectId} />
+        {panelOpen && <StudioLeftPanel projectId={projectId} />}
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">
-            <StudioCanvas projectId={projectId} />
+            <StudioCanvas
+              projectId={projectId}
+              panelOpen={panelOpen}
+              onTogglePanel={() => setPanelOpen((o) => !o)}
+              timelineOpen={timelineOpen}
+              onToggleTimeline={() => setTimelineOpen((o) => !o)}
+            />
           </main>
         </ReactFlowProvider>
       </div>
 
-      <StudioTimeline projectId={projectId} />
+      {timelineOpen && <StudioTimeline projectId={projectId} />}
 
       <ProjectSettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
