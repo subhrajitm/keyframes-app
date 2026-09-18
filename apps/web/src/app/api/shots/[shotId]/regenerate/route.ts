@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { ShotSpec } from "@keyframe/types";
-import type { generateImageTask } from "../../../../../../trigger/generate-image";
+import type { generateImageTask } from "@/trigger/generate-image";
 
 export async function POST(
   _req: NextRequest,
@@ -52,16 +52,20 @@ export async function POST(
     .filter((n) => n["type"] === "location")
     .map((n) => (n["data"] as Record<string, unknown>)?.["locationImageUrl"] as string)
     .find(Boolean);
+  const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
+  const styleRefUrl = settings?.["styleRefUrl"] as string | undefined;
 
   // Reset shot to idle then trigger
   await supabase.from("shots")
     .update({ status: "image_pending", image_url: null, video_url: null, error: null })
     .eq("id", shotId);
 
+  const base = shot.shot_spec as unknown as ShotSpec;
   const shotSpec: ShotSpec = {
-    ...(shot.shot_spec as unknown as ShotSpec),
-    characterRefs: characterRefs.length ? characterRefs : (shot.shot_spec as unknown as ShotSpec).characterRefs ?? [],
-    locationRef: locationRef ?? (shot.shot_spec as unknown as ShotSpec).locationRef,
+    ...base,
+    characterRefs: characterRefs.length ? characterRefs : base.characterRefs ?? [],
+    locationRef: locationRef ?? base.locationRef,
+    ...(styleRefUrl ? { styleRefUrl } : {}),
   };
 
   const handle = await tasks.trigger<typeof generateImageTask>("generate-image", {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { tasks } from "@trigger.dev/sdk/v3";
-import type { composeVideoTask } from "../../../../trigger/compose-video";
+import type { composeVideoTask } from "@/trigger/compose-video";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();

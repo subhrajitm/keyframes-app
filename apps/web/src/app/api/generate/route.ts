@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { tasks } from "@trigger.dev/sdk/v3";
 import type { ShotSpec, Json } from "@keyframe/types";
-import type { generateImageTask } from "../../../../trigger/generate-image";
+import type { generateImageTask } from "@/trigger/generate-image";
 
 const IMAGE_CREDITS = 1;
 const VIDEO_CREDITS = 3;
