@@ -71,7 +71,7 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDirty]);
 
-  // Drop node from palette
+  // Drop node from palette or asset library
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
@@ -79,11 +79,27 @@ export function StudioCanvas({ projectId }: StudioCanvasProps) {
       if (!type || !reactFlowWrapper.current) return;
 
       const bounds = reactFlowWrapper.current.getBoundingClientRect();
-      // We'll resolve the canvas position using the store's RF instance below
       const position = {
         x: e.clientX - bounds.left - 110,
         y: e.clientY - bounds.top - 60,
       };
+
+      // Check if an asset was dragged (from asset library)
+      const assetRaw = e.dataTransfer.getData("application/keyframe-asset");
+      if (assetRaw) {
+        try {
+          const asset = JSON.parse(assetRaw) as { id: string; url: string; name: string; type: string };
+          const extraData =
+            asset.type === "character"
+              ? { characterImageUrl: asset.url, characterName: asset.name }
+              : asset.type === "location"
+              ? { locationImageUrl: asset.url, locationName: asset.name }
+              : { outputUrl: asset.url };
+          addNode(type, position, extraData);
+          return;
+        } catch { /* fall through to plain add */ }
+      }
+
       addNode(type, position);
     },
     [addNode]

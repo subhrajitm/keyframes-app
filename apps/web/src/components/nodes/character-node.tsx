@@ -6,13 +6,33 @@ import { User } from "lucide-react";
 import { NodeWrapper } from "./node-wrapper";
 import type { KFNode } from "@/store/project-store";
 
+const VIEW_LABELS = ["F", "S", "¾"];
+
 export const CharacterNode = memo(({ id, data }: NodeProps<KFNode>) => {
+  const views = data.characterViews as string[] | undefined;
+
   return (
     <NodeWrapper id={id} accentColor="#a855f7" icon="🎭" title="Character">
       <div className="flex flex-col items-center gap-2">
-        {data.characterImageUrl ? (
+        {views?.length ? (
+          // Multi-view sheet grid
+          <div className="grid grid-cols-3 gap-1 w-full">
+            {views.map((url, i) => (
+              <div key={i} className="relative overflow-hidden rounded">
+                <img
+                  src={url}
+                  alt={VIEW_LABELS[i]}
+                  className="aspect-[3/4] w-full object-cover"
+                />
+                <span className="absolute bottom-0.5 right-0.5 rounded text-[8px] bg-black/60 px-0.5 text-white/60">
+                  {VIEW_LABELS[i]}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : data.characterImageUrl ? (
           <img
-            src={data.characterImageUrl}
+            src={data.characterImageUrl as string}
             alt={data.characterName ?? "Character"}
             className="h-20 w-20 rounded-full object-cover ring-2 ring-violet-500/40"
           />
@@ -21,10 +41,18 @@ export const CharacterNode = memo(({ id, data }: NodeProps<KFNode>) => {
             <User className="h-8 w-8 text-violet-400/60" />
           </div>
         )}
+
         <p className="text-center text-sm font-medium text-white/80">
           {data.characterName || "Unnamed Character"}
         </p>
+
+        {views?.length && (
+          <span className="rounded-full bg-violet-500/10 px-2 py-0.5 text-[9px] text-violet-300">
+            {views.length} views
+          </span>
+        )}
       </div>
+
       <Handle
         type="source"
         position={Position.Right}

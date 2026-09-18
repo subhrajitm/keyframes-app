@@ -5,6 +5,8 @@ import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { CharacterSheetPanel } from "./character-sheet-panel";
+import { LocationBuilderPanel } from "./location-builder-panel";
 
 interface NodeInspectorProps {
   projectId: string;
@@ -48,17 +50,6 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
         {/* Character */}
         {type === "character" && (
           <>
-            <Field label="Reference Image">
-              <ImageUpload
-                value={data.characterImageUrl}
-                onChange={(url) => updateNodeData(node.id, { characterImageUrl: url })}
-                onClear={() => updateNodeData(node.id, { characterImageUrl: undefined })}
-                projectId={projectId}
-                assetType="character"
-                shape="circle"
-                label="Drop photo or click"
-              />
-            </Field>
             <Field label="Character Name">
               <Input
                 value={data.characterName ?? ""}
@@ -66,15 +57,44 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
                 placeholder="e.g. Maya"
               />
             </Field>
+            <Field label="Reference Photo">
+              <ImageUpload
+                value={data.characterImageUrl}
+                onChange={(url) => updateNodeData(node.id, { characterImageUrl: url })}
+                onClear={() => updateNodeData(node.id, { characterImageUrl: undefined, characterViews: undefined })}
+                projectId={projectId}
+                assetType="character"
+                shape="circle"
+                label="Drop photo or click"
+              />
+            </Field>
+            {data.characterImageUrl && (
+              <Field label="Reference Sheet">
+                <CharacterSheetPanel
+                  nodeId={node.id}
+                  projectId={projectId}
+                  refUrl={data.characterImageUrl as string}
+                  characterName={data.characterName as string ?? ""}
+                  views={data.characterViews as string[] | undefined}
+                />
+              </Field>
+            )}
           </>
         )}
 
         {/* Location */}
         {type === "location" && (
           <>
-            <Field label="Reference Image">
+            <Field label="Location Name">
+              <Input
+                value={data.locationName ?? ""}
+                onChange={(e) => updateNodeData(node.id, { locationName: e.target.value })}
+                placeholder="e.g. Tokyo Street"
+              />
+            </Field>
+            <Field label="Upload Reference">
               <ImageUpload
-                value={data.locationImageUrl}
+                value={data.locationImageUrl && !data.locationPanoramaUrl ? data.locationImageUrl as string : undefined}
                 onChange={(url) => updateNodeData(node.id, { locationImageUrl: url })}
                 onClear={() => updateNodeData(node.id, { locationImageUrl: undefined })}
                 projectId={projectId}
@@ -83,20 +103,13 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
                 label="Drop scene photo or click"
               />
             </Field>
-            <Field label="Location Name">
-              <Input
-                value={data.locationName ?? ""}
-                onChange={(e) => updateNodeData(node.id, { locationName: e.target.value })}
-                placeholder="e.g. Tokyo Street"
-              />
-            </Field>
-            <Field label="Description">
-              <textarea
-                className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-2 text-xs text-white placeholder:text-white/30 focus:border-green-500/60 focus:outline-none"
-                rows={3}
-                value={data.locationDescription ?? ""}
-                onChange={(e) => updateNodeData(node.id, { locationDescription: e.target.value })}
-                placeholder="Neon-lit alley, rain-soaked…"
+            <Field label="Location Builder">
+              <LocationBuilderPanel
+                nodeId={node.id}
+                projectId={projectId}
+                locationName={data.locationName as string ?? ""}
+                currentDescription={data.locationDescription as string | undefined}
+                panoramaUrl={data.locationPanoramaUrl as string | undefined}
               />
             </Field>
           </>

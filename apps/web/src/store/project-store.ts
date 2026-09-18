@@ -26,9 +26,11 @@ export interface NodeData extends Record<string, unknown> {
   label: string;
   characterName?: string;
   characterImageUrl?: string;
+  characterViews?: string[]; // [front, side, quarter] generated views
   locationName?: string;
   locationDescription?: string;
   locationImageUrl?: string;
+  locationPanoramaUrl?: string; // generated panoramic image
   promptText?: string;
   generationId?: string;
   generationStatus?: "idle" | "pending" | "processing" | "completed" | "failed";
@@ -72,7 +74,7 @@ interface ProjectStore {
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
 
-  addNode: (type: NodeType, position: { x: number; y: number }) => void;
+  addNode: (type: NodeType, position: { x: number; y: number }, extraData?: Partial<NodeData>) => void;
   updateNodeData: (id: string, data: Partial<NodeData>) => void;
   deleteNode: (id: string) => void;
   selectNode: (id: string | null) => void;
@@ -129,9 +131,12 @@ export const useProjectStore = create<ProjectStore>()(
       }));
     },
 
-    addNode: (type, position) => {
+    addNode: (type, position, extraData) => {
       const id = makeNodeId(type);
-      const newNode: KFNode = { id, type, position, data: defaultDataForType(type) };
+      const newNode: KFNode = {
+        id, type, position,
+        data: { ...defaultDataForType(type), ...extraData },
+      };
       set((s) => ({ nodes: [...s.nodes, newNode], isDirty: true }));
       get().selectNode(id);
     },
