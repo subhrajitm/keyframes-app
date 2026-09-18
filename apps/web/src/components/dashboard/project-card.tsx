@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MoreHorizontal, Trash2, Film, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 import { formatRelativeTime } from "@/lib/utils";
 import { deleteProject } from "@/app/(dashboard)/dashboard/actions";
 import type { Project } from "@keyframe/types";
@@ -14,33 +12,33 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 
-interface ProjectCardProps {
-  project: Project;
-}
-
-const STATUS_STYLE: Record<string, string> = {
-  complete:   "bg-green-500/10 text-green-400",
-  generating: "bg-yellow-500/10 text-yellow-400",
-  draft:      "bg-white/5 text-white/40",
+const STATUS_DOT: Record<string, string> = {
+  complete:   "bg-green-400",
+  generating: "bg-yellow-400 animate-pulse",
+  draft:      "bg-white/20",
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
+const STATUS_LABEL: Record<string, string> = {
+  complete:   "Complete",
+  generating: "Generating…",
+  draft:      "Draft",
+};
+
+export function ProjectCard({ project }: { project: Project }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const isVideo = project.thumbnail_url?.endsWith(".mp4") ||
                   project.thumbnail_url?.includes("/videos/");
 
   return (
-    <Card className="group relative overflow-hidden transition-colors hover:border-violet-500/40">
-      {/* Thumbnail / Video */}
+    <div className={`group relative overflow-hidden rounded-2xl bg-white/[0.04] transition-colors hover:bg-white/[0.07] ${menuOpen ? "bg-white/[0.07]" : ""}`}>
+      {/* Thumbnail */}
       <Link href={`/studio/${project.id}`}>
-        <div className="aspect-video w-full overflow-hidden bg-white/5">
+        <div className="aspect-video w-full overflow-hidden bg-white/[0.03]">
           {project.status === "complete" && project.thumbnail_url && isVideo ? (
             <video
               src={project.thumbnail_url}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              muted
-              loop
-              autoPlay
-              playsInline
+              className="h-full w-full object-cover"
+              muted loop autoPlay playsInline
             />
           ) : project.thumbnail_url && !isVideo ? (
             <img
@@ -50,65 +48,62 @@ export function ProjectCard({ project }: ProjectCardProps) {
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Film className="h-8 w-8 text-white/20" />
+              <span className="material-symbols-rounded text-[32px] text-white/10">movie</span>
             </div>
           )}
         </div>
       </Link>
 
-      <CardContent className="p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <Link href={`/studio/${project.id}`}>
-              <p className="truncate text-sm font-medium text-white hover:text-violet-300">
-                {project.title}
-              </p>
-            </Link>
-            <p className="mt-0.5 text-xs text-white/40">
-              {formatRelativeTime(project.updated_at)}
-            </p>
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="z-50 min-w-[140px] rounded-lg border border-white/10 bg-[#1a1a2e] p-1 text-sm text-white shadow-xl"
-            >
-              <DropdownMenuItem
-                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-red-400 outline-none hover:bg-white/5"
-                onClick={() => deleteProject(project.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="mt-2 flex items-center justify-between">
-          <span className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${STATUS_STYLE[project.status] ?? "bg-white/5 text-white/40"}`}>
-            {project.status}
-          </span>
-
+      {/* Three-dot menu */}
+      <DropdownMenu onOpenChange={setMenuOpen}>
+        <DropdownMenuTrigger asChild>
+          <button className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/60 opacity-0 group-hover:opacity-100 hover:bg-black/70 hover:text-white transition-all backdrop-blur-sm">
+            <span className="material-symbols-rounded text-[16px]">more_vert</span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="z-50 min-w-[140px] rounded-xl border border-white/10 bg-[#1a1a2e] p-1 text-sm text-white shadow-xl"
+        >
+          <DropdownMenuItem
+            className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-red-400 outline-none hover:bg-white/5"
+            onClick={() => deleteProject(project.id)}
+          >
+            <span className="material-symbols-rounded text-[16px]">delete</span>
+            Delete
+          </DropdownMenuItem>
           {project.status === "complete" && project.thumbnail_url && (
-            <a
-              href={project.thumbnail_url}
-              download={`${project.title}.mp4`}
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] text-white/40 hover:bg-white/5 hover:text-white/70"
-              title="Download final video"
-            >
-              <Download className="h-3 w-3" />
-              Download
-            </a>
+            <DropdownMenuItem asChild>
+              <a
+                href={project.thumbnail_url}
+                download={`${project.title}.mp4`}
+                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-white/70 outline-none hover:bg-white/5"
+              >
+                <span className="material-symbols-rounded text-[16px]">download</span>
+                Download
+              </a>
+            </DropdownMenuItem>
           )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Info */}
+      <div className="p-3">
+        <Link href={`/studio/${project.id}`}>
+          <p className="truncate text-sm font-medium hover:text-violet-300 transition-colors">
+            {project.title}
+          </p>
+        </Link>
+        <div className="mt-1.5 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[project.status] ?? "bg-white/20"}`} />
+            <span className="text-xs text-white/40">{STATUS_LABEL[project.status] ?? project.status}</span>
+          </div>
+          <p className="text-xs text-white/30" suppressHydrationWarning>
+            {formatRelativeTime(project.updated_at)}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

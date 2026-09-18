@@ -1,30 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, Wand2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { Template } from "@keyframe/types";
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Commercial:    "bg-blue-500/10 text-blue-400",
-  Entertainment: "bg-violet-500/10 text-violet-400",
-  Documentary:   "bg-green-500/10 text-green-400",
+const CATEGORY_GRADIENT: Record<string, string> = {
+  Commercial:    "from-blue-900/80 via-blue-800/40 to-slate-900",
+  Entertainment: "from-violet-900/80 via-purple-800/40 to-slate-900",
+  Documentary:   "from-green-900/80 via-emerald-800/40 to-slate-900",
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  Commercial: "📺",
-  Entertainment: "🎬",
-  Documentary: "🎥",
+const CATEGORY_ICON: Record<string, string> = {
+  Commercial:    "tv",
+  Entertainment: "movie",
+  Documentary:   "video_camera_back",
 };
 
-interface TemplateGalleryProps {
+interface Props {
   templates: Template[];
 }
 
-export function TemplateGallery({ templates }: TemplateGalleryProps) {
+export function TemplateGallery({ templates }: Props) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  const handleUse = async (template: Template) => {
+  function scrollBy(dir: 1 | -1) {
+    scrollRef.current?.scrollBy({ left: dir * 500, behavior: "smooth" });
+  }
+
+  async function handleUse(template: Template) {
     setLoadingId(template.id);
     const tid = toast.loading(`Setting up "${template.title}"…`);
     try {
@@ -34,58 +38,77 @@ export function TemplateGallery({ templates }: TemplateGalleryProps) {
         body: JSON.stringify({ templateId: template.id }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to load template");
+      if (!res.ok) throw new Error(data.error ?? "Failed");
       toast.success("Project created — Director is planning your shots…", { id: tid });
       window.location.href = `/studio/${data.projectId}`;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed", { id: tid });
       setLoadingId(null);
     }
-  };
+  }
 
   if (!templates.length) return null;
 
   return (
     <section>
-      <div className="mb-4 flex items-center gap-2">
-        <Wand2 className="h-4 w-4 text-violet-400" />
-        <h2 className="text-lg font-semibold">Start from a template</h2>
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Get Inspired</h2>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-white/40">All Templates</span>
+          <button
+            onClick={() => scrollBy(-1)}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white transition-colors"
+          >
+            <span className="material-symbols-rounded text-[18px]">chevron_left</span>
+          </button>
+          <button
+            onClick={() => scrollBy(1)}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white transition-colors"
+          >
+            <span className="material-symbols-rounded text-[18px]">chevron_right</span>
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      {/* Scroll container */}
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto pb-2 scrollbar-none"
+        style={{ scrollbarWidth: "none" }}
+      >
         {templates.map((t) => {
           const snap = t.graph_snapshot as Record<string, unknown>;
           const duration = snap?.totalDuration as number | undefined;
-          const scenes = snap?.numScenes as number | undefined;
+          const gradient = CATEGORY_GRADIENT[t.category] ?? "from-gray-800/80 via-gray-700/40 to-slate-900";
+          const icon = CATEGORY_ICON[t.category] ?? "movie";
 
           return (
             <button
               key={t.id}
               onClick={() => handleUse(t)}
               disabled={loadingId === t.id}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-white/8 bg-white/[0.02] text-left transition-all hover:border-violet-500/30 hover:bg-violet-500/[0.04] disabled:opacity-60"
+              className="group relative flex-none w-56 overflow-hidden rounded-2xl text-left transition-transform hover:scale-[1.02] active:scale-[0.99] disabled:opacity-60"
             >
-              {/* Thumbnail placeholder */}
-              <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-violet-900/20 to-black text-3xl">
-                {CATEGORY_ICONS[t.category] ?? "🎬"}
+              {/* Background gradient */}
+              <div className={`h-36 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                <span className="material-symbols-rounded text-[40px] text-white/20 group-hover:text-white/30 transition-colors">
+                  {icon}
+                </span>
               </div>
 
-              <div className="flex flex-col gap-1.5 p-3">
-                <p className="truncate text-xs font-medium text-white/80">{t.title}</p>
-
-                <div className="flex items-center gap-1.5">
-                  <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-medium ${CATEGORY_COLORS[t.category] ?? "bg-white/5 text-white/40"}`}>
-                    {t.category}
-                  </span>
-                  {duration && <span className="text-[9px] text-white/30">{duration}s</span>}
-                  {scenes && <span className="text-[9px] text-white/20">· {scenes} scenes</span>}
+              {/* Title overlay */}
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-8">
+                <p className="text-sm font-semibold leading-tight">{t.title}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  <span className="text-xs text-white/40">{t.category}</span>
+                  {duration && <span className="text-xs text-white/25">· {duration}s</span>}
                 </div>
               </div>
 
-              {/* Loading overlay */}
               {loadingId === t.id && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                  <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl">
+                  <span className="material-symbols-rounded text-[28px] animate-spin">progress_activity</span>
                 </div>
               )}
             </button>
