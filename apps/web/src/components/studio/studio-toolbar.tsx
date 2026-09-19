@@ -92,8 +92,8 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
         )}
 
         {credits !== null && (
-          <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/60">
-            <span className="material-symbols-rounded text-[16px] text-yellow-400/70">bolt</span>
+          <span className="flex items-center gap-1.5 rounded border border-white/[0.08] px-3 py-1 text-sm text-white/45">
+            <span className="material-symbols-rounded text-[15px] text-white/25">bolt</span>
             {credits}
           </span>
         )}

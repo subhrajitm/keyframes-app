@@ -152,8 +152,8 @@ export function CanvasToolbar({
             className={cn(
               "flex h-9 items-center gap-1.5 rounded-md px-4 text-sm font-semibold transition-all",
               addOpen
-                ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
-                : "bg-white/[0.07] text-white/65 hover:bg-white/[0.11] hover:text-white",
+                ? "bg-white text-black"
+                : "border border-white/20 text-white/60 hover:border-white/35 hover:text-white",
             )}
           >
             <span className="material-symbols-rounded text-[16px]">add</span>
@@ -183,7 +183,7 @@ function ToolBtn({
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-md transition-colors",
         active
-          ? "bg-violet-600/20 text-violet-300"
+          ? "bg-white/[0.08] text-white"
           : "text-white/35 hover:bg-white/[0.06] hover:text-white/70",
       )}
     >

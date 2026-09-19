@@ -40,16 +40,14 @@ export function DashboardShell({ user, projects, templates }: Props) {
     : user.email[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-black text-white">
 
       {/* ── Header ──────────────────────────────────────────────── */}
       <header className="flex items-center gap-4 px-8 py-5">
-        <span className="shrink-0 text-lg font-bold tracking-tight mr-2">
-          <span className="text-violet-400">Key</span>frame
-        </span>
+        <span className="shrink-0 text-lg font-bold tracking-tight mr-2">Keyframe</span>
 
-        {/* Search — grows but doesn't push right items */}
-        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 max-w-lg">
+        {/* Search */}
+        <div className="flex min-w-0 flex-1 items-center gap-3 rounded border border-white/[0.08] bg-white/[0.03] px-4 py-2 max-w-lg">
           <span className="material-symbols-rounded text-[18px] text-white/30">search</span>
           <input
             value={query}
@@ -70,7 +68,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
           <form action={createProject}>
             <button
               type="submit"
-              className="flex items-center gap-2 rounded-full bg-violet-600 px-5 py-2.5 text-sm font-medium hover:bg-violet-500 transition-colors"
+              className="flex items-center gap-2 rounded border border-white/20 px-4 py-2 text-sm font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
             >
               <span className="material-symbols-rounded text-[18px]">add</span>
               New Project
@@ -78,15 +76,15 @@ export function DashboardShell({ user, projects, templates }: Props) {
           </form>
 
           {/* Credits */}
-          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm">
-            <span className="material-symbols-rounded text-[16px] text-yellow-400">toll</span>
-            <span className="text-white/70">{user.credits}</span>
+          <div className="flex items-center gap-1.5 rounded border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-sm">
+            <span className="material-symbols-rounded text-[15px] text-white/30">bolt</span>
+            <span className="text-white/55">{user.credits}</span>
           </div>
 
           {/* Settings */}
           <Link
             href="/settings"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white"
           >
             <span className="material-symbols-rounded text-[20px]">settings</span>
           </Link>
@@ -96,18 +94,18 @@ export function DashboardShell({ user, projects, templates }: Props) {
             <button
               type="submit"
               title="Sign out"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white"
             >
               <span className="material-symbols-rounded text-[20px]">logout</span>
             </button>
           </form>
 
           {/* Avatar → settings */}
-          <Link href="/settings" className="h-9 w-9 overflow-hidden rounded-full shrink-0 block">
+          <Link href="/settings" className="h-8 w-8 overflow-hidden rounded shrink-0 block">
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-violet-600 text-sm font-semibold">
+              <div className="flex h-full w-full items-center justify-center bg-white/10 text-xs font-semibold text-white">
                 {initials}
               </div>
             )}
@@ -151,7 +149,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
                 <form action={createProject} className="mt-5">
                   <button
                     type="submit"
-                    className="flex items-center gap-2 rounded-full bg-violet-600 px-6 py-2.5 text-sm font-medium hover:bg-violet-500 transition-colors"
+                    className="flex items-center gap-2 rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white/60 transition-colors hover:border-white/35 hover:text-white"
                   >
                     <span className="material-symbols-rounded text-[18px]">add</span>
                     Create your first project
@@ -176,8 +174,8 @@ export function DashboardShell({ user, projects, templates }: Props) {
 function QuickActionCard({ icon, label, desc, action }: typeof QUICK_ACTIONS[number]) {
   const inner = (
     <div className="flex items-center gap-4 rounded-lg bg-white/[0.04] px-5 py-4 hover:bg-white/[0.07] transition-colors cursor-pointer w-full text-left border border-transparent hover:border-white/10">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-violet-600/80">
-        <span className="material-symbols-rounded text-[20px] text-white">{icon}</span>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-white/[0.04]">
+        <span className="material-symbols-rounded text-[18px] text-white/40">{icon}</span>
       </div>
       <div className="min-w-0">
         <p className="text-sm font-semibold leading-snug">{label}</p>

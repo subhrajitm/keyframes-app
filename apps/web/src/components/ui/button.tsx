@@ -6,22 +6,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-violet-600 text-white hover:bg-violet-700",
+        default:     "bg-white text-black hover:bg-white/90",
         destructive: "bg-red-600 text-white hover:bg-red-700",
-        outline: "border border-white/10 bg-transparent text-white hover:bg-white/5",
-        ghost: "text-white/70 hover:bg-white/5 hover:text-white",
-        link: "text-violet-400 underline-offset-4 hover:underline",
-        secondary: "bg-white/10 text-white hover:bg-white/15",
+        outline:     "border border-white/20 bg-transparent text-white/70 hover:border-white/40 hover:text-white",
+        ghost:       "text-white/50 hover:bg-white/[0.05] hover:text-white",
+        link:        "text-white/55 underline underline-offset-4 hover:text-white",
+        secondary:   "bg-white/[0.07] text-white hover:bg-white/10",
       },
       size: {
         default: "h-9 px-4 py-2",
-        sm: "h-8 px-3 text-xs",
-        lg: "h-11 px-6 text-base",
-        icon: "h-9 w-9",
+        sm:      "h-8 px-3 text-xs",
+        lg:      "h-11 px-6 text-base",
+        icon:    "h-9 w-9",
       },
     },
     defaultVariants: {
@@ -51,7 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {asChild ? children : (
           <>
             {loading && (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />
             )}
             {children}
           </>

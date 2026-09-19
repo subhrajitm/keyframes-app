@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginWithEmail, initialState);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-black px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white">Keyframe</h1>
@@ -52,7 +52,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-white/50">
           No account?{" "}
-          <Link href="/signup" className="text-violet-400 hover:text-violet-300">
+          <Link href="/signup" className="text-white/60 underline underline-offset-2 hover:text-white transition-colors">
             Sign up free
           </Link>
         </p>

@@ -56,7 +56,7 @@ export function ProfileForm({ initialName, email, initialAvatarUrl }: Props) {
           {avatarUrl ? (
             <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-violet-600 text-2xl font-semibold">
+            <div className="flex h-full w-full items-center justify-center bg-white/10 text-2xl font-semibold text-white">
               {initials}
             </div>
           )}

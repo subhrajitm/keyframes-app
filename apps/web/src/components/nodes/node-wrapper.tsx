@@ -43,7 +43,7 @@ export function NodeWrapper({
         "relative overflow-visible rounded-lg border bg-[#161616] text-white shadow-2xl transition-all duration-150 cursor-pointer",
         wide ? "w-[300px]" : "w-[260px]",
         isSelected
-          ? "border-violet-500/50 shadow-[0_0_0_1px_rgb(139_92_246_/_0.15)]"
+          ? "border-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
           : "border-white/[0.08] shadow-black/60",
         className,
       )}

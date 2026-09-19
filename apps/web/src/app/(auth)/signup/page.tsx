@@ -12,7 +12,7 @@ export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(signupWithEmail, initialState);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-black px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white">Create account</h1>
@@ -45,7 +45,7 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-white/50">
           Already have an account?{" "}
-          <Link href="/login" className="text-violet-400 hover:text-violet-300">
+          <Link href="/login" className="text-white/60 underline underline-offset-2 hover:text-white transition-colors">
             Sign in
           </Link>
         </p>

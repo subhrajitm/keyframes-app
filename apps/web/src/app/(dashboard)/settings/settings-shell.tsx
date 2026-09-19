@@ -35,7 +35,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
   const current = NAV.find((n) => n.id === active)!;
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className="flex min-h-screen bg-black text-white">
 
       {/* ── Sidebar ─────────────────────────────────────────────── */}
       <aside className="flex w-56 shrink-0 flex-col border-r border-white/[0.06] px-3 py-8">
@@ -122,7 +122,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
                 <p className="text-base font-medium">Buy credits</p>
                 <p className="mt-0.5 text-sm text-white/40">Top up your balance</p>
               </div>
-              <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-white/40">
+              <span className="rounded border border-white/[0.08] px-2 py-0.5 text-[10px] text-white/30">
                 Coming soon
               </span>
             </button>

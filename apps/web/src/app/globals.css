@@ -62,14 +62,14 @@ body {
   fill: rgba(255,255,255,0.7) !important;
 }
 .react-flow__edge-path {
-  stroke: #6d28d9;
+  stroke: rgba(255,255,255,0.15);
   stroke-width: 1.5;
 }
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #8b5cf6;
+  stroke: rgba(255,255,255,0.25);
 }
 .react-flow__connection-line {
-  stroke: #6d28d9;
+  stroke: rgba(255,255,255,0.15);
   stroke-width: 1.5;
   stroke-dasharray: 5 5;
 }

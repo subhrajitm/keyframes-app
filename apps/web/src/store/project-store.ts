@@ -128,7 +128,7 @@ export const useProjectStore = create<ProjectStore>()(
     onConnect: (connection) => {
       set((s) => ({
         edges: addEdge(
-          { ...connection, animated: false, style: { stroke: "#6d28d9", strokeWidth: 1.5 } },
+          { ...connection, animated: false, style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 } },
           s.edges
         ),
         isDirty: true,

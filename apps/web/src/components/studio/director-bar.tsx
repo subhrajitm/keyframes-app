@@ -59,7 +59,7 @@ export function DirectorBar({ projectId, initialDescription }: DirectorBarProps)
 
   return (
     <div className="flex items-center gap-3 border-b border-white/10 bg-[#0d0d0d] px-4 py-2.5">
-      <span className="material-symbols-rounded text-[18px] shrink-0 text-violet-400/70">auto_awesome</span>
+      <span className="material-symbols-rounded text-[18px] shrink-0 text-white/25">auto_awesome</span>
 
       <input
         className="min-w-0 flex-1 bg-transparent text-sm text-white/70 placeholder:text-white/30 focus:outline-none"
@@ -78,7 +78,7 @@ export function DirectorBar({ projectId, initialDescription }: DirectorBarProps)
       <Button
         size="sm"
         variant="ghost"
-        className="shrink-0 h-8 gap-1.5 px-3 text-sm text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 disabled:opacity-40"
+        className="shrink-0 h-8 gap-1.5 px-3 text-sm text-white/50 hover:bg-white/[0.05] hover:text-white disabled:opacity-40"
         onClick={handleRun}
         disabled={!description.trim() || isRunning}
       >

@@ -135,7 +135,7 @@ export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen
         maxZoom={2}
         deleteKeyCode="Delete"
         defaultEdgeOptions={{
-          style: { stroke: "#6d28d9", strokeWidth: 1.5 },
+          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
           animated: false,
         }}
         style={{ backgroundColor: "#080808" }}

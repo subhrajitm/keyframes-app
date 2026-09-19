@@ -48,7 +48,7 @@ export function compileDirectorOutput(output: DirectorOutput): CompileResult {
           id: `${source}-${sourceHandle}--${target}-${targetHandle}`,
           source, sourceHandle, target, targetHandle,
           animated: false,
-          style: { stroke: "#6d28d9", strokeWidth: 1.5 },
+          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
         });
       };
 
@@ -72,7 +72,7 @@ export function compileDirectorOutput(output: DirectorOutput): CompileResult {
           source: charId, sourceHandle: "character-out",
           target: imgId,  targetHandle: "character-in",
           animated: false,
-          style: { stroke: "#6d28d9", strokeWidth: 1.5 },
+          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
         });
         auxY += 180;
       }
@@ -89,7 +89,7 @@ export function compileDirectorOutput(output: DirectorOutput): CompileResult {
           source: locId, sourceHandle: "location-out",
           target: imgId,  targetHandle: "location-in",
           animated: false,
-          style: { stroke: "#6d28d9", strokeWidth: 1.5 },
+          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
         });
       }
 

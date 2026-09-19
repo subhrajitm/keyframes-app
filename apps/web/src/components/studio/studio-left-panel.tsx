@@ -44,7 +44,7 @@ function TabButton({ active, onClick, icon, label }: {
       onClick={onClick}
       className={`flex flex-1 flex-col items-center gap-1 py-3.5 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
         active
-          ? "border-b-2 border-violet-500 text-violet-300"
+          ? "border-b-2 border-white text-white"
           : "border-b-2 border-transparent text-white/25 hover:text-white/55"
       }`}
     >
