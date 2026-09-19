@@ -1,14 +1,8 @@
 import { task, tasks } from "@trigger.dev/sdk/v3";
 import { createClient } from "@supabase/supabase-js";
-import { getProvider } from "@/lib/providers";
+import { getProvider, DIMS } from "@/lib/providers";
 import type { ShotSpec } from "@keyframe/types";
 import type { generateVideoTask } from "./generate-video";
-
-const aspectDimensions: Record<string, { width: number; height: number }> = {
-  "16:9": { width: 1280, height: 720 },
-  "9:16": { width: 720, height: 1280 },
-  "1:1": { width: 1024, height: 1024 },
-};
 
 export const generateImageTask = task({
   id: "generate-image",
@@ -29,7 +23,9 @@ export const generateImageTask = task({
 
     try {
       const provider = getProvider();
-      const dims = aspectDimensions[shotSpec.aspectRatio] ?? { width: 1280, height: 720 };
+      const resolution = shotSpec.outputResolution ?? "720p";
+      const aspectDims = DIMS[shotSpec.aspectRatio] ?? DIMS["16:9"];
+      const dims = aspectDims[resolution];
 
       const result = await provider.generateImage({
         prompt: shotSpec.prompt,
@@ -41,6 +37,7 @@ export const generateImageTask = task({
         styleRefUrl: shotSpec.styleRefUrl,
         style: shotSpec.style,
         modelId: shotSpec.imageModel,
+        characterStrength: shotSpec.characterStrength,
       });
 
       // Store image and advance to video_pending

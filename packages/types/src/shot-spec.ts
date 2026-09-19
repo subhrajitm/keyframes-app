@@ -39,6 +39,10 @@ export interface ShotSpec {
   duration: number;
   fps: number;
   aspectRatio: AspectRatio;
+  /** Output resolution — controls image pixel dimensions */
+  outputResolution?: "720p" | "1080p";
+  /** IP-adapter scale for character reference images (0.1–1.0) */
+  characterStrength?: number;
 
   imageModel: ImageModel;
   videoModel: VideoModel;

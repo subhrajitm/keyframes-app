@@ -1,13 +1,15 @@
 import { fal } from "@fal-ai/client";
 import type { AIProvider, ImageGenerationRequest, VideoGenerationRequest, GenerationResult } from "./types";
 
-const ASPECT_DIMENSIONS: Record<string, { width: number; height: number }> = {
-  "16:9": { width: 1280, height: 720 },
-  "9:16": { width: 720, height: 1280 },
-  "1:1": { width: 1024, height: 1024 },
+// Dimensions keyed by aspectRatio then resolution
+const DIMS: Record<string, Record<"720p" | "1080p", { width: number; height: number }>> = {
+  "16:9": { "720p": { width: 1280, height: 720  }, "1080p": { width: 1920, height: 1080 } },
+  "9:16": { "720p": { width: 720,  height: 1280 }, "1080p": { width: 1080, height: 1920 } },
+  "1:1":  { "720p": { width: 1024, height: 1024 }, "1080p": { width: 1440, height: 1440 } },
+  "4:3":  { "720p": { width: 1024, height: 768  }, "1080p": { width: 1440, height: 1080 } },
+  "3:4":  { "720p": { width: 768,  height: 1024 }, "1080p": { width: 1080, height: 1440 } },
 };
 
-// Full fal.ai endpoint paths for each model key
 const VIDEO_ENDPOINTS: Record<string, string> = {
   "fal/minimax-h3-max": "fal-ai/minimax/h3-max/image-to-video",
   "fal/seedance-2-5":   "fal-ai/bytedance/seedance-2.5/image-to-video",
@@ -15,10 +17,8 @@ const VIDEO_ENDPOINTS: Record<string, string> = {
   "fal/wan-3":          "fal-ai/wan/v3/image-to-video",
 };
 
-// Per-model input builders — each API has slightly different field names/options
 function buildVideoInput(modelKey: string, req: VideoGenerationRequest): Record<string, unknown> {
   const base = { prompt: req.prompt, image_url: req.imageUrl };
-
   switch (modelKey) {
     case "fal/minimax-h3-max":
       return { ...base, duration: Math.min(req.duration, 10) as 5 | 10, resolution: "768p" };
@@ -49,7 +49,7 @@ export class FalProvider implements AIProvider {
 
     if (req.characterRefUrls?.length) {
       input["ip_adapter_image_url"] = req.characterRefUrls[0];
-      input["ip_adapter_scale"] = 0.6;
+      input["ip_adapter_scale"] = req.characterStrength ?? 0.6;
     }
 
     if (req.styleRefUrl) {
@@ -75,3 +75,6 @@ export class FalProvider implements AIProvider {
     return { url, metadata: { model: req.modelId, endpoint } };
   }
 }
+
+// Export dimension lookup so Trigger tasks can use the correct resolution
+export { DIMS };

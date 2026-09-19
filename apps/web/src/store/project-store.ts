@@ -43,6 +43,16 @@ export interface ProjectSettings {
   style: string;
   totalDuration: number;
   numScenes: number;
+  /** Duration per individual clip in seconds */
+  shotDuration: number;
+  /** Frame rate for video generation */
+  fps: 24 | 30;
+  /** Output resolution for image generation */
+  outputResolution: "720p" | "1080p";
+  /** Global negative prompt applied to every shot */
+  negativePrompt: string;
+  /** IP-adapter scale for character reference images (0.1–1.0) */
+  characterStrength: number;
   imageModel: ImageModel;
   videoModel: VideoModel;
   /** URL of a style reference image passed to fal.ai for visual consistency */
@@ -58,6 +68,11 @@ export const DEFAULT_SETTINGS: ProjectSettings = {
   style: "",
   totalDuration: 30,
   numScenes: 3,
+  shotDuration: 5,
+  fps: 24,
+  outputResolution: "720p",
+  negativePrompt: "",
+  characterStrength: 0.6,
   imageModel: "fal/flux-pro",
   videoModel: "fal/minimax-h3-max",
 };

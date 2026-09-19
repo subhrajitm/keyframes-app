@@ -70,7 +70,12 @@ export async function POST(req: NextRequest) {
     .map((n) => (n["data"] as Record<string, unknown>)?.["locationImageUrl"] as string)
     .find(Boolean);
   const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
-  const styleRefUrl = settings?.["styleRefUrl"] as string | undefined;
+  const styleRefUrl        = settings?.["styleRefUrl"]        as string | undefined;
+  const negativePrompt     = settings?.["negativePrompt"]     as string | undefined;
+  const characterStrength  = settings?.["characterStrength"]  as number | undefined;
+  const outputResolution   = settings?.["outputResolution"]   as "720p" | "1080p" | undefined;
+  const shotDuration       = settings?.["shotDuration"]       as number | undefined;
+  const fps                = settings?.["fps"]                as 24 | 30 | undefined;
 
   // Fetch idle shots
   let query = supabase
@@ -96,7 +101,12 @@ export async function POST(req: NextRequest) {
       ...base,
       characterRefs: characterRefs.length ? characterRefs : (base.characterRefs ?? []),
       locationRef: locationRef ?? base.locationRef,
-      ...(styleRefUrl ? { styleRefUrl } : {}),
+      ...(styleRefUrl       ? { styleRefUrl }       : {}),
+      ...(negativePrompt    ? { negativePrompt }     : {}),
+      ...(characterStrength ? { characterStrength }  : {}),
+      ...(outputResolution  ? { outputResolution }   : {}),
+      ...(shotDuration      ? { duration: shotDuration } : {}),
+      ...(fps               ? { fps }                : {}),
     };
 
     await supabase

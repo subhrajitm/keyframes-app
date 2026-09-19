@@ -8,6 +8,8 @@ export interface ImageGenerationRequest {
   styleRefUrl?: string;
   style?: string;
   modelId: string;
+  /** IP-adapter scale for character reference (0.1–1.0) */
+  characterStrength?: number;
 }
 
 export interface VideoGenerationRequest {
