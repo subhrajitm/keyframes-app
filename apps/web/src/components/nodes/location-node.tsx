@@ -33,7 +33,7 @@ export const LocationNode = memo(({ id, data }: NodeProps<KFNode>) => {
         {(data.locationName as string) || "Unnamed location"}
       </p>
       {data.locationDescription ? (
-        <p className="mt-0.5 line-clamp-2 text-[11px] text-white/25">
+        <p className="mt-1.5 line-clamp-2 text-[11px] text-white/25">
           {data.locationDescription as string}
         </p>
       ) : null}

@@ -25,9 +25,10 @@ const CATEGORY_BADGE_COLOR: Record<string, string> = {
 
 interface Props {
   templates: Template[];
+  noHeader?: boolean;
 }
 
-export function TemplateGallery({ templates }: Props) {
+export function TemplateGallery({ templates, noHeader = false }: Props) {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -60,27 +61,34 @@ export function TemplateGallery({ templates }: Props) {
   return (
     <section>
       {/* Header */}
-      <div className="mb-6 flex items-end justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-white">Templates</h2>
-          <p className="mt-0.5 text-sm text-white/40">Start from a pre-built film concept</p>
+      {!noHeader && (
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-white">Templates</h2>
+            <p className="mt-0.5 text-sm text-white/40">Start from a pre-built film concept</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <button onClick={() => scrollBy(-1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
+              <span className="material-symbols-rounded text-[18px]">chevron_left</span>
+            </button>
+            <button onClick={() => scrollBy(1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
+              <span className="material-symbols-rounded text-[18px]">chevron_right</span>
+            </button>
+          </div>
         </div>
+      )}
 
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => scrollBy(-1)}
-            className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white"
-          >
+      {/* Scroll controls when header is hidden */}
+      {noHeader && (
+        <div className="mb-4 flex justify-end gap-1">
+          <button onClick={() => scrollBy(-1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
             <span className="material-symbols-rounded text-[18px]">chevron_left</span>
           </button>
-          <button
-            onClick={() => scrollBy(1)}
-            className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white"
-          >
+          <button onClick={() => scrollBy(1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
             <span className="material-symbols-rounded text-[18px]">chevron_right</span>
           </button>
         </div>
-      </div>
+      )}
 
       {/* Scroll row */}
       <div

@@ -32,6 +32,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Node entrance animation */
+@keyframes node-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-node-enter {
+  animation: node-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* React Flow overrides */
 
 /* Strip the default white background/border/padding from every node wrapper */

@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Request body too large" }, { status: 413 });
   }
 
-  // Rate limit: 5 director runs per hour per user (each triggers an OpenRouter call)
-  const allowed = await checkRateLimit(supabase, "director", 5, 3600);
+  // Rate limit: 30 director runs per hour per user
+  const allowed = await checkRateLimit(supabase, "director", 30, 3600);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many director requests. Try again later." },

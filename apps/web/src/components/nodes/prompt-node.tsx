@@ -26,7 +26,7 @@ export const PromptNode = memo(({ id, data }: NodeProps<KFNode>) => {
       <textarea
         className="nodrag w-full resize-none rounded-md border-0 bg-transparent p-0 text-[12px] leading-[1.65] text-white/55 placeholder:text-white/20 focus:outline-none focus:ring-0"
         style={{ textAlign: "justify" }}
-        rows={5}
+        rows={6}
         placeholder="Describe the shot in cinematic detail…"
         value={prompt}
         maxLength={MAX_CHARS}

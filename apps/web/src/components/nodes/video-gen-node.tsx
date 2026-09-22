@@ -66,8 +66,8 @@ export const VideoGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
       <Handle type="target" position={Position.Left} id="prompt-in" style={{ top: "62%" }}
         className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
 
-      <div className="flex items-center gap-1.5">
-        <span className={`h-1.5 w-1.5 rounded-full ${dotCls}`} />
+      <div className="flex items-center gap-2 py-1">
+        <span className={`h-2 w-2 rounded-full ${dotCls}`} />
         <span className="text-[11px] text-white/35">{STATUS_LABEL[status] ?? "Ready"}</span>
       </div>
 

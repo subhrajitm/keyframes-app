@@ -16,7 +16,7 @@ export function DirectorBar({ projectId, initialDescription }: DirectorBarProps)
   const [description, setDescription] = useState(initialDescription ?? "");
   const [isRunning, setIsRunning] = useState(false);
 
-  const loadGraph = useProjectStore((s) => s.loadGraph);
+  const revealGraph = useProjectStore((s) => s.revealGraph);
   const settings = useProjectStore((s) => s.settings);
   const loadScenes = useSceneStore((s) => s.loadScenes);
 
@@ -44,7 +44,7 @@ export function DirectorBar({ projectId, initialDescription }: DirectorBarProps)
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Director failed");
 
-      loadGraph(data.graph.nodes, data.graph.edges);
+      revealGraph(data.graph.nodes, data.graph.edges);
       await loadScenes(projectId);
       setDescription("");
       const sceneCount = data.scenes?.length ?? 0;

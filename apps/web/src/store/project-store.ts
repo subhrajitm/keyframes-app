@@ -100,6 +100,7 @@ interface ProjectStore {
   updateSettings: (settings: Partial<ProjectSettings>) => void;
 
   loadGraph: (nodes: KFNode[], edges: KFEdge[], settings?: Partial<ProjectSettings>) => void;
+  revealGraph: (nodes: KFNode[], edges: KFEdge[]) => void;
   markSaved: () => void;
   markSaving: () => void;
 }
@@ -188,6 +189,37 @@ export const useProjectStore = create<ProjectStore>()(
       settings: { ...DEFAULT_SETTINGS, ...settings },
       isDirty: false,
     }),
+
+    revealGraph: (allNodes, allEdges) => {
+      // Clear canvas first
+      set({ nodes: [], edges: [], isDirty: false });
+
+      // Group nodes + edges by shot prefix (e.g. "s0_sh2")
+      const SHOT_RE = /^(s\d+_sh\d+)_/;
+      const groups = new Map<string, { nodes: KFNode[]; edges: KFEdge[] }>();
+
+      for (const node of allNodes) {
+        const key = node.id.match(SHOT_RE)?.[1] ?? "misc";
+        if (!groups.has(key)) groups.set(key, { nodes: [], edges: [] });
+        groups.get(key)!.nodes.push(node);
+      }
+      for (const edge of allEdges) {
+        const key = edge.source.match(SHOT_RE)?.[1] ?? "misc";
+        if (!groups.has(key)) groups.set(key, { nodes: [], edges: [] });
+        groups.get(key)!.edges.push(edge);
+      }
+
+      const list = [...groups.values()];
+      list.forEach((group, i) => {
+        setTimeout(() => {
+          set((s) => ({
+            nodes: [...s.nodes, ...group.nodes],
+            edges: [...s.edges, ...group.edges],
+            isDirty: i === list.length - 1,
+          }));
+        }, i * 220);
+      });
+    },
 
     markSaved: () => set({ isDirty: false, isSaving: false }),
     markSaving: () => set({ isSaving: true }),

@@ -38,6 +38,7 @@ const TRY_CHIPS = [
 
 export function DashboardShell({ user, projects, templates }: Props) {
   const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"projects" | "templates">("projects");
 
   const filtered = query
     ? projects.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
@@ -186,46 +187,63 @@ export function DashboardShell({ user, projects, templates }: Props) {
           </section>
         )}
 
-        {/* ── Default view ─────────────────────────────────────── */}
+        {/* ── Tabs + default view ───────────────────────────────── */}
         {!query && (
           <>
-            {/* Templates */}
-            {templates.length > 0 && (
-              <section className="pt-8">
-                <TemplateGallery templates={templates} />
+            {/* Tab bar */}
+            <div className="flex items-center gap-1 border-b border-white/[0.06] pt-5 pb-0">
+              {(["projects", "templates"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${
+                    activeTab === tab
+                      ? "text-white"
+                      : "text-white/35 hover:text-white/65"
+                  }`}
+                >
+                  {tab === "projects" ? "Recent Projects" : "Templates"}
+                  {activeTab === tab && (
+                    <span className="absolute inset-x-0 bottom-0 h-[2px] rounded-t bg-white/70" />
+                  )}
+                  {tab === "projects" && projects.length > 0 && (
+                    <span className="ml-1.5 rounded-full bg-white/[0.08] px-1.5 py-0.5 text-[10px] text-white/40">
+                      {projects.length}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Projects tab */}
+            {activeTab === "projects" && (
+              <section className="pt-6">
+                <div className="mb-5 flex justify-end">
+                  <form action={createProject}>
+                    <button
+                      type="submit"
+                      className="text-xs text-white/30 transition-colors hover:text-white/60"
+                    >
+                      + New project
+                    </button>
+                  </form>
+                </div>
+                {projects.length === 0 ? (
+                  <EmptyProjects />
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
+                  </div>
+                )}
               </section>
             )}
 
-            {/* Recent Projects */}
-            <section className="pt-10">
-              <div className="mb-5 flex items-end justify-between">
-                <div>
-                  <h2 className="text-xl font-bold">
-                    Recent projects
-                    {projects.length > 0 && (
-                      <span className="ml-2 text-sm font-normal text-white/30">{projects.length}</span>
-                    )}
-                  </h2>
-                  <p className="mt-0.5 text-sm text-white/35">Your AI filmmaking projects</p>
-                </div>
-                <form action={createProject}>
-                  <button
-                    type="submit"
-                    className="text-xs text-white/30 transition-colors hover:text-white/60"
-                  >
-                    + New project
-                  </button>
-                </form>
-              </div>
-
-              {projects.length === 0 ? (
-                <EmptyProjects />
-              ) : (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                  {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
-                </div>
-              )}
-            </section>
+            {/* Templates tab */}
+            {activeTab === "templates" && (
+              <section className="pt-6">
+                <TemplateGallery templates={templates} noHeader />
+              </section>
+            )}
           </>
         )}
       </main>
@@ -238,7 +256,7 @@ function EmptyProjects() {
     <div className="flex flex-col items-center justify-center rounded border border-white/[0.06] bg-white/[0.01] py-24 text-center">
       <span className="material-symbols-rounded mb-4 text-[48px] text-white/[0.07]">movie</span>
       <p className="text-base font-medium text-white/40">No projects yet</p>
-      <p className="mt-1 text-sm text-white/20">Create a project or start from a template above</p>
+      <p className="mt-1 text-sm text-white/20">Create a project or pick a template from the Templates tab</p>
       <form action={createProject} className="mt-6">
         <button
           type="submit"

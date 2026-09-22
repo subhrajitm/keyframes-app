@@ -1,133 +1,107 @@
 import type { KFNode, KFEdge, NodeData } from "@/store/project-store";
 import type { DirectorOutput } from "@keyframe/types";
 
-// Vertical pipeline layout: each shot is a column, nodes stack top → bottom
-const SHOT_COL_WIDTH  = 280;   // horizontal gap between shot columns
-const NODE_Y_SPACING  = 200;   // vertical gap between pipeline stages
-const AUX_X_OFFSET    = -260;  // character/location sit to the left of the column
+// Horizontal pipeline per shot, shots stacked top → bottom
+// Each row:  [Char?] [Loc?]   [Prompt] → [ImageGen] → [VideoGen] → [Output]
+const ROW_HEIGHT  = 340;   // vertical gap between shot rows
+const PIPE_X      = [0, 400, 760, 1120] as const; // prompt, imageGen, videoGen, output
+const AUX_X       = -360;  // character / location left of pipeline
 
 interface CompileResult {
   nodes: KFNode[];
   edges: KFEdge[];
 }
 
-/**
- * Converts Director output into a React Flow graph.
- *
- * Layout per shot (top → bottom column):
- *   [char?] [loc?]  ← aux nodes left of column
- *        Prompt
- *          ↓
- *       ImageGen
- *          ↓
- *       VideoGen
- *          ↓
- *        Output
- *
- * Shots expand left → right; scenes are contiguous groups of columns.
- */
 export function compileDirectorOutput(output: DirectorOutput): CompileResult {
   const nodes: KFNode[] = [];
   const edges: KFEdge[] = [];
 
-  let globalColIdx = 0;
+  let globalShotIdx = 0;
 
   output.scenes.forEach((scene, sceneIdx) => {
     scene.shots.forEach((shot, shotIdx) => {
-      const baseX = globalColIdx * SHOT_COL_WIDTH;
+      const rowY   = globalShotIdx * ROW_HEIGHT;
+      const hasChar = (shot.characterRefs?.length ?? 0) > 0;
+      const hasLoc  = !!shot.locationRef;
 
-      const nodeId = (suffix: string) =>
-        `s${sceneIdx}_sh${shotIdx}_${suffix}`;
+      // Vertically centre aux nodes around the pipeline row
+      const auxOffsets =
+        hasChar && hasLoc ? [-140, 140]   // char above, loc below
+        : [0];                            // single aux node centred
 
-      const addNode = (id: string, type: KFNode["type"], data: NodeData, x: number, y: number) => {
-        nodes.push({ id, type, position: { x, y }, data });
-      };
+      const nodeId = (suffix: string) => `s${sceneIdx}_sh${shotIdx}_${suffix}`;
 
-      const addEdge = (source: string, sourceHandle: string, target: string, targetHandle: string) => {
+      const addNode = (
+        id: string,
+        type: KFNode["type"],
+        data: NodeData,
+        x: number,
+        y: number,
+      ) => nodes.push({ id, type, position: { x, y }, data });
+
+      const addEdge = (
+        source: string, sourceHandle: string,
+        target: string, targetHandle: string,
+      ) =>
         edges.push({
           id: `${source}-${sourceHandle}--${target}-${targetHandle}`,
           source, sourceHandle, target, targetHandle,
           animated: false,
           style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
         });
-      };
 
-      const imgId  = nodeId("img");
-      const vidId  = nodeId("vid");
-      const outId  = nodeId("out");
       const promptId = nodeId("prompt");
+      const imgId    = nodeId("img");
+      const vidId    = nodeId("vid");
+      const outId    = nodeId("out");
 
-      // ── Aux nodes (left of column) ─────────────────────────────
-      let auxY = 0;
-
-      if (shot.characterRefs?.length) {
+      // ── Aux nodes ─────────────────────────────────────────────────
+      let auxI = 0;
+      if (hasChar) {
         const charId = nodeId("char");
         addNode(charId, "character", {
           label: "Character",
           characterName: `Character (${shot.title})`,
           characterImageUrl: shot.characterRefs[0],
-        }, baseX + AUX_X_OFFSET, auxY);
-        edges.push({
-          id: `${charId}--${imgId}-char`,
-          source: charId, sourceHandle: "character-out",
-          target: imgId,  targetHandle: "character-in",
-          animated: false,
-          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
-        });
-        auxY += 180;
+        }, AUX_X, rowY + auxOffsets[auxI++]);
+        addEdge(charId, "character-out", imgId, "character-in");
       }
 
-      if (shot.locationRef) {
+      if (hasLoc) {
         const locId = nodeId("loc");
         addNode(locId, "location", {
           label: "Location",
           locationName: `Location (${shot.title})`,
           locationDescription: "",
-        }, baseX + AUX_X_OFFSET, auxY);
-        edges.push({
-          id: `${locId}--${imgId}-loc`,
-          source: locId, sourceHandle: "location-out",
-          target: imgId,  targetHandle: "location-in",
-          animated: false,
-          style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 },
-        });
+        }, AUX_X, rowY + auxOffsets[auxI]);
+        addEdge(locId, "location-out", imgId, "location-in");
       }
 
-      // ── Vertical pipeline ──────────────────────────────────────
-      // Row 0: Prompt
+      // ── Pipeline ──────────────────────────────────────────────────
       addNode(promptId, "prompt", {
         label: "Prompt",
         promptText: shot.prompt,
-      }, baseX, 0);
+      }, PIPE_X[0], rowY);
 
-      // Row 1: ImageGen
       addNode(imgId, "imageGen", {
         label: "Image Gen",
         generationStatus: "idle",
-        generationId: undefined,
-      }, baseX, NODE_Y_SPACING);
+      }, PIPE_X[1], rowY);
       addEdge(promptId, "prompt-out", imgId, "prompt-in");
 
-      // Row 2: VideoGen
       addNode(vidId, "videoGen", {
         label: "Video Gen",
         generationStatus: "idle",
-        generationId: undefined,
-      }, baseX, NODE_Y_SPACING * 2);
+      }, PIPE_X[2], rowY);
       addEdge(imgId, "image-out", vidId, "image-in");
 
-      // Row 3: Output
-      const globalShotIdx = output.scenes
-        .slice(0, sceneIdx)
-        .reduce((sum, s) => sum + s.shots.length, 0) + shotIdx;
-
       addNode(outId, "output", {
-        label: `Output ${globalShotIdx + 1}`,
+        label: `Clip ${globalShotIdx + 1}`,
         clipOrder: globalShotIdx,
-      }, baseX, NODE_Y_SPACING * 3);
+      }, PIPE_X[3], rowY);
       addEdge(vidId, "video-out", outId, "video-in");
 
-      globalColIdx++;
+      globalShotIdx++;
     });
   });
 

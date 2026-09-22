@@ -81,9 +81,9 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
         className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />
 
       {/* Status + regen */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className={`h-1.5 w-1.5 rounded-full ${dotCls}`} />
+      <div className="flex items-center justify-between py-1">
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${dotCls}`} />
           <span className="text-[11px] text-white/35">{STATUS_LABEL[status] ?? "Ready"}</span>
         </div>
 
@@ -91,7 +91,7 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
           <button
             onClick={handleRegen}
             disabled={isBusy}
-            className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] text-white/30 transition-colors hover:bg-white/[0.05] hover:text-white/60 disabled:opacity-40"
+            className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-white/30 transition-colors hover:bg-white/[0.05] hover:text-white/60 disabled:opacity-40"
           >
             <span className={`material-symbols-rounded text-[12px] ${isBusy ? "animate-spin" : ""}`}>
               refresh

@@ -40,8 +40,8 @@ export function NodeWrapper({
   return (
     <div
       className={cn(
-        "relative overflow-visible rounded-lg border bg-[#161616] text-white shadow-2xl transition-all duration-150 cursor-pointer",
-        wide ? "w-[300px]" : "w-[260px]",
+        "relative overflow-visible rounded-lg border bg-[#161616] text-white shadow-2xl transition-all duration-150 cursor-pointer animate-node-enter",
+        wide ? "w-[340px]" : "w-[300px]",
         isSelected
           ? "border-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
           : "border-white/[0.08] shadow-black/60",
@@ -93,7 +93,7 @@ export function NodeWrapper({
       {/* Title row */}
       <div
         className={cn(
-          "flex items-center gap-2 px-3.5 pt-3 pb-1.5",
+          "flex items-center gap-2 px-4 pt-4 pb-2",
           !imageSlot && "pr-10",
         )}
       >
@@ -118,11 +118,11 @@ export function NodeWrapper({
       </div>
 
       {/* Body */}
-      {children && <div className="px-3.5 pb-2">{children}</div>}
+      {children && <div className="px-4 pb-3">{children}</div>}
 
       {/* Char count footer */}
       {typeof charCount === "number" && (
-        <div className="flex justify-end px-3.5 pb-3">
+        <div className="flex justify-end px-4 pb-4">
           <span className="font-mono text-[10px] text-white/20">
             {charCount}/{maxChars}
           </span>
