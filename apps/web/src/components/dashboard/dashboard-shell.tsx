@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createProject, logout } from "@/app/(dashboard)/dashboard/actions";
 import { ProjectCard } from "./project-card";
 import { TemplateGallery } from "./template-gallery";
-import { HeroBanner } from "./hero-banner";
 import type { Project, Template } from "@keyframe/types";
 
 interface User {
@@ -21,11 +20,20 @@ interface Props {
   templates: Template[];
 }
 
-const QUICK_ACTIONS = [
-  { icon: "add_circle",    label: "New Project",    desc: "Start with a blank canvas",  action: "new" },
-  { icon: "auto_awesome",  label: "From Template",  desc: "Begin with a preset",        action: "template" },
-  { icon: "smart_toy",     label: "AI Director",    desc: "Let AI plan your shots",     action: "director" },
-  { icon: "photo_library", label: "Asset Library",  desc: "Browse your generations",    action: "assets" },
+const NAV_LINKS = [
+  { label: "Home",      href: "/dashboard" },
+  { label: "Projects",  href: "/dashboard", active: true },
+  { label: "Assets",    href: "/dashboard" },
+  { label: "Settings",  href: "/settings" },
+];
+
+const TRY_CHIPS = [
+  { icon: "movie",        label: "Travel montage",     color: "#10b981" },
+  { icon: "tv",           label: "Coffee brand promo",  color: "#3b82f6" },
+  { icon: "bolt",         label: "Action trailer",      color: "#ef4444" },
+  { icon: "music_note",   label: "Music video",         color: "#8b5cf6" },
+  { icon: "photo_camera", label: "Product launch",      color: "#f59e0b" },
+  { icon: "star",         label: "Featured templates",  color: "#6366f1" },
 ];
 
 export function DashboardShell({ user, projects, templates }: Props) {
@@ -37,56 +45,47 @@ export function DashboardShell({ user, projects, templates }: Props) {
 
   const initials = user.name
     ? user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
-    : user.email[0]?.toUpperCase() ?? "?";
+    : (user.email[0]?.toUpperCase() ?? "?");
 
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <header className="flex items-center gap-4 px-8 py-5">
-        <span className="shrink-0 text-lg font-bold tracking-tight mr-2">Keyframe</span>
+      {/* ── Nav ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 flex items-center gap-6 border-b border-white/[0.06] bg-black/95 px-6 py-3 backdrop-blur-sm">
+        {/* Logo */}
+        <span className="shrink-0 text-sm font-bold tracking-tight">Keyframe</span>
 
-        {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-3 rounded border border-white/[0.08] bg-white/[0.03] px-4 py-2 max-w-lg">
-          <span className="material-symbols-rounded text-[18px] text-white/30">search</span>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search projects…"
-            className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
-          />
-          {query && (
-            <button onClick={() => setQuery("")} className="text-white/30 hover:text-white/60">
-              <span className="material-symbols-rounded text-[16px]">close</span>
-            </button>
-          )}
-        </div>
-
-        {/* Right-side controls — pushed to the far right */}
-        <div className="ml-auto flex items-center gap-3 shrink-0">
-          {/* New Project */}
-          <form action={createProject}>
-            <button
-              type="submit"
-              className="flex items-center gap-2 rounded border border-white/20 px-4 py-2 text-sm font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
+        {/* Nav links */}
+        <nav className="flex items-center gap-1">
+          {NAV_LINKS.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              className={`rounded px-3 py-1.5 text-sm transition-colors ${
+                l.active
+                  ? "bg-white/[0.07] text-white"
+                  : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+              }`}
             >
-              <span className="material-symbols-rounded text-[18px]">add</span>
-              New Project
-            </button>
-          </form>
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
+        {/* Right */}
+        <div className="ml-auto flex items-center gap-2 shrink-0">
           {/* Credits */}
-          <div className="flex items-center gap-1.5 rounded border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-sm">
-            <span className="material-symbols-rounded text-[15px] text-white/30">bolt</span>
-            <span className="text-white/55">{user.credits}</span>
+          <div className="flex items-center gap-1.5 rounded border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-white/50">
+            <span className="material-symbols-rounded text-[14px] text-white/25">bolt</span>
+            {user.credits} credits
           </div>
 
           {/* Settings */}
           <Link
             href="/settings"
-            className="flex h-9 w-9 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white"
+            className="flex h-8 w-8 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white/70"
           >
-            <span className="material-symbols-rounded text-[20px]">settings</span>
+            <span className="material-symbols-rounded text-[18px]">settings</span>
           </Link>
 
           {/* Logout */}
@@ -94,14 +93,14 @@ export function DashboardShell({ user, projects, templates }: Props) {
             <button
               type="submit"
               title="Sign out"
-              className="flex h-9 w-9 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded text-white/35 transition-colors hover:bg-white/[0.05] hover:text-white/70"
             >
-              <span className="material-symbols-rounded text-[20px]">logout</span>
+              <span className="material-symbols-rounded text-[18px]">logout</span>
             </button>
           </form>
 
-          {/* Avatar → settings */}
-          <Link href="/settings" className="h-8 w-8 overflow-hidden rounded shrink-0 block">
+          {/* Avatar */}
+          <Link href="/settings" className="flex h-8 w-8 shrink-0 overflow-hidden rounded">
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
             ) : (
@@ -113,93 +112,154 @@ export function DashboardShell({ user, projects, templates }: Props) {
         </div>
       </header>
 
-      <main className="px-8 pb-20 space-y-10">
+      <main className="mx-auto max-w-[1400px] px-6 pb-20">
 
-        {/* ── Quick actions ────────────────────────────────────── */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {QUICK_ACTIONS.map((qa) => (
-            <QuickActionCard key={qa.action} {...qa} />
-          ))}
+        {/* ── Search bar ───────────────────────────────────────── */}
+        <div className="flex gap-3 border-b border-white/[0.06] py-5">
+          <div className="flex flex-1 items-center gap-3 rounded border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+            <span className="material-symbols-rounded text-[20px] text-white/25">search</span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search projects by name…"
+              className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/25 focus:outline-none"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="text-white/25 hover:text-white/50 transition-colors">
+                <span className="material-symbols-rounded text-[16px]">close</span>
+              </button>
+            )}
+          </div>
+          <form action={createProject}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded border border-white/20 px-5 py-3 text-sm font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
+            >
+              <span className="material-symbols-rounded text-[18px]">add</span>
+              New project
+            </button>
+          </form>
         </div>
 
-        {/* ── Hero banner (dismissible) ────────────────────────── */}
-        <HeroBanner />
-
-        {/* ── Get Inspired ─────────────────────────────────────── */}
-        {templates.length > 0 && <TemplateGallery templates={templates} />}
-
-        {/* ── Recent Projects ──────────────────────────────────── */}
-        <section>
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              {query ? `Results for "${query}"` : "Recent Projects"}
-              {filtered.length > 0 && (
-                <span className="ml-2 text-sm font-normal text-white/30">{filtered.length}</span>
-              )}
-            </h2>
+        {/* ── Try: chips ───────────────────────────────────────── */}
+        {!query && (
+          <div className="flex items-center gap-2 overflow-x-auto border-b border-white/[0.06] py-3" style={{ scrollbarWidth: "none" }}>
+            <span className="shrink-0 text-xs text-white/25">Try:</span>
+            {TRY_CHIPS.map((chip) => (
+              <button
+                key={chip.label}
+                className="flex shrink-0 items-center gap-1.5 rounded border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-xs text-white/45 transition-colors hover:border-white/15 hover:text-white/70"
+              >
+                <span
+                  className="material-symbols-rounded text-[13px]"
+                  style={{ color: chip.color }}
+                >
+                  {chip.icon}
+                </span>
+                {chip.label}
+              </button>
+            ))}
           </div>
+        )}
 
-          {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg bg-white/[0.03] py-24 text-center">
-              <span className="material-symbols-rounded text-[48px] text-white/10 mb-4">movie</span>
-              <p className="text-base font-medium text-white/50">
-                {query ? "No projects match your search" : "No projects yet"}
-              </p>
-              {!query && (
-                <form action={createProject} className="mt-5">
+        {/* ── Search results ───────────────────────────────────── */}
+        {query && (
+          <section className="pt-8">
+            <div className="mb-5 flex items-end justify-between">
+              <div>
+                <h2 className="text-xl font-bold">
+                  Results for &ldquo;{query}&rdquo;
+                </h2>
+                <p className="mt-0.5 text-sm text-white/35">{filtered.length} project{filtered.length !== 1 ? "s" : ""} found</p>
+              </div>
+              <button onClick={() => setQuery("")} className="text-xs text-white/30 hover:text-white/60 transition-colors">
+                Clear search
+              </button>
+            </div>
+            {filtered.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {filtered.map((p) => <ProjectCard key={p.id} project={p} />)}
+              </div>
+            ) : (
+              <EmptySearch query={query} onClear={() => setQuery("")} />
+            )}
+          </section>
+        )}
+
+        {/* ── Default view ─────────────────────────────────────── */}
+        {!query && (
+          <>
+            {/* Templates */}
+            {templates.length > 0 && (
+              <section className="pt-8">
+                <TemplateGallery templates={templates} />
+              </section>
+            )}
+
+            {/* Recent Projects */}
+            <section className="pt-10">
+              <div className="mb-5 flex items-end justify-between">
+                <div>
+                  <h2 className="text-xl font-bold">
+                    Recent projects
+                    {projects.length > 0 && (
+                      <span className="ml-2 text-sm font-normal text-white/30">{projects.length}</span>
+                    )}
+                  </h2>
+                  <p className="mt-0.5 text-sm text-white/35">Your AI filmmaking projects</p>
+                </div>
+                <form action={createProject}>
                   <button
                     type="submit"
-                    className="flex items-center gap-2 rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white/60 transition-colors hover:border-white/35 hover:text-white"
+                    className="text-xs text-white/30 transition-colors hover:text-white/60"
                   >
-                    <span className="material-symbols-rounded text-[18px]">add</span>
-                    Create your first project
+                    + New project
                   </button>
                 </form>
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {filtered.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          )}
-        </section>
+              </div>
 
+              {projects.length === 0 ? (
+                <EmptyProjects />
+              ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
+                </div>
+              )}
+            </section>
+          </>
+        )}
       </main>
     </div>
   );
 }
 
-function QuickActionCard({ icon, label, desc, action }: typeof QUICK_ACTIONS[number]) {
-  const inner = (
-    <div className="flex items-center gap-4 rounded-lg bg-white/[0.04] px-5 py-4 hover:bg-white/[0.07] transition-colors cursor-pointer w-full text-left border border-transparent hover:border-white/10">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-white/[0.04]">
-        <span className="material-symbols-rounded text-[18px] text-white/40">{icon}</span>
-      </div>
-      <div className="min-w-0">
-        <p className="text-sm font-semibold leading-snug">{label}</p>
-        <p className="text-xs text-white/40 leading-snug mt-0.5">{desc}</p>
-      </div>
+function EmptyProjects() {
+  return (
+    <div className="flex flex-col items-center justify-center rounded border border-white/[0.06] bg-white/[0.01] py-24 text-center">
+      <span className="material-symbols-rounded mb-4 text-[48px] text-white/[0.07]">movie</span>
+      <p className="text-base font-medium text-white/40">No projects yet</p>
+      <p className="mt-1 text-sm text-white/20">Create a project or start from a template above</p>
+      <form action={createProject} className="mt-6">
+        <button
+          type="submit"
+          className="inline-flex items-center gap-2 rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white/60 transition-colors hover:border-white/35 hover:text-white"
+        >
+          <span className="material-symbols-rounded text-[18px]">add</span>
+          Create your first project
+        </button>
+      </form>
     </div>
   );
+}
 
-  if (action === "new") {
-    return (
-      <form action={createProject} className="contents">
-        <button type="submit" className="contents">{inner}</button>
-      </form>
-    );
-  }
-
-  if (action === "template") {
-    return <div onClick={() => window.scrollTo({ top: 400, behavior: "smooth" })}>{inner}</div>;
-  }
-
-  if (action === "assets") {
-    return <Link href="/studio" className="contents">{inner}</Link>;
-  }
-
-  // director - scroll to template
-  return <div>{inner}</div>;
+function EmptySearch({ query, onClear }: { query: string; onClear: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded border border-white/[0.06] py-20 text-center">
+      <span className="material-symbols-rounded mb-4 text-[40px] text-white/[0.07]">search_off</span>
+      <p className="text-sm font-medium text-white/40">No projects match &ldquo;{query}&rdquo;</p>
+      <button onClick={onClear} className="mt-3 text-xs text-white/30 underline underline-offset-2 hover:text-white/60 transition-colors">
+        Clear search
+      </button>
+    </div>
+  );
 }
