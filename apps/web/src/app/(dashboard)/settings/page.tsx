@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabase
     .from("users")
-    .select("full_name, credits, avatar_url, fal_api_key, openrouter_api_key")
+    .select("full_name, credits, avatar_url, fal_api_key, explabs_api_key")
     .eq("id", user.id)
     .single();
 
@@ -22,7 +22,7 @@ export default async function SettingsPage() {
         credits: profile?.credits ?? 0,
         avatar_url: profile?.avatar_url ?? null,
         fal_api_key: profile?.fal_api_key ?? null,
-        openrouter_api_key: profile?.openrouter_api_key ?? null,
+        explabs_api_key: profile?.explabs_api_key ?? null,
       }}
     />
   );

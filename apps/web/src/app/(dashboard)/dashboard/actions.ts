@@ -28,6 +28,7 @@ export async function deleteProject(projectId: string): Promise<void> {
 
   await supabase.from("projects").delete().eq("id", projectId).eq("user_id", user.id);
   revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 export async function logout(): Promise<void> {

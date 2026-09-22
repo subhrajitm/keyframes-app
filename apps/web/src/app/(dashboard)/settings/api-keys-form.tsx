@@ -9,7 +9,7 @@ const initial: { error: string; success: string } = { error: "", success: "" };
 
 interface Props {
   initialFalKey: string;
-  initialOpenrouterKey: string;
+  initialExplabsKey: string;
 }
 
 function MaskedInput({ name, defaultValue, placeholder }: { name: string; defaultValue: string; placeholder: string }) {
@@ -38,7 +38,7 @@ function MaskedInput({ name, defaultValue, placeholder }: { name: string; defaul
   );
 }
 
-export function ApiKeysForm({ initialFalKey, initialOpenrouterKey }: Props) {
+export function ApiKeysForm({ initialFalKey, initialExplabsKey }: Props) {
   const [state, formAction, isPending] = useActionState(updateApiKeys, initial);
 
   return (
@@ -55,8 +55,8 @@ export function ApiKeysForm({ initialFalKey, initialOpenrouterKey }: Props) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-white/50">OpenRouter API key</label>
-        <MaskedInput name="openrouter_api_key" defaultValue={initialOpenrouterKey} placeholder="sk-or-…" />
+        <label className="text-sm font-medium text-white/50">Experiential Labs API key</label>
+        <MaskedInput name="explabs_api_key" defaultValue={initialExplabsKey} placeholder="xpl_…" />
       </div>
 
       <Button type="submit" loading={isPending} className="h-11 px-6 text-base">

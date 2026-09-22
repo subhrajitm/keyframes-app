@@ -3,7 +3,7 @@ const REQUIRED: readonly string[] = [
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
   "FAL_API_KEY",
-  "OPENROUTER_API_KEY",
+  "EXPLABS_API_KEY",
 ];
 
 export function assertServerEnv(): void {

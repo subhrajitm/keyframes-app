@@ -50,7 +50,10 @@ export function ProjectCard({ project }: { project: Project }) {
           {/* Three-dot menu — top right */}
           <DropdownMenu onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <button className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/50 opacity-0 backdrop-blur-sm transition-all hover:bg-black/70 hover:text-white group-hover:opacity-100">
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/50 opacity-0 backdrop-blur-sm transition-all hover:bg-black/70 hover:text-white group-hover:opacity-100"
+              >
                 <span className="material-symbols-rounded text-[16px]">more_horiz</span>
               </button>
             </DropdownMenuTrigger>

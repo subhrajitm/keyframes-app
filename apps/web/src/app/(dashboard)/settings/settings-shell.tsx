@@ -18,7 +18,7 @@ interface Props {
     credits: number;
     avatar_url: string | null;
     fal_api_key: string | null;
-    openrouter_api_key: string | null;
+    explabs_api_key: string | null;
   };
 }
 
@@ -132,7 +132,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
         {active === "apikeys" && (
           <ApiKeysForm
             initialFalKey={profile.fal_api_key ?? ""}
-            initialOpenrouterKey={profile.openrouter_api_key ?? ""}
+            initialExplabsKey={profile.explabs_api_key ?? ""}
           />
         )}
 

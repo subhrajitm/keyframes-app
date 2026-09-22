@@ -68,7 +68,7 @@ export async function updateEmail(_: FormState, formData: FormData): Promise<For
 
 export async function updateApiKeys(_: FormState, formData: FormData): Promise<FormState> {
   const falKey = (formData.get("fal_api_key") as string).trim();
-  const openrouterKey = (formData.get("openrouter_api_key") as string).trim();
+  const explabsKey = (formData.get("explabs_api_key") as string).trim();
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -76,7 +76,7 @@ export async function updateApiKeys(_: FormState, formData: FormData): Promise<F
 
   const { error } = await supabase
     .from("users")
-    .update({ fal_api_key: falKey || null, openrouter_api_key: openrouterKey || null })
+    .update({ fal_api_key: falKey || null, explabs_api_key: explabsKey || null })
     .eq("id", user.id);
   if (error) return { error: error.message, success: "" };
 
