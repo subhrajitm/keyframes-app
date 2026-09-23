@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { AppTopbar } from "@/components/ui/app-topbar";
 import type { AppTopbarUser } from "@/components/ui/app-topbar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 
 export const revalidate = 60;
 
@@ -37,14 +38,18 @@ export default async function GalleryPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-black text-white">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#0f0f0f] text-white">
       <AppTopbar user={topbarUser} />
 
-      <div className="mx-auto w-full max-w-6xl px-6 py-12">
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold">Gallery</h1>
-          <p className="mt-1.5 text-sm text-white/40">AI films made with Keyframe</p>
-        </div>
+      <div className="flex flex-1 overflow-hidden">
+        <AppSidebar activeId="gallery" />
+
+        <main className="flex flex-1 flex-col overflow-hidden bg-[#111111]">
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div className="mb-6">
+              <h1 className="text-lg font-semibold text-white">Gallery</h1>
+              <p className="mt-0.5 text-xs text-white/40">AI films made with Keyframe</p>
+            </div>
 
         {!projects?.length ? (
           <div className="flex flex-col items-center justify-center py-32 text-center">
@@ -97,6 +102,8 @@ export default async function GalleryPage() {
             })}
           </div>
         )}
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ProjectCard } from "./project-card";
 import { TemplateGallery } from "./template-gallery";
 import { NewProjectModal } from "./new-project-modal";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
 import { AppTopbar } from "@/components/ui/app-topbar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import type { Project, Template } from "@keyframe/types";
 
 interface User {
@@ -25,17 +25,6 @@ interface Props {
 
 type Section = "home" | "projects" | "templates" | "characters" | "locations";
 
-const NAV_ITEMS = [
-  { id: "home" as Section,      icon: "home",          label: "Home" },
-  { id: "projects" as Section,  icon: "video_library", label: "All Projects" },
-  { id: "templates" as Section, icon: "auto_stories",  label: "Templates" },
-];
-
-const ASSET_ITEMS = [
-  { id: "characters" as Section, icon: "face",         label: "Characters" },
-  { id: "locations" as Section,  icon: "location_on",  label: "Locations" },
-];
-
 export function DashboardShell({ user, projects, templates }: Props) {
   const [query, setQuery] = useState("");
   const [section, setSection] = useState<Section>("home");
@@ -52,81 +41,27 @@ export function DashboardShell({ user, projects, templates }: Props) {
 
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ── Left sidebar ─────────────────────────────────────── */}
-        <aside className="flex w-56 shrink-0 flex-col border-r border-white/[0.08] bg-[#0f0f0f]">
-
-          <div className="px-4 pt-4 pb-2">
-            <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/25">Library</p>
-          </div>
-
-          <nav className="flex flex-col gap-px px-2">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSection(item.id)}
-                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-colors ${
-                  section === item.id
-                    ? "bg-violet-500/15 text-violet-300"
-                    : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
-                }`}
-              >
-                <span className={`material-symbols-rounded text-[16px] ${section === item.id ? "text-violet-400" : "text-white/40"}`}>{item.icon}</span>
-                <span>{item.label}</span>
-                {item.id === "projects" && projects.length > 0 && (
-                  <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] tabular-nums ${section === item.id ? "bg-violet-500/20 text-violet-300" : "bg-white/[0.06] text-white/30"}`}>{projects.length}</span>
-                )}
-              </button>
-            ))}
-
-            <Link
-              href="/gallery"
-              className="flex items-center gap-2.5 rounded px-2.5 py-2 text-xs font-medium text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white/85"
-            >
-              <span className="material-symbols-rounded text-[16px] text-white/40">photo_library</span>
-              Gallery
-            </Link>
-          </nav>
-
-          <div className="mt-5 px-4 pb-2">
-            <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/25">Assets</p>
-          </div>
-          <nav className="flex flex-col gap-px px-2">
-            {ASSET_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSection(item.id)}
-                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-colors ${
-                  section === item.id
-                    ? "bg-violet-500/15 text-violet-300"
-                    : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
-                }`}
-              >
-                <span className={`material-symbols-rounded text-[16px] ${section === item.id ? "text-violet-400" : "text-white/40"}`}>{item.icon}</span>
-                <span>{item.label}</span>
-                <span className="ml-auto rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-white/25 tabular-nums">0</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="mt-auto border-t border-white/[0.08] p-3">
-            <Button variant="violet" size="sm" className="w-full" onClick={() => setNewProjectOpen(true)}>
-              <span className="material-symbols-rounded text-[14px]">add</span>
-              New project
-            </Button>
-          </div>
-        </aside>
+        <AppSidebar
+          activeId={section}
+          projectCount={projects.length}
+          onSectionClick={(id) => setSection(id as Section)}
+        />
 
         {/* ── Main content ─────────────────────────────────────── */}
         <main className="flex flex-1 flex-col overflow-hidden bg-[#111111]">
 
           {/* Search bar */}
-          <div className="shrink-0 border-b border-white/[0.08] px-4 py-2">
-            <div className="flex items-center gap-2 rounded border border-white/[0.1] bg-white/[0.04] px-3 py-1.5">
+          <div className="shrink-0 flex items-center gap-2 border-b border-white/[0.08] px-4 py-2">
+            <div className="flex flex-1 items-center gap-2 rounded border border-white/[0.1] bg-white/[0.04] px-3 py-1.5">
               <span className="material-symbols-rounded text-[15px] text-white/35">search</span>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search projects and templates…"
+                placeholder={
+                section === "characters" ? "Search characters…"
+                : section === "locations" ? "Search locations…"
+                : "Search projects and templates…"
+              }
                 className="min-w-0 flex-1 bg-transparent text-xs text-white placeholder:text-white/30 focus:outline-none"
               />
               {query && (
@@ -135,6 +70,17 @@ export function DashboardShell({ user, projects, templates }: Props) {
                 </button>
               )}
             </div>
+            {section === "characters" || section === "locations" ? (
+              <Button variant="outline" size="sm">
+                <span className="material-symbols-rounded text-[14px]">add</span>
+                New {section === "characters" ? "character" : "location"}
+              </Button>
+            ) : (
+              <Button variant="violet" size="sm" onClick={() => setNewProjectOpen(true)}>
+                <span className="material-symbols-rounded text-[14px]">add</span>
+                New project
+              </Button>
+            )}
           </div>
 
           {/* Content */}
@@ -163,12 +109,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
             {/* Home */}
             {!query && section === "home" && (
               <>
-                <SectionHeader title="Recent Projects" onSeeAll={() => setSection("projects")}>
-                  <Button variant="ghost" size="xs" onClick={() => setNewProjectOpen(true)} className="text-violet-400 hover:bg-violet-500/10 hover:text-violet-300">
-                    <span className="material-symbols-rounded text-[13px]">add</span>
-                    New
-                  </Button>
-                </SectionHeader>
+                <SectionHeader title="Recent Projects" onSeeAll={() => setSection("projects")} />
 
                 {projects.length === 0 ? (
                   <EmptyProjects onNew={() => setNewProjectOpen(true)} />
@@ -190,15 +131,11 @@ export function DashboardShell({ user, projects, templates }: Props) {
             {/* All Projects */}
             {!query && section === "projects" && (
               <>
-                <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4">
                   <p className="text-sm font-semibold text-white">
                     All Projects
                     {projects.length > 0 && <span className="ml-1.5 text-xs font-normal text-white/40">{projects.length}</span>}
                   </p>
-                  <Button variant="violet" size="xs" onClick={() => setNewProjectOpen(true)}>
-                    <span className="material-symbols-rounded text-[13px]">add</span>
-                    New project
-                  </Button>
                 </div>
                 {projects.length === 0 ? (
                   <EmptyProjects onNew={() => setNewProjectOpen(true)} />
@@ -225,21 +162,40 @@ export function DashboardShell({ user, projects, templates }: Props) {
               </>
             )}
 
-            {/* Assets placeholder */}
+            {/* Characters / Locations */}
             {!query && (section === "characters" || section === "locations") && (
-              <div className="flex flex-col items-center justify-center py-24 text-center">
-                <span className="material-symbols-rounded mb-3 text-[40px] text-white/10">
-                  {section === "characters" ? "face" : "location_on"}
-                </span>
-                <p className="text-sm font-medium text-white/40 capitalize">{section}</p>
-                <p className="mt-1 text-xs text-white/25">Assets created in Studio appear here.</p>
-              </div>
+              <>
+                <div className="mb-6">
+                  <h1 className="text-base font-semibold text-white capitalize">{section}</h1>
+                </div>
+
+                <div className="flex flex-col items-center justify-center py-28 text-center">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.03]">
+                    <span className="material-symbols-rounded text-[28px] text-white/25">
+                      {section === "characters" ? "face" : "location_on"}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-white/75">
+                    No {section === "characters" ? "characters" : "locations"} yet
+                  </p>
+                  <p className="mt-1.5 text-xs text-white/40">
+                    {section === "characters"
+                      ? "Create a reusable character from reference images."
+                      : "Define reusable locations for your scenes."}
+                  </p>
+                  <Button variant="outline" size="sm" className="mt-5">
+                    <span className="material-symbols-rounded text-[14px]">add</span>
+                    New {section === "characters" ? "character" : "location"}
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </main>
       </div>
 
       <NewProjectModal open={newProjectOpen} onClose={() => setNewProjectOpen(false)} />
+
     </div>
   );
 }

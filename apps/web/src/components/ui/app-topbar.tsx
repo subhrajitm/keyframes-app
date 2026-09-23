@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { DropdownMenu } from "radix-ui";
 import { logout } from "@/app/actions";
-import { Button } from "@/components/ui/button";
 
 export interface AppTopbarUser {
   email: string;
@@ -15,10 +16,30 @@ interface AppTopbarProps {
   user?: AppTopbarUser | null;
 }
 
-export function AppTopbar({ user }: AppTopbarProps) {
-  const initials = user?.name
+function Avatar({ user, size = "sm" }: { user: AppTopbarUser; size?: "sm" | "lg" }) {
+  const initials = user.name
     ? user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
-    : (user?.email?.[0]?.toUpperCase() ?? "?");
+    : (user.email?.[0]?.toUpperCase() ?? "?");
+
+  const cls = size === "lg"
+    ? "h-14 w-14 text-lg rounded-xl ring-2 ring-white/[0.12]"
+    : "h-8 w-8 text-[11px] rounded-full ring-1 ring-white/[0.15]";
+
+  return (
+    <div className={`flex shrink-0 overflow-hidden ${cls}`}>
+      {user.avatarUrl ? (
+        <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-violet-600 font-bold text-white">
+          {initials}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function AppTopbar({ user }: AppTopbarProps) {
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-white/[0.08] bg-[#0f0f0f] px-5">
@@ -36,27 +57,83 @@ export function AppTopbar({ user }: AppTopbarProps) {
             {user.credits}
           </div>
 
-          <Button variant="ghost" size="icon-sm" asChild>
-            <Link href="/settings" title="Settings">
-              <span className="material-symbols-rounded text-[18px]">settings</span>
-            </Link>
-          </Button>
+          {/* Profile dropdown */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button className="outline-none">
+                <Avatar user={user} size="sm" />
+              </button>
+            </DropdownMenu.Trigger>
 
-          <form action={logout}>
-            <Button variant="ghost" size="icon-sm" type="submit" title="Sign out">
-              <span className="material-symbols-rounded text-[18px]">logout</span>
-            </Button>
-          </form>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={8}
+                className="z-50 w-64 overflow-hidden rounded-xl border border-white/[0.08] bg-[#1c1c1c] shadow-2xl shadow-black/60 outline-none animate-in fade-in-0 zoom-in-95"
+              >
+                {/* Identity header */}
+                <div className="flex items-center gap-3 px-4 py-4">
+                  <Avatar user={user} size="lg" />
+                  <div className="min-w-0">
+                    {user.name && (
+                      <p className="truncate text-sm font-semibold text-white">{user.name}</p>
+                    )}
+                    <p className="truncate text-xs text-white/50">{user.email}</p>
+                  </div>
+                </div>
 
-          <Link href="/settings" className="flex h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-white/[0.15]">
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-violet-600 text-[11px] font-bold text-white">
-                {initials}
-              </div>
-            )}
-          </Link>
+                <div className="mx-3 border-t border-white/[0.06]" />
+
+                {/* Navigation items */}
+                <div className="p-1.5">
+                  <DropdownMenu.Item asChild>
+                    <Link
+                      href="/settings"
+                      className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-white/70 outline-none transition-colors hover:bg-white/[0.06] hover:text-white"
+                    >
+                      <span className="material-symbols-rounded text-[17px] text-white/40">settings</span>
+                      Settings
+                    </Link>
+                  </DropdownMenu.Item>
+                </div>
+
+                <div className="mx-3 border-t border-white/[0.06]" />
+
+                {/* Sign out */}
+                <div className="p-1.5">
+                  {!logoutConfirmOpen ? (
+                    <DropdownMenu.Item
+                      onSelect={(e) => { e.preventDefault(); setLogoutConfirmOpen(true); }}
+                      className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-white/70 outline-none transition-colors hover:bg-white/[0.06] hover:text-white"
+                    >
+                      <span className="material-symbols-rounded text-[17px] text-white/40">logout</span>
+                      Sign out
+                    </DropdownMenu.Item>
+                  ) : (
+                    <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
+                      <p className="mb-2.5 text-xs text-white/60">Sign out of Keyframe?</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setLogoutConfirmOpen(false)}
+                          className="flex-1 rounded-md border border-white/[0.1] bg-white/[0.04] py-1.5 text-xs text-white/60 transition-colors hover:bg-white/[0.08] hover:text-white/90"
+                        >
+                          Cancel
+                        </button>
+                        <form action={logout} className="flex-1">
+                          <button
+                            type="submit"
+                            className="w-full rounded-md bg-red-500/15 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/25 hover:text-red-300"
+                          >
+                            Sign out
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       )}
     </header>
