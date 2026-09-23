@@ -64,7 +64,7 @@ export function NewProjectModal({ open, onClose }: Props) {
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" variant="violet" size="sm">
+          <Button type="submit" variant="rose" size="sm">
             Create project
           </Button>
         </div>

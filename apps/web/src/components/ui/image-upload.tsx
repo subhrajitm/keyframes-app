@@ -66,7 +66,7 @@ export function ImageUpload({
       <div
         className={`relative w-full overflow-hidden border-2 border-dashed transition-colors ${shapeClass} ${
           isDragging
-            ? "border-violet-400 bg-violet-500/10"
+            ? "border-rose-400 bg-gradient-to-br from-rose-500/10 to-violet-500/5"
             : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.07]"
         } cursor-pointer`}
         onClick={() => !isUploading && inputRef.current?.click()}

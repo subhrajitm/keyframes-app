@@ -30,7 +30,7 @@ function Avatar({ user, size = "sm" }: { user: AppTopbarUser; size?: "sm" | "lg"
       {user.avatarUrl ? (
         <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-violet-600 font-bold text-white">
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-rose-500 to-violet-600 font-bold text-white">
           {initials}
         </div>
       )}
@@ -45,7 +45,7 @@ export function AppTopbar({ user }: AppTopbarProps) {
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-white/[0.08] bg-[#0f0f0f] px-5">
       <Link
         href="/dashboard"
-        className="shrink-0 text-base font-bold tracking-tight text-white transition-opacity hover:opacity-70"
+        className="shrink-0 text-base font-bold tracking-tight transition-opacity hover:opacity-80 bg-gradient-to-r from-rose-400 to-violet-400 bg-clip-text text-transparent"
       >
         Keyframe
       </Link>

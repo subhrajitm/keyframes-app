@@ -227,7 +227,7 @@ function ClipCard({ shot, index, isHovered, onDragStart, onDragOver, onDrop, onD
       onDragEnd={onDragEnd}
       className={`group relative flex shrink-0 cursor-grab flex-col overflow-hidden rounded-lg border transition-all active:cursor-grabbing ${
         isHovered
-          ? "border-violet-500 scale-[1.02]"
+          ? "border-rose-500 scale-[1.02]"
           : "border-white/10 hover:border-white/20"
       }`}
       style={{ width: 128, height: 88 }}

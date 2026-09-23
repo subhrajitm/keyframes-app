@@ -54,7 +54,7 @@ export function CharacterSheetPanel({
       <button
         onClick={generate}
         disabled={isGenerating}
-        className="flex items-center justify-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 py-2 text-xs font-medium text-violet-300 transition-colors hover:border-violet-500/50 hover:bg-violet-500/20 disabled:opacity-40"
+        className="flex items-center justify-center gap-2 rounded-lg border border-rose-500/30 bg-gradient-to-r from-rose-500/10 to-violet-500/5 py-2 text-xs font-medium text-rose-300 transition-colors hover:from-rose-500/20 hover:to-violet-500/10 hover:border-rose-500/50 disabled:opacity-40"
       >
         {isGenerating ? (
           <span className="material-symbols-rounded text-[14px] animate-spin">progress_activity</span>

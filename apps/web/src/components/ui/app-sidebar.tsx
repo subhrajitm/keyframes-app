@@ -26,14 +26,16 @@ interface NavItemProps {
 
 function NavItem({ id, icon, label, activeId, badge, onSectionClick }: NavItemProps) {
   const active = activeId === id;
-  const cls = `flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-colors w-full ${
-    active ? "bg-violet-500/15 text-violet-300" : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
+  const cls = `flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-all w-full ${
+    active
+      ? "bg-gradient-to-r from-rose-500/20 to-violet-500/10"
+      : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
   }`;
-  const iconCls = `material-symbols-rounded text-[16px] ${active ? "text-violet-400" : "text-white/40"}`;
+  const iconCls = `material-symbols-rounded text-[16px] ${active ? "text-rose-400" : "text-white/40"}`;
   const inner = (
     <>
       <span className={iconCls}>{icon}</span>
-      <span>{label}</span>
+      <span className={active ? "bg-gradient-to-r from-rose-300 to-violet-300 bg-clip-text text-transparent" : ""}>{label}</span>
       {badge}
     </>
   );
@@ -80,7 +82,7 @@ export function AppSidebar({ activeId, projectCount = 0, onSectionClick }: AppSi
             onSectionClick={onSectionClick}
             badge={
               item.id === "projects" && projectCount > 0 ? (
-                <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] tabular-nums ${activeId === "projects" ? "bg-violet-500/20 text-violet-300" : "bg-white/[0.06] text-white/30"}`}>
+                <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] tabular-nums ${activeId === "projects" ? "bg-gradient-to-r from-rose-500/25 to-violet-500/15 text-rose-300" : "bg-white/[0.06] text-white/30"}`}>
                   {projectCount}
                 </span>
               ) : undefined
@@ -90,16 +92,16 @@ export function AppSidebar({ activeId, projectCount = 0, onSectionClick }: AppSi
 
         <Link
           href="/gallery"
-          className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-xs font-medium transition-colors ${
+          className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-xs font-medium transition-all ${
             activeId === "gallery"
-              ? "bg-violet-500/15 text-violet-300"
+              ? "bg-gradient-to-r from-rose-500/20 to-violet-500/10"
               : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
           }`}
         >
-          <span className={`material-symbols-rounded text-[16px] ${activeId === "gallery" ? "text-violet-400" : "text-white/40"}`}>
+          <span className={`material-symbols-rounded text-[16px] ${activeId === "gallery" ? "text-rose-400" : "text-white/40"}`}>
             photo_library
           </span>
-          Gallery
+          <span className={activeId === "gallery" ? "bg-gradient-to-r from-rose-300 to-violet-300 bg-clip-text text-transparent" : ""}>Gallery</span>
         </Link>
       </nav>
 

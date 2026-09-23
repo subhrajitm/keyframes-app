@@ -48,9 +48,9 @@
   --input: oklch(1 0 0 / 8%);
   --ring: oklch(0.5 0 0);
 
-  /* Violet accent for primary actions */
-  --violet: oklch(0.541 0.281 293.009);
-  --violet-foreground: oklch(0.985 0 0);
+  /* Rose / Copper accent for primary actions */
+  --rose: oklch(0.645 0.246 16.454);
+  --rose-foreground: oklch(0.985 0 0);
 
   /* Charts */
   --chart-1: oklch(0.87 0 0);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Template } from "@keyframe/types";
@@ -26,9 +26,10 @@ const CATEGORY_BADGE_COLOR: Record<string, string> = {
 interface Props {
   templates: Template[];
   noHeader?: boolean;
+  renderHeader?: (controls: React.ReactNode) => React.ReactNode;
 }
 
-export function TemplateGallery({ templates, noHeader = false }: Props) {
+export function TemplateGallery({ templates, noHeader = false, renderHeader }: Props) {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -36,6 +37,17 @@ export function TemplateGallery({ templates, noHeader = false }: Props) {
   function scrollBy(dir: 1 | -1) {
     scrollRef.current?.scrollBy({ left: dir * 560, behavior: "smooth" });
   }
+
+  const scrollControls = (
+    <div className="flex items-center gap-1">
+      <button onClick={() => scrollBy(-1)} className="flex h-7 w-7 items-center justify-center rounded bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
+        <span className="material-symbols-rounded text-[16px]">chevron_left</span>
+      </button>
+      <button onClick={() => scrollBy(1)} className="flex h-7 w-7 items-center justify-center rounded bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
+        <span className="material-symbols-rounded text-[16px]">chevron_right</span>
+      </button>
+    </div>
+  );
 
   async function handleUse(template: Template) {
     setLoadingId(template.id);
@@ -60,33 +72,17 @@ export function TemplateGallery({ templates, noHeader = false }: Props) {
 
   return (
     <section>
-      {/* Header */}
-      {!noHeader && (
+      {/* Render-prop header (caller owns the row, we inject scroll controls) */}
+      {renderHeader && <div className="mb-3">{renderHeader(scrollControls)}</div>}
+
+      {/* Built-in full header */}
+      {!noHeader && !renderHeader && (
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-xl font-bold text-white">Templates</h2>
             <p className="mt-0.5 text-sm text-white/40">Start from a pre-built film concept</p>
           </div>
-          <div className="flex items-center gap-1">
-            <button onClick={() => scrollBy(-1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
-              <span className="material-symbols-rounded text-[18px]">chevron_left</span>
-            </button>
-            <button onClick={() => scrollBy(1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
-              <span className="material-symbols-rounded text-[18px]">chevron_right</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Scroll controls when header is hidden */}
-      {noHeader && (
-        <div className="mb-4 flex justify-end gap-1">
-          <button onClick={() => scrollBy(-1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
-            <span className="material-symbols-rounded text-[18px]">chevron_left</span>
-          </button>
-          <button onClick={() => scrollBy(1)} className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.06] text-white/40 transition-colors hover:bg-white/10 hover:text-white">
-            <span className="material-symbols-rounded text-[18px]">chevron_right</span>
-          </button>
+          {scrollControls}
         </div>
       )}
 

@@ -85,7 +85,7 @@ export function DashboardShell({ user, projects, templates, initialSection = "ho
                 New {section === "characters" ? "character" : "location"}
               </Button>
             ) : (
-              <Button variant="violet" size="sm" onClick={() => setNewProjectOpen(true)}>
+              <Button variant="rose" size="sm" onClick={() => setNewProjectOpen(true)}>
                 <span className="material-symbols-rounded text-[14px]">add</span>
                 New project
               </Button>
@@ -130,8 +130,14 @@ export function DashboardShell({ user, projects, templates, initialSection = "ho
 
                 {templates.length > 0 && (
                   <div className="mt-7">
-                    <SectionHeader title="Templates" onSeeAll={() => navigateSection("templates")} />
-                    <TemplateGallery templates={templates} noHeader />
+                    <TemplateGallery
+                      templates={templates}
+                      renderHeader={(controls) => (
+                        <SectionHeader title="Templates" onSeeAll={() => navigateSection("templates")}>
+                          {controls}
+                        </SectionHeader>
+                      )}
+                    />
                   </div>
                 )}
               </>
@@ -216,7 +222,7 @@ function EmptyProjects({ onNew }: { onNew: () => void }) {
       <span className="material-symbols-rounded mb-3 text-[40px] text-white/12">movie</span>
       <p className="text-sm font-medium text-white/50">No projects yet</p>
       <p className="mt-1 text-xs text-white/30">Create a project to get started</p>
-      <Button variant="violet" size="sm" className="mt-4" onClick={onNew}>
+      <Button variant="rose" size="sm" className="mt-4" onClick={onNew}>
         <span className="material-symbols-rounded text-[14px]">add</span>
         Create project
       </Button>

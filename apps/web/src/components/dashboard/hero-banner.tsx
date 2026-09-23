@@ -30,7 +30,7 @@ export function HeroBanner() {
 
       <div className="flex flex-col gap-8 p-10 sm:flex-row sm:items-center">
         {/* Decorative visual */}
-        <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-violet-900/60 via-purple-900/40 to-black sm:h-56 sm:w-72">
+        <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-rose-900/60 via-rose-950/40 to-black sm:h-56 sm:w-72">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col gap-2 opacity-30">
               {[...Array(5)].map((_, i) => (
@@ -56,7 +56,7 @@ export function HeroBanner() {
           <form action={createProject}>
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-full bg-violet-600 px-7 py-3 text-base font-semibold hover:bg-violet-500 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-rose-600 px-7 py-3 text-base font-semibold hover:bg-rose-500 transition-colors"
             >
               Get Started
               <span className="material-symbols-rounded text-[18px]">arrow_forward</span>

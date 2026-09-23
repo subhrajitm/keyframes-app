@@ -53,7 +53,7 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const dotCls =
     status === "completed" ? "bg-emerald-400"
     : status === "failed" ? "bg-red-400"
-    : isProcessing ? "animate-pulse bg-violet-400"
+    : isProcessing ? "animate-pulse bg-rose-400"
     : "bg-white/20";
 
   const handleRegen = async (e: React.MouseEvent) => {

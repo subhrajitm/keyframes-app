@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:     "bg-white text-black hover:bg-white/90",
-        violet:      "bg-violet-600 text-white shadow-lg shadow-violet-900/30 hover:bg-violet-500 active:bg-violet-700",
+        rose:      "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-lg shadow-rose-900/40 hover:from-rose-400 hover:to-violet-500 active:opacity-90",
         destructive: "bg-red-600 text-white shadow-sm shadow-red-900/30 hover:bg-red-500 active:bg-red-700",
         outline:     "border border-white/[0.15] bg-white/[0.05] text-white/70 hover:border-white/25 hover:bg-white/[0.08] hover:text-white/90",
         ghost:       "text-white/50 hover:bg-white/[0.05] hover:text-white",

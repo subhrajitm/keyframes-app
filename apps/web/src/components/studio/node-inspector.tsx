@@ -20,7 +20,7 @@ const NODE_LABEL: Record<string, string> = {
 };
 
 const NODE_ACCENT: Record<string, string> = {
-  character: "text-violet-400",
+  character: "text-rose-400",
   location:  "text-green-400",
   prompt:    "text-blue-400",
   imageGen:  "text-orange-400",
@@ -361,7 +361,7 @@ function AudioGenerateButton({ nodeId, data, updateNodeData }: {
     <Button
       variant="ghost"
       size="sm"
-      className="w-full gap-1.5 text-violet-300/70 hover:bg-violet-500/10 hover:text-violet-200 disabled:opacity-40"
+      className="w-full gap-1.5 text-rose-300/70 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-violet-500/5 hover:text-rose-200 disabled:opacity-40"
       onClick={handleGenerate}
       disabled={!data.audioText || isGenerating}
     >

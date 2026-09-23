@@ -19,7 +19,7 @@ export const AudioGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
     >
       {/* Type badge */}
       <div className="mb-2 flex items-center gap-1.5">
-        <span className="material-symbols-rounded text-[13px] text-violet-400">
+        <span className="material-symbols-rounded text-[13px] text-rose-400">
           {audioType === "narration" ? "record_voice_over" : "surround_sound"}
         </span>
         <span className="text-[11px] capitalize text-white/40">{audioType}</span>

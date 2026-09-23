@@ -51,7 +51,7 @@ export function SaveTemplateModal({ open, onClose, projectId, projectTitle }: Sa
       <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-md border border-white/10 bg-[#0d0d1a] p-6 shadow-2xl">
         <div className="mb-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-rounded text-[18px] text-violet-400">library_books</span>
+            <span className="material-symbols-rounded text-[18px] text-rose-400">library_books</span>
             <h2 className="text-sm font-semibold text-white/90">Save as Template</h2>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white/60">
@@ -78,7 +78,7 @@ export function SaveTemplateModal({ open, onClose, projectId, projectTitle }: Sa
                   onClick={() => setCategory(cat)}
                   className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
                     category === cat
-                      ? "border-violet-500 bg-violet-500/10 text-violet-300"
+                      ? "border-rose-500/50 bg-gradient-to-r from-rose-500/15 to-violet-500/10 text-rose-300"
                       : "border-white/10 text-white/40 hover:border-white/20 hover:text-white/60"
                   }`}
                 >
