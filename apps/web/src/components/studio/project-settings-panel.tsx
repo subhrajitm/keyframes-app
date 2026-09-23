@@ -67,8 +67,6 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
   const settings = useProjectStore((s) => s.settings);
   const updateSettings = useProjectStore((s) => s.updateSettings);
 
-  if (!open) return null;
-
   const set = <K extends keyof ProjectSettings>(key: K, val: ProjectSettings[K]) =>
     updateSettings({ [key]: val });
 
@@ -78,9 +76,12 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={onClose}
+      />
 
-      <aside className="fixed right-0 top-0 z-50 flex h-full w-80 flex-col border-l border-white/[0.08] bg-[#0d0d0d] shadow-2xl">
+      <aside className={`fixed right-0 top-0 z-50 flex h-full w-80 flex-col border-l border-white/[0.08] bg-[#0d0d0d] shadow-2xl transition-transform duration-200 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}>
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-5 py-4">
           <p className="text-sm font-semibold text-white/80">Project Settings</p>

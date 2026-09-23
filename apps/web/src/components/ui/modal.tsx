@@ -22,11 +22,11 @@ export function Modal({ open, onClose, children, maxWidth = "max-w-md" }: ModalP
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in-0 duration-150"
       onClick={onClose}
     >
       <div
-        className={cn("w-full rounded border border-white/[0.1] bg-[#141414] p-5 shadow-2xl", maxWidth)}
+        className={cn("w-full rounded border border-white/[0.1] bg-[#141414] p-5 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150", maxWidth)}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

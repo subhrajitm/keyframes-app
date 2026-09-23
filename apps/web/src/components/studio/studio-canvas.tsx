@@ -160,7 +160,9 @@ export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen
         {/* Empty state */}
         {nodes.length === 0 && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <p className="text-sm text-white/15">Use the Director bar above, or press <span className="font-semibold text-white/25">+ Add</span> below</p>
+            <p className="text-sm text-white/20">
+              Open the <span className="bg-gradient-to-r from-rose-400 to-violet-400 bg-clip-text font-semibold text-transparent">Director</span> panel, or press <span className="font-semibold text-white/35">+ Add</span> to place nodes
+            </p>
           </div>
         )}
       </ReactFlow>

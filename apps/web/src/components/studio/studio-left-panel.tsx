@@ -15,9 +15,9 @@ export function StudioLeftPanel({ projectId }: StudioLeftPanelProps) {
   const [tab, setTab] = useState<Tab>("scenes");
 
   return (
-    <div className="flex w-80 shrink-0 flex-col border-r border-white/10 bg-[#111111]">
+    <div className="flex w-72 flex-1 flex-col border-r border-white/10 bg-[#0d0d0d]">
       {/* Tab bar */}
-      <div className="flex shrink-0 border-b border-white/10">
+      <div className="flex shrink-0 border-b border-white/[0.06]">
         <TabButton active={tab === "scenes"} onClick={() => setTab("scenes")} icon="movie" label="Scenes" />
         <TabButton active={tab === "assets"} onClick={() => setTab("assets")} icon="image" label="Assets" />
         <TabButton active={tab === "nodes"} onClick={() => setTab("nodes")} icon="layers" label="Nodes" />
@@ -42,14 +42,15 @@ function TabButton({ active, onClick, icon, label }: {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-1 py-3.5 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
-        active
-          ? "border-b-2 border-white text-white"
-          : "border-b-2 border-transparent text-white/25 hover:text-white/55"
+      className={`relative flex flex-1 flex-col items-center gap-1 py-3.5 text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+        active ? "text-white" : "text-white/25 hover:text-white/55"
       }`}
     >
       <span className="material-symbols-rounded text-[20px]">{icon}</span>
       {label}
+      {active && (
+        <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-rose-500 to-violet-500" />
+      )}
     </button>
   );
 }

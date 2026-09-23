@@ -82,7 +82,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
   };
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-[#111111] px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.08] bg-[#0f0f0f] px-4">
       {/* Left */}
       <div className="flex items-center gap-3">
         <Link
@@ -92,22 +92,23 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
           <span className="material-symbols-rounded text-[18px]">chevron_left</span>
           Dashboard
         </Link>
-        <span className="text-white/20">/</span>
-
         {onToggleDirector && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                className={`h-8 w-8 p-0 transition-colors ${directorOpen ? "text-rose-400 hover:bg-rose-500/10" : "text-white/30 hover:text-white/60"}`}
-                onClick={onToggleDirector}
-              >
-                <span className="material-symbols-rounded text-[18px]">auto_awesome</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{directorOpen ? "Close Director" : "Open Director"}</TooltipContent>
-          </Tooltip>
+          <>
+            <span className="text-white/20">/</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className={`h-8 w-8 p-0 transition-all ${directorOpen ? "bg-gradient-to-r from-rose-500/20 to-violet-500/10 text-rose-300" : "text-white/30 hover:bg-white/[0.06] hover:text-white/60"}`}
+                  onClick={onToggleDirector}
+                >
+                  <span className="material-symbols-rounded text-[18px]">auto_awesome</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{directorOpen ? "Close Director" : "Open Director"}</TooltipContent>
+            </Tooltip>
+          </>
         )}
 
         <span className="text-white/20">/</span>
@@ -141,8 +142,8 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
         )}
 
         {credits !== null && (
-          <span className="flex items-center gap-1.5 rounded border border-white/[0.08] px-3 py-1 text-sm text-white/45">
-            <span className="material-symbols-rounded text-[15px] text-white/25">bolt</span>
+          <span className="flex items-center gap-1.5 rounded border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs text-white/60">
+            <span className="material-symbols-rounded text-[13px] text-amber-400">bolt</span>
             {credits}
           </span>
         )}
@@ -152,7 +153,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
             <Button
               size="sm"
               variant="ghost"
-              className="h-8 w-8 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
+              className="h-8 w-8 p-0 text-white/40 hover:bg-white/[0.06] hover:text-white/70"
               onClick={onSettingsOpen}
             >
               <span className="material-symbols-rounded text-[18px]">settings</span>
@@ -166,7 +167,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
             <Button
               size="sm"
               variant="ghost"
-              className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-rose-400 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-violet-500/5 hover:text-rose-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
+              className={`h-8 gap-1.5 px-3 text-sm transition-all ${isPublic ? "bg-gradient-to-r from-rose-500/15 to-violet-500/8 text-rose-300 hover:from-rose-500/20 hover:to-violet-500/12" : "text-white/40 hover:bg-white/[0.06] hover:text-white/60"}`}
               onClick={handleTogglePublic}
               disabled={isTogglingPublic}
             >
@@ -182,7 +183,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
             <Button
               size="sm"
               variant="ghost"
-              className="h-8 gap-1.5 px-3 text-sm text-white/40 hover:bg-white/5 hover:text-white/60"
+              className="h-8 gap-1.5 px-3 text-sm text-white/40 hover:bg-white/[0.06] hover:text-white/60"
               onClick={onSaveTemplate}
             >
               <span className="material-symbols-rounded text-[18px]">library_books</span>
@@ -194,12 +195,12 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
 
         <Button
           size="sm"
-          variant="ghost"
-          className="h-8 gap-1.5 px-3 text-sm text-rose-300 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-violet-500/5 hover:text-rose-200 disabled:opacity-40"
+          variant="rose"
+          className="h-8 gap-1.5 px-4 text-sm disabled:opacity-40"
           onClick={handleGenerateAll}
           disabled={isGenerating}
         >
-          {isGenerating ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">play_arrow</span>}
+          {isGenerating ? <span className="material-symbols-rounded text-[15px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[15px]">play_arrow</span>}
           {isGenerating ? "Generating…" : "Generate All"}
         </Button>
       </div>

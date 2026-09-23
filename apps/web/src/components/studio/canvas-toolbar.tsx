@@ -49,7 +49,7 @@ export function CanvasToolbar({
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useProjectStore((s) => s.addNode);
 
-  // Close popup when clicking outside
+  // Close popup when clicking outside — capture phase bypasses ReactFlow's stopPropagation
   useEffect(() => {
     if (!addOpen) return;
     const handler = (e: MouseEvent) => {
@@ -57,8 +57,8 @@ export function CanvasToolbar({
         setAddOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handler, true);
+    return () => document.removeEventListener("mousedown", handler, true);
   }, [addOpen]);
 
   const handleAddNode = useCallback(
@@ -81,7 +81,7 @@ export function CanvasToolbar({
 
         {/* ── Add popup ── */}
         {addOpen && (
-          <div className="w-72 overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616] shadow-2xl">
+          <div className="w-72 overflow-hidden rounded-lg border border-white/[0.08] bg-[#0d0d0d] shadow-2xl">
             <div className="border-b border-white/[0.06] px-4 py-3">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">Add to canvas</p>
             </div>
@@ -122,7 +122,7 @@ export function CanvasToolbar({
         )}
 
         {/* ── Toolbar pill ── */}
-        <div className="flex items-center gap-0.5 rounded-lg border border-white/[0.08] bg-[#161616]/90 p-1.5 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center gap-0.5 rounded-lg border border-white/[0.08] bg-[#0d0d0d]/90 p-1.5 shadow-2xl backdrop-blur-xl">
 
           {/* Director toggle */}
           <ToolBtn
@@ -166,7 +166,7 @@ export function CanvasToolbar({
             className={cn(
               "flex h-9 items-center gap-1.5 rounded-md px-4 text-sm font-semibold transition-all",
               addOpen
-                ? "bg-white text-black"
+                ? "bg-gradient-to-r from-rose-500 to-violet-600 text-white border-0"
                 : "border border-white/20 text-white/60 hover:border-white/35 hover:text-white",
             )}
           >
@@ -197,7 +197,7 @@ function ToolBtn({
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-md transition-colors",
         active
-          ? "bg-white/[0.08] text-white"
+          ? "bg-gradient-to-r from-rose-500/20 to-violet-500/10 text-white"
           : "text-white/35 hover:bg-white/[0.06] hover:text-white/70",
       )}
     >

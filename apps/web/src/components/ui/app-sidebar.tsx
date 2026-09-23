@@ -127,7 +127,7 @@ export function AppSidebar({ activeId, projectCount = 0, onSectionClick }: AppSi
       {/* Footer */}
       <div className="mt-auto border-t border-white/[0.08] p-2">
         {logoutConfirmOpen ? (
-          <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
+          <div className="rounded-lg bg-white/[0.04] px-3 py-2.5 animate-in fade-in-0 zoom-in-95 duration-150">
             <p className="mb-2.5 text-[11px] text-white/50">Sign out of Keyframe?</p>
             <div className="flex gap-2">
               <button

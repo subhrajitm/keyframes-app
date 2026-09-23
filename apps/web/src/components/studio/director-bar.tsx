@@ -88,7 +88,7 @@ export function DirectorBar({ projectId, initialDescription, onClose }: Director
     : 'Describe your video… e.g. "A 30-second coffee brand promo, warm cinematic tones, 3 scenes"';
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col border-r border-white/10 bg-[#0d0d0d]">
+    <aside className="flex w-72 flex-1 flex-col border-r border-white/10 bg-[#0d0d0d]">
 
       {/* Panel header */}
       <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
@@ -129,7 +129,7 @@ export function DirectorBar({ projectId, initialDescription, onClose }: Director
       </div>
 
       {/* Input area */}
-      <div className="flex flex-1 flex-col px-3 py-3">
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-3">
         {mode === "script" ? (
           <textarea
             className="nodrag flex-1 resize-none bg-transparent text-sm text-white/70 placeholder:text-white/25 focus:outline-none leading-relaxed"

@@ -54,14 +54,19 @@ export function StudioShell({ projectId, initialTitle, initialIsPublic, initialN
       />
 
       <div className="flex flex-1 overflow-hidden">
-        {directorOpen && (
+        {/* Director sidebar — width transition */}
+        <div className={`flex shrink-0 overflow-hidden transition-[width] duration-200 ease-in-out ${directorOpen ? "w-72" : "w-0"}`}>
           <DirectorBar
             projectId={projectId}
             initialDescription={initialDescription}
             onClose={() => setDirectorOpen(false)}
           />
-        )}
-        {panelOpen && <StudioLeftPanel projectId={projectId} />}
+        </div>
+
+        {/* Asset panel — width transition */}
+        <div className={`flex shrink-0 overflow-hidden transition-[width] duration-200 ease-in-out ${panelOpen ? "w-72" : "w-0"}`}>
+          <StudioLeftPanel projectId={projectId} />
+        </div>
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">
@@ -78,7 +83,10 @@ export function StudioShell({ projectId, initialTitle, initialIsPublic, initialN
         </ReactFlowProvider>
       </div>
 
-      {timelineOpen && <StudioTimeline projectId={projectId} />}
+      {/* Timeline — max-height transition */}
+      <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${timelineOpen ? "max-h-52" : "max-h-0"}`}>
+        <StudioTimeline projectId={projectId} />
+      </div>
 
       <ProjectSettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
