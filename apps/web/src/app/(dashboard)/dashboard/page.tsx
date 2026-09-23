@@ -2,7 +2,17 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ s?: string }>;
+}) {
+  const { s } = await searchParams;
+  const validSections = ["home", "projects", "templates", "characters", "locations"] as const;
+  const initialSection = validSections.includes(s as typeof validSections[number])
+    ? (s as typeof validSections[number])
+    : "home";
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -27,6 +37,7 @@ export default async function DashboardPage() {
 
   return (
     <DashboardShell
+      initialSection={initialSection}
       user={{
         email: user.email ?? "",
         name: profile?.full_name ?? null,

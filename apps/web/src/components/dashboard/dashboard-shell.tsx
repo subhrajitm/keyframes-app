@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ProjectCard } from "./project-card";
 import { TemplateGallery } from "./template-gallery";
 import { NewProjectModal } from "./new-project-modal";
@@ -21,14 +22,22 @@ interface Props {
   user: User;
   projects: Project[];
   templates: Template[];
+  initialSection?: Section;
 }
 
 type Section = "home" | "projects" | "templates" | "characters" | "locations";
 
-export function DashboardShell({ user, projects, templates }: Props) {
+export function DashboardShell({ user, projects, templates, initialSection = "home" }: Props) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [section, setSection] = useState<Section>("home");
+  const [section, setSection] = useState<Section>(initialSection);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
+
+  const navigateSection = useCallback((id: Section) => {
+    setSection(id);
+    const url = id === "home" ? "/dashboard" : `/dashboard?s=${id}`;
+    router.replace(url, { scroll: false });
+  }, [router]);
 
   const filtered = query
     ? projects.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
@@ -44,7 +53,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
         <AppSidebar
           activeId={section}
           projectCount={projects.length}
-          onSectionClick={(id) => setSection(id as Section)}
+          onSectionClick={(id) => navigateSection(id as Section)}
         />
 
         {/* ── Main content ─────────────────────────────────────── */}
@@ -109,7 +118,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
             {/* Home */}
             {!query && section === "home" && (
               <>
-                <SectionHeader title="Recent Projects" onSeeAll={() => setSection("projects")} />
+                <SectionHeader title="Recent Projects" onSeeAll={() => navigateSection("projects")} />
 
                 {projects.length === 0 ? (
                   <EmptyProjects onNew={() => setNewProjectOpen(true)} />
@@ -121,7 +130,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
 
                 {templates.length > 0 && (
                   <div className="mt-7">
-                    <SectionHeader title="Templates" onSeeAll={() => setSection("templates")} />
+                    <SectionHeader title="Templates" onSeeAll={() => navigateSection("templates")} />
                     <TemplateGallery templates={templates} noHeader />
                   </div>
                 )}
