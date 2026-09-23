@@ -25,6 +25,7 @@ interface StudioShellProps {
 export function StudioShell({ projectId, initialTitle, initialIsPublic, initialNodes, initialEdges, initialSettings, initialDescription }: StudioShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
+  const [directorOpen, setDirectorOpen] = useState(true);
   const [panelOpen, setPanelOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
   const supabase = createClient();
@@ -48,17 +49,26 @@ export function StudioShell({ projectId, initialTitle, initialIsPublic, initialN
         onTitleChange={handleTitleChange}
         onSettingsOpen={() => setSettingsOpen(true)}
         onSaveTemplate={() => setSaveTemplateOpen(true)}
+        directorOpen={directorOpen}
+        onToggleDirector={() => setDirectorOpen((o) => !o)}
       />
 
-      <DirectorBar projectId={projectId} initialDescription={initialDescription} />
-
       <div className="flex flex-1 overflow-hidden">
+        {directorOpen && (
+          <DirectorBar
+            projectId={projectId}
+            initialDescription={initialDescription}
+            onClose={() => setDirectorOpen(false)}
+          />
+        )}
         {panelOpen && <StudioLeftPanel projectId={projectId} />}
 
         <ReactFlowProvider>
           <main className="relative flex-1 overflow-hidden">
             <StudioCanvas
               projectId={projectId}
+              directorOpen={directorOpen}
+              onToggleDirector={() => setDirectorOpen((o) => !o)}
               panelOpen={panelOpen}
               onTogglePanel={() => setPanelOpen((o) => !o)}
               timelineOpen={timelineOpen}

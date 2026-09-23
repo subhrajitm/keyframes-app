@@ -32,6 +32,8 @@ interface CanvasToolbarProps {
   onToggleTimeline: () => void;
   panelOpen: boolean;
   onTogglePanel: () => void;
+  directorOpen: boolean;
+  onToggleDirector: () => void;
 }
 
 export function CanvasToolbar({
@@ -39,6 +41,8 @@ export function CanvasToolbar({
   onToggleTimeline,
   panelOpen,
   onTogglePanel,
+  directorOpen,
+  onToggleDirector,
 }: CanvasToolbarProps) {
   const [addOpen, setAddOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,6 +123,16 @@ export function CanvasToolbar({
 
         {/* ── Toolbar pill ── */}
         <div className="flex items-center gap-0.5 rounded-lg border border-white/[0.08] bg-[#161616]/90 p-1.5 shadow-2xl backdrop-blur-xl">
+
+          {/* Director toggle */}
+          <ToolBtn
+            icon="auto_awesome"
+            active={directorOpen}
+            onClick={onToggleDirector}
+            title={directorOpen ? "Hide Director" : "Show Director"}
+          />
+
+          <Sep />
 
           {/* Panel toggle */}
           <ToolBtn

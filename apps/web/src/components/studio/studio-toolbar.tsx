@@ -16,9 +16,11 @@ interface StudioToolbarProps {
   onTitleChange: (title: string) => Promise<void>;
   onSettingsOpen: () => void;
   onSaveTemplate: () => void;
+  directorOpen?: boolean;
+  onToggleDirector?: () => void;
 }
 
-export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false, onTitleChange, onSettingsOpen, onSaveTemplate }: StudioToolbarProps) {
+export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false, onTitleChange, onSettingsOpen, onSaveTemplate, directorOpen, onToggleDirector }: StudioToolbarProps) {
   const [title, setTitle] = useState(initialTitle);
   const [isTitleSaving, setIsTitleSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -90,6 +92,24 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
           <span className="material-symbols-rounded text-[18px]">chevron_left</span>
           Dashboard
         </Link>
+        <span className="text-white/20">/</span>
+
+        {onToggleDirector && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className={`h-8 w-8 p-0 transition-colors ${directorOpen ? "text-rose-400 hover:bg-rose-500/10" : "text-white/30 hover:text-white/60"}`}
+                onClick={onToggleDirector}
+              >
+                <span className="material-symbols-rounded text-[18px]">auto_awesome</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{directorOpen ? "Close Director" : "Open Director"}</TooltipContent>
+          </Tooltip>
+        )}
+
         <span className="text-white/20">/</span>
         <input
           ref={titleRef}

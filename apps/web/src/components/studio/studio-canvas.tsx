@@ -38,9 +38,11 @@ interface StudioCanvasProps {
   onTogglePanel: () => void;
   timelineOpen: boolean;
   onToggleTimeline: () => void;
+  directorOpen: boolean;
+  onToggleDirector: () => void;
 }
 
-export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen, onToggleTimeline }: StudioCanvasProps) {
+export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen, onToggleTimeline, directorOpen, onToggleDirector }: StudioCanvasProps) {
   const {
     nodes,
     edges,
@@ -169,6 +171,8 @@ export function StudioCanvas({ projectId, panelOpen, onTogglePanel, timelineOpen
         onTogglePanel={onTogglePanel}
         timelineOpen={timelineOpen}
         onToggleTimeline={onToggleTimeline}
+        directorOpen={directorOpen}
+        onToggleDirector={onToggleDirector}
       />
 
       {/* Slide-in node inspector overlay */}
