@@ -84,7 +84,7 @@ export function StudioShell({ projectId, initialTitle, initialIsPublic, initialN
       </div>
 
       {/* Timeline — max-height transition */}
-      <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${timelineOpen ? "max-h-52" : "max-h-0"}`}>
+      <div className={`overflow-hidden transition-[max-height] duration-200 ease-in-out ${timelineOpen ? "max-h-40" : "max-h-0"}`}>
         <StudioTimeline projectId={projectId} />
       </div>
 

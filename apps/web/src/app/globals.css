@@ -4,6 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ── Pointer cursor for all interactive elements ─────────────────── */
+button:not(:disabled),
+[role="button"],
+a[href],
+select,
+label[for] {
+  cursor: pointer;
+}
+
 /* ── Material Symbols ────────────────────────────────────────────── */
 .material-symbols-rounded {
   font-family: "Material Symbols Rounded";

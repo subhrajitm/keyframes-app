@@ -119,9 +119,9 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
   const totalCount = orderedShots.length;
 
   return (
-    <div className={`shrink-0 border-t border-white/10 bg-[#0d0d0d] transition-all ${collapsed ? "h-8" : "h-44"}`}>
+    <div className={`shrink-0 border-t border-white/10 bg-[#0d0d0d] transition-all ${collapsed ? "h-11" : "h-36"}`}>
       {/* Header bar */}
-      <div className="flex h-8 items-center justify-between border-b border-white/5 px-3">
+      <div className="flex h-11 items-center justify-between border-b border-white/5 px-3 pr-4">
         <div className="flex items-center gap-2">
           <button onClick={() => setCollapsed((c) => !c)} className="text-white/30 hover:text-white/60">
             {collapsed ? <span className="material-symbols-rounded text-[14px]">expand_less</span> : <span className="material-symbols-rounded text-[14px]">expand_more</span>}
@@ -133,26 +133,28 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
         </div>
 
         {!collapsed && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {/* Music */}
             {settings.musicUrl ? (
-              <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
-                <span className="material-symbols-rounded text-[16px] text-rose-400">music_note</span>
-                <span className="max-w-[100px] truncate text-xs text-white/50">Music added</span>
+              <div className="flex items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 py-0.5">
+                <span className="material-symbols-rounded text-[12px] text-rose-400">music_note</span>
+                <span className="max-w-[80px] truncate text-[10px] text-white/50">Music added</span>
                 <button
                   onClick={() => updateSettings({ musicUrl: undefined })}
                   className="text-white/20 hover:text-white/50"
                 >
-                  <span className="material-symbols-rounded text-[16px]">close</span>
+                  <span className="material-symbols-rounded text-[12px]">close</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => musicInputRef.current?.click()}
                 disabled={isUploadingMusic}
-                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-xs text-white/40 hover:border-rose-500/30 hover:text-rose-300"
+                className="flex items-center gap-1 rounded border border-white/10 px-2 py-0.5 text-[10px] text-white/40 transition-colors hover:border-rose-500/30 hover:text-rose-300"
               >
-                {isUploadingMusic ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">music_note</span>}
+                {isUploadingMusic
+                  ? <span className="material-symbols-rounded text-[12px] animate-spin">progress_activity</span>
+                  : <span className="material-symbols-rounded text-[12px]">music_note</span>}
                 Add music
               </button>
             )}
@@ -160,9 +162,11 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
             <button
               onClick={handleCompose}
               disabled={isComposing || completedCount === 0}
-              className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-gradient-to-r from-rose-500/10 to-violet-500/5 px-3 py-1 text-sm font-medium text-rose-300 hover:from-rose-500/20 hover:to-violet-500/10 disabled:opacity-40"
+              className="flex items-center gap-1 rounded border border-rose-500/30 bg-gradient-to-r from-rose-500/10 to-violet-500/5 px-2 py-0.5 text-[10px] font-medium text-rose-300 transition-colors hover:from-rose-500/20 hover:to-violet-500/10 disabled:opacity-40"
             >
-              {isComposing ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">play_arrow</span>}
+              {isComposing
+                ? <span className="material-symbols-rounded text-[12px] animate-spin">progress_activity</span>
+                : <span className="material-symbols-rounded text-[12px]">play_arrow</span>}
               {isComposing ? "Composing…" : "Compose Film"}
             </button>
           </div>
@@ -180,7 +184,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
 
       {/* Clips strip */}
       {!collapsed && (
-        <div className="flex h-[calc(100%-2rem)] items-start gap-2 overflow-x-auto overflow-y-hidden px-3 py-2">
+        <div className="flex h-[calc(100%-2.75rem)] items-start gap-2 overflow-x-auto overflow-y-hidden px-3 py-2">
           {orderedShots.length === 0 ? (
             <div className="flex flex-1 items-center justify-center text-center">
               <p className="text-xs text-white/30">
