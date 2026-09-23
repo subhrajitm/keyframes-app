@@ -97,6 +97,8 @@ export const DEFAULT_SETTINGS: ProjectSettings = {
 export type KFNode = Node<NodeData, NodeType>;
 export type KFEdge = Edge;
 
+type Snapshot = { nodes: KFNode[]; edges: KFEdge[] };
+
 interface ProjectStore {
   projectId: string;
   nodes: KFNode[];
@@ -105,6 +107,10 @@ interface ProjectStore {
   selectedNodeId: string | null;
   isDirty: boolean;
   isSaving: boolean;
+
+  // History
+  past: Snapshot[];
+  future: Snapshot[];
 
   onNodesChange: (changes: NodeChange<KFNode>[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
@@ -120,6 +126,9 @@ interface ProjectStore {
   revealGraph: (nodes: KFNode[], edges: KFEdge[]) => void;
   markSaved: () => void;
   markSaving: () => void;
+
+  undo: () => void;
+  redo: () => void;
 }
 
 let nodeCounter = 0;
@@ -142,7 +151,15 @@ function defaultDataForType(type: NodeType): NodeData {
 }
 
 export const useProjectStore = create<ProjectStore>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set, get) => {
+
+    // Push current nodes+edges onto the past stack (max 30 entries)
+    const pushHistory = () => {
+      const { nodes, edges, past } = get();
+      set({ past: [{ nodes, edges }, ...past].slice(0, 30), future: [] });
+    };
+
+    return {
     projectId: "",
     nodes: [],
     edges: [],
@@ -150,8 +167,15 @@ export const useProjectStore = create<ProjectStore>()(
     selectedNodeId: null,
     isDirty: false,
     isSaving: false,
+    past: [],
+    future: [],
 
     onNodesChange: (changes) => {
+      // Push history when a drag ends (position change with dragging === false)
+      const dragEnd = changes.some(
+        (c) => c.type === "position" && c.dragging === false
+      );
+      if (dragEnd) pushHistory();
       set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as KFNode[], isDirty: true }));
     },
 
@@ -160,6 +184,7 @@ export const useProjectStore = create<ProjectStore>()(
     },
 
     onConnect: (connection) => {
+      pushHistory();
       set((s) => ({
         edges: addEdge(
           { ...connection, animated: false, style: { stroke: "rgba(255,255,255,0.15)", strokeWidth: 1.5 } },
@@ -170,6 +195,7 @@ export const useProjectStore = create<ProjectStore>()(
     },
 
     addNode: (type, position, extraData) => {
+      pushHistory();
       const id = makeNodeId(type);
       const newNode: KFNode = {
         id, type, position,
@@ -187,6 +213,7 @@ export const useProjectStore = create<ProjectStore>()(
     },
 
     deleteNode: (id) => {
+      pushHistory();
       set((s) => ({
         nodes: s.nodes.filter((n) => n.id !== id),
         edges: s.edges.filter((e) => e.source !== id && e.target !== id),
@@ -241,5 +268,20 @@ export const useProjectStore = create<ProjectStore>()(
 
     markSaved: () => set({ isDirty: false, isSaving: false }),
     markSaving: () => set({ isSaving: true }),
-  }))
+
+    undo: () => {
+      const { past, nodes, edges, future } = get();
+      if (!past.length) return;
+      const [prev, ...rest] = past;
+      set({ nodes: prev.nodes, edges: prev.edges, past: rest, future: [{ nodes, edges }, ...future], isDirty: true });
+    },
+
+    redo: () => {
+      const { future, nodes, edges, past } = get();
+      if (!future.length) return;
+      const [next, ...rest] = future;
+      set({ nodes: next.nodes, edges: next.edges, future: rest, past: [{ nodes, edges }, ...past], isDirty: true });
+    },
+  };
+  })
 );

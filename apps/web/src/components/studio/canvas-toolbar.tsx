@@ -48,6 +48,22 @@ export function CanvasToolbar({
   const containerRef = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useProjectStore((s) => s.addNode);
+  const undo = useProjectStore((s) => s.undo);
+  const redo = useProjectStore((s) => s.redo);
+  const canUndo = useProjectStore((s) => s.past.length > 0);
+  const canRedo = useProjectStore((s) => s.future.length > 0);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+      if (e.key === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
+      if ((e.key === "z" && e.shiftKey) || e.key === "y") { e.preventDefault(); redo(); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [undo, redo]);
 
   // Close popup when clicking outside — capture phase bypasses ReactFlow's stopPropagation
   useEffect(() => {
@@ -154,9 +170,9 @@ export function CanvasToolbar({
 
           <Sep />
 
-          {/* Undo / Redo (visual — history not yet wired) */}
-          <ToolBtn icon="undo" onClick={() => {}} title="Undo" />
-          <ToolBtn icon="redo" onClick={() => {}} title="Redo" />
+          {/* Undo / Redo */}
+          <ToolBtn icon="undo" onClick={undo} title="Undo (⌘Z)" disabled={!canUndo} />
+          <ToolBtn icon="redo" onClick={redo} title="Redo (⌘⇧Z)" disabled={!canRedo} />
 
           <Sep />
 
@@ -184,18 +200,21 @@ function ToolBtn({
   active,
   onClick,
   title,
+  disabled,
 }: {
   icon: string;
   active?: boolean;
   onClick: () => void;
   title?: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
       title={title}
+      disabled={disabled}
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-md transition-colors",
+        "flex h-9 w-9 items-center justify-center rounded-md transition-colors disabled:pointer-events-none disabled:opacity-30",
         active
           ? "bg-gradient-to-r from-rose-500/20 to-violet-500/10 text-white"
           : "text-white/35 hover:bg-white/[0.06] hover:text-white/70",
