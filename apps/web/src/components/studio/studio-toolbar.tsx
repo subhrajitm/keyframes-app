@@ -146,7 +146,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
             <Button
               size="sm"
               variant="ghost"
-              className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
+              className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-rose-400 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-violet-500/5 hover:text-rose-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
               onClick={handleTogglePublic}
               disabled={isTogglingPublic}
             >
@@ -175,7 +175,7 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
         <Button
           size="sm"
           variant="ghost"
-          className="h-8 gap-1.5 px-3 text-sm text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 disabled:opacity-40"
+          className="h-8 gap-1.5 px-3 text-sm text-rose-300 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-violet-500/5 hover:text-rose-200 disabled:opacity-40"
           onClick={handleGenerateAll}
           disabled={isGenerating}
         >

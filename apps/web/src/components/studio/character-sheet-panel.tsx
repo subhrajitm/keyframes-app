@@ -71,7 +71,7 @@ export function CharacterSheetPanel({
             <button
               key={i}
               onClick={() => selectView(url)}
-              className="group relative flex flex-col gap-1 rounded-lg overflow-hidden border border-white/10 hover:border-violet-500/40 transition-colors"
+              className="group relative flex flex-col gap-1 rounded-lg overflow-hidden border border-white/10 hover:border-rose-500/40 transition-colors"
               title={`Use ${VIEW_LABELS[i]} view as primary reference`}
             >
               <img src={url} alt={VIEW_LABELS[i]} className="aspect-[3/4] w-full object-cover" />

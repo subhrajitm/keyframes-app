@@ -137,7 +137,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
             {/* Music */}
             {settings.musicUrl ? (
               <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
-                <span className="material-symbols-rounded text-[16px] text-purple-400">music_note</span>
+                <span className="material-symbols-rounded text-[16px] text-rose-400">music_note</span>
                 <span className="max-w-[100px] truncate text-xs text-white/50">Music added</span>
                 <button
                   onClick={() => updateSettings({ musicUrl: undefined })}
@@ -150,7 +150,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
               <button
                 onClick={() => musicInputRef.current?.click()}
                 disabled={isUploadingMusic}
-                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-xs text-white/40 hover:border-purple-500/30 hover:text-purple-300"
+                className="flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-xs text-white/40 hover:border-rose-500/30 hover:text-rose-300"
               >
                 {isUploadingMusic ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">music_note</span>}
                 Add music
@@ -160,7 +160,7 @@ export function StudioTimeline({ projectId }: StudioTimelineProps) {
             <button
               onClick={handleCompose}
               disabled={isComposing || completedCount === 0}
-              className="flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300 hover:bg-blue-500/20 disabled:opacity-40"
+              className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-gradient-to-r from-rose-500/10 to-violet-500/5 px-3 py-1 text-sm font-medium text-rose-300 hover:from-rose-500/20 hover:to-violet-500/10 disabled:opacity-40"
             >
               {isComposing ? <span className="material-symbols-rounded text-[16px] animate-spin">progress_activity</span> : <span className="material-symbols-rounded text-[16px]">play_arrow</span>}
               {isComposing ? "Composing…" : "Compose Film"}
