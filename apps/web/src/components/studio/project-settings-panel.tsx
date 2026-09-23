@@ -30,6 +30,22 @@ const VIDEO_MODELS: { value: VideoModel; label: string; note?: string }[] = [
   { value: "fal/wan-3",          label: "Wan 3.0",         note: "Budget" },
 ];
 
+const CAMERA_MOTIONS: { value: string; label: string; icon: string }[] = [
+  { value: "static",    label: "Static",    icon: "crop_free" },
+  { value: "zoom-in",   label: "Zoom In",   icon: "zoom_in" },
+  { value: "zoom-out",  label: "Zoom Out",  icon: "zoom_out" },
+  { value: "pan-left",  label: "Pan Left",  icon: "arrow_back" },
+  { value: "pan-right", label: "Pan Right", icon: "arrow_forward" },
+  { value: "tilt-up",   label: "Tilt Up",   icon: "arrow_upward" },
+  { value: "tilt-down", label: "Tilt Down", icon: "arrow_downward" },
+];
+
+const TRANSITIONS: { value: string; label: string; desc: string }[] = [
+  { value: "none",     label: "Cut",     desc: "Hard cut between clips" },
+  { value: "fade",     label: "Fade",    desc: "Fade to black between clips" },
+  { value: "dissolve", label: "Dissolve", desc: "Cross-dissolve overlap" },
+];
+
 const STYLE_PRESETS = [
   "Cinematic", "Documentary", "Commercial",
   "Music video", "Anime", "Noir", "Vintage", "Minimalist",
@@ -198,6 +214,48 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
                   }`}
                 >
                   {preset}
+                </button>
+              ))}
+            </div>
+          </Section>
+
+          {/* Camera Motion */}
+          <Section label="Default Camera Motion">
+            <div className="grid grid-cols-4 gap-1.5">
+              {CAMERA_MOTIONS.map((cm) => (
+                <button
+                  key={cm.value}
+                  onClick={() => set("cameraMotion", cm.value as ProjectSettings["cameraMotion"])}
+                  title={cm.label}
+                  className={`flex flex-col items-center gap-1 rounded border py-2 text-[10px] transition-colors ${
+                    settings.cameraMotion === cm.value
+                      ? "border-white/40 bg-white/[0.07] text-white"
+                      : "border-white/[0.07] text-white/35 hover:border-white/20 hover:text-white/60"
+                  }`}
+                >
+                  <span className="material-symbols-rounded text-[16px]">{cm.icon}</span>
+                  {cm.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-white/20">Applied when Director doesn't specify motion. Kling v3 only.</p>
+          </Section>
+
+          {/* Transitions */}
+          <Section label="Clip Transitions">
+            <div className="flex flex-col gap-1.5">
+              {TRANSITIONS.map((t) => (
+                <button
+                  key={t.value}
+                  onClick={() => set("transition", t.value as ProjectSettings["transition"])}
+                  className={`flex items-center justify-between rounded border px-3 py-2.5 text-left transition-colors ${
+                    settings.transition === t.value
+                      ? "border-white/35 bg-white/[0.06] text-white"
+                      : "border-white/[0.07] text-white/40 hover:border-white/15 hover:text-white/65"
+                  }`}
+                >
+                  <span className="text-xs font-medium">{t.label}</span>
+                  <span className="text-[10px] text-white/25">{t.desc}</span>
                 </button>
               ))}
             </div>

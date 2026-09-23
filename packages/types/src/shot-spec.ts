@@ -35,6 +35,8 @@ export interface ShotSpec {
   styleRefUrl?: string;
 
   style?: string;
+  /** Camera movement for video generation */
+  cameraMotion?: "static" | "zoom-in" | "zoom-out" | "pan-left" | "pan-right" | "tilt-up" | "tilt-down";
   /** Shot duration in seconds */
   duration: number;
   fps: number;

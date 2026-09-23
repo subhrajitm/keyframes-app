@@ -33,13 +33,15 @@ export async function POST(req: NextRequest) {
   // Extract clipOrder and musicUrl from project settings
   const graphState = project.graph_state as Record<string, unknown> | null;
   const settings = graphState?.["settings"] as Record<string, unknown> | undefined;
-  const clipOrder = settings?.["clipOrder"] as string[] | undefined;
-  const musicUrl = settings?.["musicUrl"] as string | undefined;
+  const clipOrder  = settings?.["clipOrder"]  as string[] | undefined;
+  const musicUrl   = settings?.["musicUrl"]   as string | undefined;
+  const transition = settings?.["transition"] as "none" | "fade" | "dissolve" | undefined;
 
   const handle = await tasks.trigger<typeof composeVideoTask>("compose-video", {
     projectId,
     clipOrder,
     musicUrl,
+    transition,
   });
 
   return NextResponse.json({ runId: handle.id });

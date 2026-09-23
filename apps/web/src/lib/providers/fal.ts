@@ -17,6 +17,16 @@ const VIDEO_ENDPOINTS: Record<string, string> = {
   "fal/wan-3":          "fal-ai/wan/v3/image-to-video",
 };
 
+const KLING_CAMERA_MOTION: Record<string, string> = {
+  "static":    "static",
+  "zoom-in":   "zoom_in",
+  "zoom-out":  "zoom_out",
+  "pan-left":  "pan_left",
+  "pan-right": "pan_right",
+  "tilt-up":   "tilt_up",
+  "tilt-down": "tilt_down",
+};
+
 function buildVideoInput(modelKey: string, req: VideoGenerationRequest): Record<string, unknown> {
   const base = { prompt: req.prompt, image_url: req.imageUrl };
   switch (modelKey) {
@@ -24,8 +34,10 @@ function buildVideoInput(modelKey: string, req: VideoGenerationRequest): Record<
       return { ...base, duration: Math.min(req.duration, 10) as 5 | 10, resolution: "768p" };
     case "fal/seedance-2-5":
       return { ...base, duration: Math.max(4, Math.min(req.duration, 15)), resolution: "720p" };
-    case "fal/kling-v3":
-      return { ...base, duration: req.duration, aspect_ratio: "16:9" };
+    case "fal/kling-v3": {
+      const motion = req.cameraMotion ? KLING_CAMERA_MOTION[req.cameraMotion] : undefined;
+      return { ...base, duration: req.duration, aspect_ratio: "16:9", ...(motion ? { camera_movement: motion } : {}) };
+    }
     default:
       return { ...base, duration: req.duration, aspect_ratio: "16:9" };
   }

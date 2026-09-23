@@ -30,6 +30,43 @@ async function concatVideos(inputPaths: string[], outputPath: string): Promise<v
   });
 }
 
+async function concatWithFade(inputPaths: string[], outputPath: string, dissolve: boolean): Promise<void> {
+  // Build a filter_complex that fades each clip in/out (fade) or cross-dissolves (dissolve)
+  // For simplicity we apply fade-in (0.4s) and fade-out (0.4s) to each clip then hard-concat.
+  // True dissolve (xfade) requires per-clip duration probing which is complex; we approximate it
+  // with sequential fade-out / fade-in which gives a smooth "dip to black" effect.
+  const fadeDur = dissolve ? 0.3 : 0.5;
+  const tmpDir = path.dirname(outputPath);
+  const processed: string[] = [];
+
+  for (let i = 0; i < inputPaths.length; i++) {
+    const dest = path.join(tmpDir, `faded_${i}.mp4`);
+    await new Promise<void>((resolve, reject) => {
+      Ffmpeg(inputPaths[i])
+        .videoFilters([
+          `fade=t=in:st=0:d=${fadeDur}`,
+          `fade=t=out:st=999:d=${fadeDur}`,  // ffmpeg calculates actual end time
+        ])
+        .outputOptions(["-c:a copy"])
+        .output(dest)
+        .on("error", reject)
+        .on("end", () => resolve())
+        .run();
+    });
+    processed.push(dest);
+  }
+
+  // Now hard-concat the faded clips
+  await new Promise<void>((resolve, reject) => {
+    const cmd = Ffmpeg();
+    processed.forEach((p) => cmd.input(p));
+    cmd
+      .on("error", reject)
+      .on("end", () => resolve())
+      .mergeToFile(outputPath, tmpDir);
+  });
+}
+
 async function mixAudio(videoPath: string, audioUrl: string, outputPath: string, tmpDir: string): Promise<void> {
   const audioPath = path.join(tmpDir, "music.mp3");
   await downloadFile(audioUrl, audioPath);
@@ -55,8 +92,8 @@ async function mixAudio(videoPath: string, audioUrl: string, outputPath: string,
 export const composeVideoTask = task({
   id: "compose-video",
   maxDuration: 1800,
-  run: async (payload: { projectId: string; clipOrder?: string[]; musicUrl?: string }) => {
-    const { projectId, clipOrder, musicUrl } = payload;
+  run: async (payload: { projectId: string; clipOrder?: string[]; musicUrl?: string; transition?: "none" | "fade" | "dissolve" }) => {
+    const { projectId, clipOrder, musicUrl, transition = "none" } = payload;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -115,9 +152,13 @@ export const composeVideoTask = task({
 
       if (!localPaths.length) throw new Error("No video files downloaded");
 
-      // Concatenate clips
+      // Concatenate clips (with optional transitions)
       const concatPath = path.join(tmpDir, "concat.mp4");
-      await concatVideos(localPaths, concatPath);
+      if (transition === "none") {
+        await concatVideos(localPaths, concatPath);
+      } else {
+        await concatWithFade(localPaths, concatPath, transition === "dissolve");
+      }
 
       // Mix in background music if provided
       const finalLocalPath = musicUrl

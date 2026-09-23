@@ -57,6 +57,10 @@ export interface ProjectSettings {
   videoModel: VideoModel;
   /** URL of a style reference image passed to fal.ai for visual consistency */
   styleRefUrl?: string;
+  /** Default camera motion applied to all shots */
+  cameraMotion: "static" | "zoom-in" | "zoom-out" | "pan-left" | "pan-right" | "tilt-up" | "tilt-down";
+  /** Transition style between clips during composition */
+  transition: "none" | "fade" | "dissolve";
   /** Ordered shot IDs for final composition — set by the Timeline panel */
   clipOrder?: string[];
   /** Background music URL mixed in during compose */
@@ -75,6 +79,8 @@ export const DEFAULT_SETTINGS: ProjectSettings = {
   characterStrength: 0.6,
   imageModel: "fal/flux-pro",
   videoModel: "fal/minimax-h3-max",
+  cameraMotion: "static",
+  transition: "none",
 };
 
 export type KFNode = Node<NodeData, NodeType>;

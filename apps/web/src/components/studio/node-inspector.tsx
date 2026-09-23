@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { toast } from "sonner";
 import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +32,7 @@ interface NodeInspectorProps {
 }
 
 export function NodeInspector({ projectId }: NodeInspectorProps) {
+  const [isEnhancing, setIsEnhancing] = useState(false);
   const selectedNodeId = useProjectStore((s) => s.selectedNodeId);
   const nodes         = useProjectStore((s) => s.nodes);
   const updateNodeData = useProjectStore((s) => s.updateNodeData);
@@ -140,6 +143,33 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
               onChange={(e) => updateNodeData(node.id, { promptText: e.target.value })}
               placeholder="A cinematic close-up of…"
             />
+            <button
+              disabled={!data.promptText || isEnhancing}
+              onClick={async () => {
+                setIsEnhancing(true);
+                try {
+                  const res = await fetch("/api/enhance-prompt", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: data.promptText, mode: "shot" }),
+                  });
+                  const d = await res.json() as { enhanced?: string; error?: string };
+                  if (!res.ok) throw new Error(d.error);
+                  updateNodeData(node.id, { promptText: d.enhanced });
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Enhance failed");
+                } finally {
+                  setIsEnhancing(false);
+                }
+              }}
+              className="flex items-center gap-1.5 self-end rounded-md px-2.5 py-1.5 text-xs text-amber-400/70 transition-colors hover:bg-amber-500/10 hover:text-amber-300 disabled:opacity-30"
+            >
+              {isEnhancing
+                ? <span className="material-symbols-rounded text-[13px] animate-spin">progress_activity</span>
+                : <span className="material-symbols-rounded text-[13px]">auto_fix_high</span>
+              }
+              {isEnhancing ? "Enhancing…" : "Enhance with AI"}
+            </button>
           </Field>
         )}
 

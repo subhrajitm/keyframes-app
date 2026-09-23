@@ -18,6 +18,7 @@ function makeShotSchema(imageModel: ImageModel, videoModel: VideoModel) {
     characterRefs: z.array(z.string()),
     locationRef: z.string().nullable(),
     style: z.string().nullable(),
+    cameraMotion: z.enum(["static", "zoom-in", "zoom-out", "pan-left", "pan-right", "tilt-up", "tilt-down"]),
     duration: z.number().describe("Shot duration in seconds"),
     fps: z.union([z.literal(24), z.literal(30)]),
     aspectRatio: z.enum(["16:9", "9:16", "1:1"]),
@@ -42,7 +43,8 @@ Rules:
 - negativePrompt: exclude blur, overexposure, watermarks, and deformed anatomy (never null)
 - characterRefs: empty array [] if no characters referenced
 - locationRef: null if no location asset applies
-- style: null if no style override`;
+- style: null if no style override
+- cameraMotion: choose deliberately — "zoom-in" for reveals, "pan-left"/"pan-right" for following action, "tilt-up" for grandeur, "zoom-out" for endings, "static" for dialogue/close-ups`;
 }
 
 function buildUserPrompt(input: DirectorInput): string {
@@ -91,6 +93,7 @@ export async function runDirector(input: DirectorInput): Promise<DirectorOutput>
       negativePrompt: shot.negativePrompt ?? undefined,
       locationRef: shot.locationRef ?? undefined,
       style: shot.style ?? undefined,
+      cameraMotion: shot.cameraMotion,
     })),
   }));
 

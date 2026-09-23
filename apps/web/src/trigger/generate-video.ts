@@ -28,6 +28,7 @@ export const generateVideoTask = task({
         duration: shotSpec.duration,
         fps: shotSpec.fps,
         modelId: shotSpec.videoModel,
+        cameraMotion: shotSpec.cameraMotion,
       });
 
       await supabase

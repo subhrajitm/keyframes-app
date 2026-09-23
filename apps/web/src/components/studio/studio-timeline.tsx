@@ -253,9 +253,20 @@ function ClipCard({ shot, index, isHovered, onDragStart, onDragOver, onDrop, onD
         <span className={`absolute right-1 top-1 h-2 w-2 rounded-full ${STATUS_DOT[shot.status]}`} />
       </div>
 
-      {/* Title bar */}
-      <div className="shrink-0 bg-[#0a0a14] px-1.5 py-1">
-        <p className="truncate text-xs text-white/50">{shot.title}</p>
+      {/* Title bar + download */}
+      <div className="flex shrink-0 items-center justify-between bg-[#0a0a14] px-1.5 py-1">
+        <p className="min-w-0 truncate text-xs text-white/50">{shot.title}</p>
+        {(shot.video_url || shot.image_url) && (
+          <a
+            href={shot.video_url ?? shot.image_url ?? ""}
+            download={`${shot.title}.${shot.video_url ? "mp4" : "jpg"}`}
+            onClick={(e) => e.stopPropagation()}
+            className="ml-1 shrink-0 text-white/20 hover:text-white/60 transition-colors"
+            title="Download clip"
+          >
+            <span className="material-symbols-rounded text-[12px]">download</span>
+          </a>
+        )}
       </div>
     </div>
   );

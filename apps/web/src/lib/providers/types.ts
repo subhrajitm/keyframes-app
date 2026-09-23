@@ -18,6 +18,7 @@ export interface VideoGenerationRequest {
   duration: number;
   fps: number;
   modelId: string;
+  cameraMotion?: string;
 }
 
 export interface GenerationResult {
