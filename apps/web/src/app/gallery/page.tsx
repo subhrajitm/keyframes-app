@@ -1,34 +1,49 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { AppTopbar } from "@/components/ui/app-topbar";
+import type { AppTopbarUser } from "@/components/ui/app-topbar";
 
-export const revalidate = 60; // Revalidate every 60s
+export const revalidate = 60;
 
 export default async function GalleryPage() {
   const supabase = await createClient();
 
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("id, title, description, thumbnail_url, updated_at")
-    .eq("is_public", true)
-    .eq("status", "complete")
-    .order("updated_at", { ascending: false })
-    .limit(50);
+  const [{ data: projects }, { data: { user } }] = await Promise.all([
+    supabase
+      .from("projects")
+      .select("id, title, description, thumbnail_url, updated_at")
+      .eq("is_public", true)
+      .eq("status", "complete")
+      .order("updated_at", { ascending: false })
+      .limit(50),
+    supabase.auth.getUser(),
+  ]);
+
+  let topbarUser: AppTopbarUser | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("users")
+      .select("full_name, credits, avatar_url")
+      .eq("id", user.id)
+      .single();
+    if (profile) {
+      topbarUser = {
+        email: user.email ?? "",
+        name: profile.full_name,
+        credits: profile.credits ?? 0,
+        avatarUrl: profile.avatar_url,
+      };
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-black px-6 py-12 text-white">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-10 flex items-end justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Gallery</h1>
-            <p className="mt-1.5 text-sm text-white/40">AI films made with Keyframe</p>
-          </div>
-          <Link
-            href="/dashboard"
-            className="text-sm text-white/30 transition-colors hover:text-white/60"
-          >
-            ← Dashboard
-          </Link>
+    <div className="flex min-h-screen flex-col bg-black text-white">
+      <AppTopbar user={topbarUser} />
+
+      <div className="mx-auto w-full max-w-6xl px-6 py-12">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold">Gallery</h1>
+          <p className="mt-1.5 text-sm text-white/40">AI films made with Keyframe</p>
         </div>
 
         {!projects?.length ? (
@@ -70,7 +85,7 @@ export default async function GalleryPage() {
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="truncate text-sm font-semibold text-white/80 group-hover:text-white transition-colors">
+                    <p className="truncate text-sm font-semibold text-white/80 transition-colors group-hover:text-white">
                       {p.title}
                     </p>
                     {p.description && (

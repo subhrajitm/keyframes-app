@@ -33,9 +33,3 @@ export async function deleteProject(projectId: string): Promise<void> {
   revalidatePath("/dashboard");
   redirect("/dashboard");
 }
-
-export async function logout(): Promise<void> {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/login");
-}

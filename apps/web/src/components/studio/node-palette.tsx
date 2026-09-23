@@ -4,13 +4,13 @@ import { type DragEvent } from "react";
 import type { NodeType } from "@/store/project-store";
 
 const NODE_TYPES: { type: NodeType; icon: string; label: string; description: string; color: string }[] = [
-  { type: "character", icon: "person",     label: "Character", description: "Reference a character", color: "#a855f7" },
-  { type: "location",  icon: "location_on",label: "Location",  description: "Set the scene",         color: "#22c55e" },
-  { type: "prompt",    icon: "edit",        label: "Prompt",    description: "Describe a shot",       color: "#3b82f6" },
-  { type: "imageGen",  icon: "image",       label: "Image Gen", description: "Generate an image",     color: "#f97316" },
-  { type: "videoGen",  icon: "movie",       label: "Video Gen", description: "Animate a frame",       color: "#ef4444" },
-  { type: "output",    icon: "videocam",    label: "Output",    description: "Collect a final clip",  color: "#eab308" },
-  { type: "audioGen",  icon: "mic",         label: "Audio Gen", description: "Generate narration/SFX", color: "#8b5cf6" },
+  { type: "character", icon: "face",            label: "Character", description: "Reference a character",   color: "#a855f7" },
+  { type: "location",  icon: "pin_drop",         label: "Location",  description: "Set the scene location",  color: "#22c55e" },
+  { type: "prompt",    icon: "rate_review",      label: "Prompt",    description: "Write a shot description", color: "#3b82f6" },
+  { type: "imageGen",  icon: "photo_auto_merge", label: "Image Gen", description: "Generate a keyframe",     color: "#f97316" },
+  { type: "videoGen",  icon: "slow_motion_video",label: "Video Gen", description: "Animate the keyframe",    color: "#ef4444" },
+  { type: "output",    icon: "movie_creation",   label: "Output",    description: "Collect the final clip",  color: "#eab308" },
+  { type: "audioGen",  icon: "graphic_eq",       label: "Audio Gen", description: "Generate narration / SFX", color: "#8b5cf6" },
 ];
 
 export function NodePalette() {

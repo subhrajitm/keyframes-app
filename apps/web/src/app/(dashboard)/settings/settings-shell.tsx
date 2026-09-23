@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ProfileForm } from "./profile-form";
+import { AppTopbar } from "@/components/ui/app-topbar";
 import { EmailForm } from "./email-form";
 import { PasswordForm } from "./password-form";
 import { ApiKeysForm } from "./api-keys-form";
@@ -35,18 +35,14 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
   const current = NAV.find((n) => n.id === active)!;
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex h-screen flex-col bg-[#0f0f0f] text-white">
+
+      <AppTopbar user={{ email, name: profile.full_name, credits: profile.credits, avatarUrl: profile.avatar_url }} />
+
+      <div className="flex flex-1 overflow-hidden">
 
       {/* ── Sidebar ─────────────────────────────────────────────── */}
       <aside className="flex w-56 shrink-0 flex-col border-r border-white/[0.06] px-3 py-8">
-        <Link
-          href="/dashboard"
-          className="mb-8 flex items-center gap-2 px-3 text-sm text-white/40 hover:text-white/70 transition-colors"
-        >
-          <span className="material-symbols-rounded text-[18px]">arrow_back</span>
-          Dashboard
-        </Link>
-
         <p className="mb-4 px-3 text-xs font-semibold uppercase tracking-widest text-white/20">
           Settings
         </p>
@@ -74,7 +70,7 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
       </aside>
 
       {/* ── Content ─────────────────────────────────────────────── */}
-      <main className="flex-1 overflow-y-auto px-12 py-12 max-w-2xl">
+      <main className="flex-1 overflow-y-auto bg-[#111111] px-12 py-12 max-w-2xl">
         <h1 className="mb-10 text-2xl font-semibold">{current.label}</h1>
 
         {active === "profile" && (
@@ -142,6 +138,8 @@ export function SettingsShell({ email, isOAuthUser, profile }: Props) {
           </div>
         )}
       </main>
+
+      </div>
     </div>
   );
 }

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { logout } from "@/app/(dashboard)/dashboard/actions";
 import { ProjectCard } from "./project-card";
 import { TemplateGallery } from "./template-gallery";
 import { NewProjectModal } from "./new-project-modal";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
+import { AppTopbar } from "@/components/ui/app-topbar";
 import type { Project, Template } from "@keyframe/types";
 
 interface User {
@@ -27,23 +27,19 @@ type Section = "home" | "projects" | "templates" | "characters" | "locations";
 
 const NAV_ITEMS = [
   { id: "home" as Section,      icon: "home",          label: "Home" },
-  { id: "projects" as Section,  icon: "grid_view",     label: "All Projects" },
-  { id: "templates" as Section, icon: "library_books", label: "Templates" },
+  { id: "projects" as Section,  icon: "video_library", label: "All Projects" },
+  { id: "templates" as Section, icon: "auto_stories",  label: "Templates" },
 ];
 
 const ASSET_ITEMS = [
-  { id: "characters" as Section, icon: "person",    label: "Characters" },
-  { id: "locations" as Section,  icon: "landscape", label: "Locations" },
+  { id: "characters" as Section, icon: "face",         label: "Characters" },
+  { id: "locations" as Section,  icon: "location_on",  label: "Locations" },
 ];
 
 export function DashboardShell({ user, projects, templates }: Props) {
   const [query, setQuery] = useState("");
   const [section, setSection] = useState<Section>("home");
   const [newProjectOpen, setNewProjectOpen] = useState(false);
-
-  const initials = user.name
-    ? user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
-    : (user.email[0]?.toUpperCase() ?? "?");
 
   const filtered = query
     ? projects.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
@@ -52,99 +48,67 @@ export function DashboardShell({ user, projects, templates }: Props) {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#0f0f0f] text-white">
 
-      {/* ── Top bar ──────────────────────────────────────────── */}
-      <header className="flex h-10 shrink-0 items-center gap-4 border-b border-white/[0.08] bg-[#0f0f0f] px-3">
-        <span className="shrink-0 text-sm font-bold tracking-tight text-white">Keyframe</span>
-
-        <div className="ml-auto flex items-center gap-1">
-          <div className="flex items-center gap-1 rounded border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-xs text-white/60">
-            <span className="material-symbols-rounded text-[12px] text-amber-400">bolt</span>
-            {user.credits}
-          </div>
-
-          <Button variant="ghost" size="icon-sm" asChild>
-            <Link href="/settings" title="Settings">
-              <span className="material-symbols-rounded text-[16px]">settings</span>
-            </Link>
-          </Button>
-
-          <form action={logout}>
-            <Button variant="ghost" size="icon-sm" type="submit" title="Sign out">
-              <span className="material-symbols-rounded text-[16px]">logout</span>
-            </Button>
-          </form>
-
-          <Link href="/settings" className="flex h-7 w-7 shrink-0 overflow-hidden rounded ring-1 ring-white/[0.15]">
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-violet-600 text-[11px] font-bold text-white">
-                {initials}
-              </div>
-            )}
-          </Link>
-        </div>
-      </header>
+      <AppTopbar user={{ email: user.email, name: user.name, credits: user.credits, avatarUrl: user.avatarUrl }} />
 
       <div className="flex flex-1 overflow-hidden">
 
         {/* ── Left sidebar ─────────────────────────────────────── */}
-        <aside className="flex w-48 shrink-0 flex-col border-r border-white/[0.08] bg-[#0f0f0f]">
+        <aside className="flex w-56 shrink-0 flex-col border-r border-white/[0.08] bg-[#0f0f0f]">
 
-          <div className="px-3 pt-3 pb-2">
-            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/25">Library</p>
+          <div className="px-4 pt-4 pb-2">
+            <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/25">Library</p>
           </div>
 
-          <nav className="flex flex-col gap-px px-1.5">
+          <nav className="flex flex-col gap-px px-2">
             {NAV_ITEMS.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setSection(item.id)}
-                className={`flex items-center gap-2 rounded px-2 py-1.5 text-left text-xs transition-colors ${
+                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-colors ${
                   section === item.id
-                    ? "bg-violet-500/15 text-violet-300 font-medium"
+                    ? "bg-violet-500/15 text-violet-300"
                     : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
                 }`}
               >
-                <span className={`material-symbols-rounded text-[15px] ${section === item.id ? "text-violet-400" : ""}`}>{item.icon}</span>
+                <span className={`material-symbols-rounded text-[16px] ${section === item.id ? "text-violet-400" : "text-white/40"}`}>{item.icon}</span>
                 <span>{item.label}</span>
                 {item.id === "projects" && projects.length > 0 && (
-                  <span className={`ml-auto text-[10px] ${section === item.id ? "text-violet-400/70" : "text-white/30"}`}>{projects.length}</span>
+                  <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] tabular-nums ${section === item.id ? "bg-violet-500/20 text-violet-300" : "bg-white/[0.06] text-white/30"}`}>{projects.length}</span>
                 )}
               </button>
             ))}
 
             <Link
               href="/gallery"
-              className="flex items-center gap-2 rounded px-2 py-1.5 text-xs text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white/80"
+              className="flex items-center gap-2.5 rounded px-2.5 py-2 text-xs font-medium text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white/85"
             >
-              <span className="material-symbols-rounded text-[15px]">public</span>
+              <span className="material-symbols-rounded text-[16px] text-white/40">photo_library</span>
               Gallery
             </Link>
           </nav>
 
-          <div className="mt-4 px-3 pb-1.5">
-            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/25">Assets</p>
+          <div className="mt-5 px-4 pb-2">
+            <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/25">Assets</p>
           </div>
-          <nav className="flex flex-col gap-px px-1.5">
+          <nav className="flex flex-col gap-px px-2">
             {ASSET_ITEMS.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setSection(item.id)}
-                className={`flex items-center gap-2 rounded px-2 py-1.5 text-left text-xs transition-colors ${
+                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-left text-xs font-medium transition-colors ${
                   section === item.id
-                    ? "bg-violet-500/15 text-violet-300 font-medium"
+                    ? "bg-violet-500/15 text-violet-300"
                     : "text-white/50 hover:bg-white/[0.06] hover:text-white/85"
                 }`}
               >
-                <span className={`material-symbols-rounded text-[15px] ${section === item.id ? "text-violet-400" : ""}`}>{item.icon}</span>
+                <span className={`material-symbols-rounded text-[16px] ${section === item.id ? "text-violet-400" : "text-white/40"}`}>{item.icon}</span>
                 <span>{item.label}</span>
-                <span className="ml-auto text-[10px] text-white/25">0</span>
+                <span className="ml-auto rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-white/25 tabular-nums">0</span>
               </button>
             ))}
           </nav>
 
-          <div className="mt-auto border-t border-white/[0.08] p-2">
+          <div className="mt-auto border-t border-white/[0.08] p-3">
             <Button variant="violet" size="sm" className="w-full" onClick={() => setNewProjectOpen(true)}>
               <span className="material-symbols-rounded text-[14px]">add</span>
               New project
@@ -265,7 +229,7 @@ export function DashboardShell({ user, projects, templates }: Props) {
             {!query && (section === "characters" || section === "locations") && (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <span className="material-symbols-rounded mb-3 text-[40px] text-white/10">
-                  {section === "characters" ? "person" : "landscape"}
+                  {section === "characters" ? "face" : "location_on"}
                 </span>
                 <p className="text-sm font-medium text-white/40 capitalize">{section}</p>
                 <p className="mt-1 text-xs text-white/25">Assets created in Studio appear here.</p>
