@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useProjectStore } from "@/store/project-store";
 import { useCredits } from "@/hooks/use-credits";
 
@@ -126,38 +127,50 @@ export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false
           </span>
         )}
 
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-8 w-8 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
-          onClick={onSettingsOpen}
-          title="Project settings"
-        >
-          <span className="material-symbols-rounded text-[18px]">settings</span>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-white/40 hover:bg-white/5 hover:text-white/70"
+              onClick={onSettingsOpen}
+            >
+              <span className="material-symbols-rounded text-[18px]">settings</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Project settings</TooltipContent>
+        </Tooltip>
 
-        <Button
-          size="sm"
-          variant="ghost"
-          className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
-          onClick={handleTogglePublic}
-          disabled={isTogglingPublic}
-          title={isPublic ? "Public — click to make private" : "Share publicly"}
-        >
-          <span className="material-symbols-rounded text-[18px]">{isPublic ? "public" : "share"}</span>
-          {isPublic ? "Public" : "Share"}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="sm"
+              variant="ghost"
+              className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
+              onClick={handleTogglePublic}
+              disabled={isTogglingPublic}
+            >
+              <span className="material-symbols-rounded text-[18px]">{isPublic ? "public" : "share"}</span>
+              {isPublic ? "Public" : "Share"}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{isPublic ? "Click to make private" : "Publish & copy link"}</TooltipContent>
+        </Tooltip>
 
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-8 gap-1.5 px-3 text-sm text-white/40 hover:bg-white/5 hover:text-white/60"
-          onClick={onSaveTemplate}
-          title="Save as template"
-        >
-          <span className="material-symbols-rounded text-[18px]">library_books</span>
-          Save template
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 gap-1.5 px-3 text-sm text-white/40 hover:bg-white/5 hover:text-white/60"
+              onClick={onSaveTemplate}
+            >
+              <span className="material-symbols-rounded text-[18px]">library_books</span>
+              Save template
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Save project as a reusable template</TooltipContent>
+        </Tooltip>
 
         <Button
           size="sm"

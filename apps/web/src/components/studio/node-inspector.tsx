@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useProjectStore } from "@/store/project-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { CharacterSheetPanel } from "./character-sheet-panel";
 import { LocationBuilderPanel } from "./location-builder-panel";
@@ -63,7 +64,8 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-4">
+      <ScrollArea className="flex-1">
+      <div className="flex flex-col gap-5 p-4">
 
         {/* ── Character ────────────────────────────────────────── */}
         {type === "character" && (
@@ -295,6 +297,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
           <p className="truncate font-mono text-xs text-white/20">{node.id}</p>
         </div>
       </div>
+      </ScrollArea>
 
       {/* Footer */}
       <div className="shrink-0 border-t border-white/10 p-3">

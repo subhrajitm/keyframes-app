@@ -2,6 +2,7 @@
 
 import { useProjectStore, type ProjectSettings } from "@/store/project-store";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { Slider } from "@/components/ui/slider";
 import type { AspectRatio, ImageModel, VideoModel } from "@keyframe/types";
 
 interface ProjectSettingsPanelProps {
@@ -183,20 +184,19 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
                 onChange={(v) => set("shotDuration", v)}
               />
               <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] uppercase tracking-widest text-white/25">Char. strength</span>
-                <div className="flex flex-col gap-1">
-                  <input
-                    type="range"
-                    min={0.1} max={1.0} step={0.05}
-                    value={settings.characterStrength}
-                    onChange={(e) => set("characterStrength", parseFloat(e.target.value))}
-                    className="w-full accent-white"
-                  />
-                  <div className="flex justify-between text-[10px] text-white/25">
-                    <span>Loose</span>
-                    <span className="text-white/50">{settings.characterStrength.toFixed(2)}</span>
-                    <span>Strict</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-widest text-white/25">Char. strength</span>
+                  <span className="text-[10px] text-white/50">{settings.characterStrength.toFixed(2)}</span>
+                </div>
+                <Slider
+                  min={0.1} max={1.0} step={0.05}
+                  value={[settings.characterStrength]}
+                  onValueChange={([v]) => set("characterStrength", v)}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-white/25">
+                  <span>Loose</span>
+                  <span>Strict</span>
                 </div>
               </div>
             </div>
