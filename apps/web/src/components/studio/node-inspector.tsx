@@ -137,7 +137,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
         {type === "prompt" && (
           <Field label="Shot description">
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-white placeholder:text-white/25 focus:border-blue-500/50 focus:outline-none leading-relaxed"
+              className="w-full resize-none rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none focus:ring-1 focus:ring-white/15 leading-relaxed"
               rows={6}
               value={data.promptText ?? ""}
               onChange={(e) => updateNodeData(node.id, { promptText: e.target.value })}
@@ -243,7 +243,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
                 <select
                   value={(data.audioVoice as string) ?? "af_sky"}
                   onChange={(e) => updateNodeData(node.id, { audioVoice: e.target.value })}
-                  className="w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none"
+                  className="w-full rounded border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white focus:border-white/25 focus:outline-none focus:ring-1 focus:ring-white/15"
                 >
                   {["af_sky", "af_bella", "am_adam", "am_echo", "bf_emma", "bm_george"].map((v) => (
                     <option key={v} value={v}>{v}</option>
@@ -255,7 +255,7 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
             <Field label={data.audioType === "narration" ? "Script" : "Describe the sound"}>
               <textarea
                 rows={4}
-                className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-white placeholder:text-white/25 focus:border-violet-500/50 focus:outline-none leading-relaxed"
+                className="w-full resize-none rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none focus:ring-1 focus:ring-white/15 leading-relaxed"
                 value={(data.audioText as string) ?? ""}
                 onChange={(e) => updateNodeData(node.id, { audioText: e.target.value })}
                 placeholder={
