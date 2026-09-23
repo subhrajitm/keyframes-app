@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createProject, logout } from "@/app/(dashboard)/dashboard/actions";
+import { logout } from "@/app/(dashboard)/dashboard/actions";
 import { ProjectCard } from "./project-card";
 import { TemplateGallery } from "./template-gallery";
+import { NewProjectModal } from "./new-project-modal";
 import type { Project, Template } from "@keyframe/types";
 
 interface User {
@@ -39,6 +40,7 @@ const TRY_CHIPS = [
 export function DashboardShell({ user, projects, templates }: Props) {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"projects" | "templates">("projects");
+  const [newProjectOpen, setNewProjectOpen] = useState(false);
 
   const filtered = query
     ? projects.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
@@ -131,15 +133,13 @@ export function DashboardShell({ user, projects, templates }: Props) {
               </button>
             )}
           </div>
-          <form action={createProject}>
-            <button
-              type="submit"
-              className="flex items-center gap-2 rounded border border-white/20 px-5 py-3 text-sm font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
-            >
-              <span className="material-symbols-rounded text-[18px]">add</span>
-              New project
-            </button>
-          </form>
+          <button
+            onClick={() => setNewProjectOpen(true)}
+            className="flex items-center gap-2 rounded border border-white/20 px-5 py-3 text-sm font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
+          >
+            <span className="material-symbols-rounded text-[18px]">add</span>
+            New project
+          </button>
         </div>
 
         {/* ── Try: chips ───────────────────────────────────────── */}
@@ -219,17 +219,15 @@ export function DashboardShell({ user, projects, templates }: Props) {
             {activeTab === "projects" && (
               <section className="pt-6">
                 <div className="mb-5 flex justify-end">
-                  <form action={createProject}>
-                    <button
-                      type="submit"
-                      className="text-xs text-white/30 transition-colors hover:text-white/60"
-                    >
-                      + New project
-                    </button>
-                  </form>
+                  <button
+                    onClick={() => setNewProjectOpen(true)}
+                    className="text-xs text-white/30 transition-colors hover:text-white/60"
+                  >
+                    + New project
+                  </button>
                 </div>
                 {projects.length === 0 ? (
-                  <EmptyProjects />
+                  <EmptyProjects onNew={() => setNewProjectOpen(true)} />
                 ) : (
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
@@ -247,25 +245,24 @@ export function DashboardShell({ user, projects, templates }: Props) {
           </>
         )}
       </main>
+      <NewProjectModal open={newProjectOpen} onClose={() => setNewProjectOpen(false)} />
     </div>
   );
 }
 
-function EmptyProjects() {
+function EmptyProjects({ onNew }: { onNew: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center rounded border border-white/[0.06] bg-white/[0.01] py-24 text-center">
       <span className="material-symbols-rounded mb-4 text-[48px] text-white/[0.07]">movie</span>
       <p className="text-base font-medium text-white/40">No projects yet</p>
       <p className="mt-1 text-sm text-white/20">Create a project or pick a template from the Templates tab</p>
-      <form action={createProject} className="mt-6">
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white/60 transition-colors hover:border-white/35 hover:text-white"
-        >
-          <span className="material-symbols-rounded text-[18px]">add</span>
-          Create your first project
-        </button>
-      </form>
+      <button
+        onClick={onNew}
+        className="mt-6 inline-flex items-center gap-2 rounded border border-white/20 px-5 py-2.5 text-sm font-medium text-white/60 transition-colors hover:border-white/35 hover:text-white"
+      >
+        <span className="material-symbols-rounded text-[18px]">add</span>
+        Create your first project
+      </button>
     </div>
   );
 }
