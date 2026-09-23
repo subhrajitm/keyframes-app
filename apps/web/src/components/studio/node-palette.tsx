@@ -10,6 +10,7 @@ const NODE_TYPES: { type: NodeType; icon: string; label: string; description: st
   { type: "imageGen",  icon: "image",       label: "Image Gen", description: "Generate an image",     color: "#f97316" },
   { type: "videoGen",  icon: "movie",       label: "Video Gen", description: "Animate a frame",       color: "#ef4444" },
   { type: "output",    icon: "videocam",    label: "Output",    description: "Collect a final clip",  color: "#eab308" },
+  { type: "audioGen",  icon: "mic",         label: "Audio Gen", description: "Generate narration/SFX", color: "#8b5cf6" },
 ];
 
 export function NodePalette() {

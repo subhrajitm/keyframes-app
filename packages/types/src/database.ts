@@ -46,6 +46,7 @@ export type Database = {
           thumbnail_url: string | null;
           graph_state: Json | null;
           status: "draft" | "generating" | "complete";
+          is_public: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -57,6 +58,7 @@ export type Database = {
           thumbnail_url?: string | null;
           graph_state?: Json | null;
           status?: "draft" | "generating" | "complete";
+          is_public?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -66,6 +68,7 @@ export type Database = {
           thumbnail_url?: string | null;
           graph_state?: Json | null;
           status?: "draft" | "generating" | "complete";
+          is_public?: boolean;
           updated_at?: string;
         };
         Relationships: [];
@@ -179,6 +182,7 @@ export type Database = {
           status: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
           image_url: string | null;
           video_url: string | null;
+          variation_urls: string[];
           error: string | null;
           trigger_run_id: string | null;
           created_at: string;
@@ -195,6 +199,7 @@ export type Database = {
           status?: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
           image_url?: string | null;
           video_url?: string | null;
+          variation_urls?: string[];
           error?: string | null;
           trigger_run_id?: string | null;
           created_at?: string;
@@ -208,6 +213,7 @@ export type Database = {
           status?: "idle" | "image_pending" | "image_processing" | "video_pending" | "video_processing" | "completed" | "failed";
           image_url?: string | null;
           video_url?: string | null;
+          variation_urls?: string[];
           error?: string | null;
           trigger_run_id?: string | null;
           updated_at?: string;

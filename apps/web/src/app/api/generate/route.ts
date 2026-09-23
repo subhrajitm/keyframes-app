@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
   const shotDuration       = settings?.["shotDuration"]       as number | undefined;
   const fps                = settings?.["fps"]                as 24 | 30 | undefined;
   const cameraMotion       = settings?.["cameraMotion"]       as ShotSpec["cameraMotion"] | undefined;
+  const numVariations      = settings?.["numVariations"]      as number | undefined;
 
   // Fetch idle shots
   let query = supabase
@@ -109,6 +110,7 @@ export async function POST(req: NextRequest) {
       ...(shotDuration      ? { duration: shotDuration } : {}),
       ...(fps               ? { fps }                : {}),
       ...(cameraMotion      ? { cameraMotion }        : {}),
+      ...(numVariations     ? { numVariations }       : {}),
     };
 
     await supabase

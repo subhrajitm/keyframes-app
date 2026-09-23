@@ -8,8 +8,8 @@ export interface ImageGenerationRequest {
   styleRefUrl?: string;
   style?: string;
   modelId: string;
-  /** IP-adapter scale for character reference (0.1–1.0) */
   characterStrength?: number;
+  numVariations?: number;
 }
 
 export interface VideoGenerationRequest {
@@ -21,12 +21,21 @@ export interface VideoGenerationRequest {
   cameraMotion?: string;
 }
 
+export interface AudioGenerationRequest {
+  text: string;
+  type: "narration" | "ambient";
+  voice?: string;
+  durationSeconds?: number;
+}
+
 export interface GenerationResult {
   url: string;
+  urls?: string[];
   metadata?: Record<string, unknown>;
 }
 
 export interface AIProvider {
   generateImage(req: ImageGenerationRequest): Promise<GenerationResult>;
   generateVideo(req: VideoGenerationRequest): Promise<GenerationResult>;
+  generateAudio?(req: AudioGenerationRequest): Promise<GenerationResult>;
 }

@@ -1,5 +1,5 @@
 import { fal } from "@fal-ai/client";
-import type { AIProvider, ImageGenerationRequest, VideoGenerationRequest, GenerationResult } from "./types";
+import type { AIProvider, ImageGenerationRequest, VideoGenerationRequest, AudioGenerationRequest, GenerationResult } from "./types";
 
 // Dimensions keyed by aspectRatio then resolution
 const DIMS: Record<string, Record<"720p" | "1080p", { width: number; height: number }>> = {
@@ -50,12 +50,13 @@ export class FalProvider implements AIProvider {
 
   async generateImage(req: ImageGenerationRequest): Promise<GenerationResult> {
     const modelId = req.modelId.replace("fal/", "fal-ai/");
+    const numImages = Math.max(1, Math.min(req.numVariations ?? 1, 4));
 
     const input: Record<string, unknown> = {
       prompt: req.prompt,
       negative_prompt: req.negativePrompt,
       image_size: { width: req.width, height: req.height },
-      num_images: 1,
+      num_images: numImages,
       enable_safety_checker: true,
     };
 
@@ -70,10 +71,10 @@ export class FalProvider implements AIProvider {
     }
 
     const result = await fal.run(modelId, { input }) as { images?: Array<{ url: string }> };
-    const url = result?.images?.[0]?.url;
-    if (!url) throw new Error("fal.ai returned no image URL");
+    const urls = result?.images?.map((i) => i.url) ?? [];
+    if (!urls.length) throw new Error("fal.ai returned no image URL");
 
-    return { url, metadata: { model: req.modelId } };
+    return { url: urls[0], urls, metadata: { model: req.modelId } };
   }
 
   async generateVideo(req: VideoGenerationRequest): Promise<GenerationResult> {
@@ -85,6 +86,31 @@ export class FalProvider implements AIProvider {
     if (!url) throw new Error("fal.ai returned no video URL");
 
     return { url, metadata: { model: req.modelId, endpoint } };
+  }
+
+  async generateAudio(req: AudioGenerationRequest): Promise<GenerationResult> {
+    if (req.type === "narration") {
+      const result = await fal.run("fal-ai/kokoro", {
+        input: {
+          text: req.text,
+          voice: req.voice ?? "af_sky",
+        },
+      }) as { audio?: { url: string } };
+      const url = result?.audio?.url;
+      if (!url) throw new Error("fal.ai returned no audio URL");
+      return { url, metadata: { type: "narration", voice: req.voice } };
+    } else {
+      const result = await fal.run("fal-ai/stable-audio", {
+        input: {
+          prompt: req.text,
+          seconds_total: req.durationSeconds ?? 10,
+          steps: 100,
+        },
+      }) as { audio_file?: { url: string } };
+      const url = result?.audio_file?.url;
+      if (!url) throw new Error("fal.ai returned no audio URL");
+      return { url, metadata: { type: "ambient" } };
+    }
   }
 }
 

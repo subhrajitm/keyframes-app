@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/store/project-store";
 import { useCredits } from "@/hooks/use-credits";
@@ -10,18 +11,45 @@ import { useCredits } from "@/hooks/use-credits";
 interface StudioToolbarProps {
   projectId: string;
   initialTitle: string;
+  initialIsPublic?: boolean;
   onTitleChange: (title: string) => Promise<void>;
   onSettingsOpen: () => void;
   onSaveTemplate: () => void;
 }
 
-export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettingsOpen, onSaveTemplate }: StudioToolbarProps) {
+export function StudioToolbar({ projectId, initialTitle, initialIsPublic = false, onTitleChange, onSettingsOpen, onSaveTemplate }: StudioToolbarProps) {
   const [title, setTitle] = useState(initialTitle);
   const [isTitleSaving, setIsTitleSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isPublic, setIsPublic] = useState(initialIsPublic);
+  const [isTogglingPublic, setIsTogglingPublic] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const { isDirty, isSaving } = useProjectStore();
   const credits = useCredits();
+
+  const handleTogglePublic = async () => {
+    setIsTogglingPublic(true);
+    const next = !isPublic;
+    try {
+      const res = await fetch(`/api/projects/${projectId}/visibility`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_public: next }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setIsPublic(next);
+      if (next) {
+        await navigator.clipboard.writeText(`${window.location.origin}/p/${projectId}`);
+        toast.success("Project is now public — link copied!");
+      } else {
+        toast.success("Project is now private");
+      }
+    } catch {
+      toast.error("Failed to update visibility");
+    } finally {
+      setIsTogglingPublic(false);
+    }
+  };
 
   const handleTitleBlur = async () => {
     if (title !== initialTitle && title.trim()) {
@@ -106,6 +134,18 @@ export function StudioToolbar({ projectId, initialTitle, onTitleChange, onSettin
           title="Project settings"
         >
           <span className="material-symbols-rounded text-[18px]">settings</span>
+        </Button>
+
+        <Button
+          size="sm"
+          variant="ghost"
+          className={`h-8 gap-1.5 px-3 text-sm transition-colors ${isPublic ? "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300" : "text-white/40 hover:bg-white/5 hover:text-white/60"}`}
+          onClick={handleTogglePublic}
+          disabled={isTogglingPublic}
+          title={isPublic ? "Public — click to make private" : "Share publicly"}
+        >
+          <span className="material-symbols-rounded text-[18px]">{isPublic ? "public" : "share"}</span>
+          {isPublic ? "Public" : "Share"}
         </Button>
 
         <Button

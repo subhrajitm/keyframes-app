@@ -28,8 +28,9 @@ export function ProjectCard({ project }: { project: Project }) {
     <div className={`group relative flex flex-col overflow-hidden rounded border border-white/[0.08] bg-[#111111] transition-colors hover:border-white/20 ${menuOpen ? "border-white/20" : ""}`}>
 
       {/* ── Thumbnail ── */}
-      <Link href={`/studio/${project.id}`} className="block">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-white/[0.025]">
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-white/[0.025]">
+        {/* Link covers the thumbnail area — sibling to the menu, not a wrapper */}
+        <Link href={`/studio/${project.id}`} className="absolute inset-0 z-0">
           {project.thumbnail_url && isVideo ? (
             <video src={project.thumbnail_url} className="h-full w-full object-cover" muted loop autoPlay playsInline />
           ) : project.thumbnail_url ? (
@@ -39,21 +40,22 @@ export function ProjectCard({ project }: { project: Project }) {
               <span className="material-symbols-rounded text-[36px] text-white/[0.06]">movie</span>
             </div>
           )}
+        </Link>
 
-          {/* Status badge — top left */}
-          {project.status === "generating" && (
-            <div className="absolute left-2.5 top-2.5 flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 backdrop-blur-sm">
-              <span className="material-symbols-rounded text-[10px] text-amber-400">progress_activity</span>
-              <span className="text-[10px] font-semibold text-amber-400">Generating</span>
-            </div>
-          )}
+        {/* Status badge — top left */}
+        {project.status === "generating" && (
+          <div className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1 rounded bg-amber-500/20 px-2 py-0.5 backdrop-blur-sm">
+            <span className="material-symbols-rounded text-[10px] text-amber-400">progress_activity</span>
+            <span className="text-[10px] font-semibold text-amber-400">Generating</span>
+          </div>
+        )}
 
-          {/* Three-dot menu — top right */}
+        {/* Three-dot menu — sits above the Link as a sibling, not inside it */}
+        <div className="absolute right-2 top-2 z-10">
           <DropdownMenu onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                onClick={(e) => e.stopPropagation()}
-                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/50 opacity-0 backdrop-blur-sm transition-all hover:bg-black/70 hover:text-white group-hover:opacity-100"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white/50 opacity-0 backdrop-blur-sm transition-all hover:bg-black/70 hover:text-white group-hover:opacity-100"
               >
                 <span className="material-symbols-rounded text-[16px]">more_horiz</span>
               </button>
@@ -84,7 +86,7 @@ export function ProjectCard({ project }: { project: Project }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </Link>
+      </div>
 
       {/* ── Delete confirmation ── */}
       {confirmOpen && (

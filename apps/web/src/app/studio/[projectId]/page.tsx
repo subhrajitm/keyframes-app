@@ -41,6 +41,7 @@ export default async function StudioPage({ params }: StudioPageProps) {
     <StudioShell
       projectId={project.id}
       initialTitle={project.title}
+      initialIsPublic={project.is_public}
       initialNodes={nodes}
       initialEdges={edges}
       initialSettings={settings}

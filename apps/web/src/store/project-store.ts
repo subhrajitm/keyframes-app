@@ -20,7 +20,8 @@ export type NodeType =
   | "prompt"
   | "imageGen"
   | "videoGen"
-  | "output";
+  | "output"
+  | "audioGen";
 
 export interface NodeData extends Record<string, unknown> {
   label: string;
@@ -36,6 +37,10 @@ export interface NodeData extends Record<string, unknown> {
   generationStatus?: "idle" | "pending" | "processing" | "completed" | "failed";
   outputUrl?: string;
   clipOrder?: number;
+  audioText?: string;
+  audioType?: "narration" | "ambient";
+  audioVoice?: string;
+  audioUrl?: string;
 }
 
 export interface ProjectSettings {
@@ -61,6 +66,10 @@ export interface ProjectSettings {
   cameraMotion: "static" | "zoom-in" | "zoom-out" | "pan-left" | "pan-right" | "tilt-up" | "tilt-down";
   /** Transition style between clips during composition */
   transition: "none" | "fade" | "dissolve";
+  /** Post-processing VFX filter applied to the final composed video */
+  vfxEffect: "none" | "film-grain" | "vignette" | "warm" | "cool" | "noir" | "cinematic" | "letterbox";
+  /** Number of image variations to generate per shot */
+  numVariations: 1 | 2 | 3 | 4;
   /** Ordered shot IDs for final composition — set by the Timeline panel */
   clipOrder?: string[];
   /** Background music URL mixed in during compose */
@@ -81,6 +90,8 @@ export const DEFAULT_SETTINGS: ProjectSettings = {
   videoModel: "fal/minimax-h3-max",
   cameraMotion: "static",
   transition: "none",
+  vfxEffect: "none",
+  numVariations: 1,
 };
 
 export type KFNode = Node<NodeData, NodeType>;
@@ -125,6 +136,7 @@ function defaultDataForType(type: NodeType): NodeData {
     imageGen: { label: "Image Gen", generationStatus: "idle" },
     videoGen: { label: "Video Gen", generationStatus: "idle" },
     output: { label: "Output", clipOrder: 0 },
+    audioGen: { label: "Audio Gen", audioType: "narration", audioText: "" },
   };
   return defaults[type];
 }

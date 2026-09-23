@@ -30,6 +30,17 @@ const VIDEO_MODELS: { value: VideoModel; label: string; note?: string }[] = [
   { value: "fal/wan-3",          label: "Wan 3.0",         note: "Budget" },
 ];
 
+const VFX_EFFECTS: { value: string; label: string; icon: string }[] = [
+  { value: "none",       label: "Off",       icon: "block" },
+  { value: "film-grain", label: "Film Grain", icon: "grain" },
+  { value: "vignette",   label: "Vignette",  icon: "vignette" },
+  { value: "warm",       label: "Warm",      icon: "wb_sunny" },
+  { value: "cool",       label: "Cool",      icon: "ac_unit" },
+  { value: "noir",       label: "Noir",      icon: "tonality" },
+  { value: "cinematic",  label: "Cinematic", icon: "movie_filter" },
+  { value: "letterbox",  label: "Letterbox", icon: "crop_16_9" },
+];
+
 const CAMERA_MOTIONS: { value: string; label: string; icon: string }[] = [
   { value: "static",    label: "Static",    icon: "crop_free" },
   { value: "zoom-in",   label: "Zoom In",   icon: "zoom_in" },
@@ -217,6 +228,50 @@ export function ProjectSettingsPanel({ open, onClose }: ProjectSettingsPanelProp
                 </button>
               ))}
             </div>
+          </Section>
+
+          {/* Variations */}
+          <Section label="Image Variations">
+            <div className="flex gap-2">
+              {([1, 2, 3, 4] as const).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => set("numVariations", n)}
+                  className={`flex-1 rounded border py-2 text-xs font-medium transition-colors ${
+                    settings.numVariations === n
+                      ? "border-white/40 bg-white/[0.07] text-white"
+                      : "border-white/[0.07] text-white/35 hover:border-white/20 hover:text-white/60"
+                  }`}
+                >
+                  {n}×
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-white/20">
+              Generate {settings.numVariations} image{settings.numVariations > 1 ? "s" : ""} per shot — pick your favourite
+            </p>
+          </Section>
+
+          {/* VFX */}
+          <Section label="VFX Effect">
+            <div className="grid grid-cols-4 gap-1.5">
+              {VFX_EFFECTS.map((vfx) => (
+                <button
+                  key={vfx.value}
+                  onClick={() => set("vfxEffect", vfx.value as ProjectSettings["vfxEffect"])}
+                  title={vfx.label}
+                  className={`flex flex-col items-center gap-1 rounded border py-2 text-[10px] transition-colors ${
+                    settings.vfxEffect === vfx.value
+                      ? "border-white/40 bg-white/[0.07] text-white"
+                      : "border-white/[0.07] text-white/35 hover:border-white/20 hover:text-white/60"
+                  }`}
+                >
+                  <span className="material-symbols-rounded text-[16px]">{vfx.icon}</span>
+                  {vfx.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-white/20">Applied to the final composed video</p>
           </Section>
 
           {/* Camera Motion */}

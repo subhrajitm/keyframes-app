@@ -19,6 +19,30 @@ async function downloadFile(url: string, dest: string): Promise<void> {
   });
 }
 
+const VFX_FILTERS: Record<string, string> = {
+  "film-grain": "noise=alls=15:allf=t+u",
+  "vignette":   "vignette=PI/5",
+  "warm":       "colorbalance=rs=0.1:gs=0.05:bs=-0.1",
+  "cool":       "colorbalance=rs=-0.1:gs=0:bs=0.15",
+  "noir":       "hue=s=0",
+  "cinematic":  "colorbalance=rs=0.05:bs=-0.05,vignette=PI/5",
+  "letterbox":  "pad=iw:ceil(ih*1.3334/2)*2:0:(oh-ih)/2:black",
+};
+
+async function applyVfx(inputPath: string, outputPath: string, effect: string): Promise<void> {
+  const filter = VFX_FILTERS[effect];
+  if (!filter) { await fs.copyFile(inputPath, outputPath); return; }
+  return new Promise((resolve, reject) => {
+    Ffmpeg(inputPath)
+      .videoFilters(filter)
+      .outputOptions(["-c:a copy"])
+      .output(outputPath)
+      .on("error", reject)
+      .on("end", () => resolve())
+      .run();
+  });
+}
+
 async function concatVideos(inputPaths: string[], outputPath: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const cmd = Ffmpeg();
@@ -92,8 +116,8 @@ async function mixAudio(videoPath: string, audioUrl: string, outputPath: string,
 export const composeVideoTask = task({
   id: "compose-video",
   maxDuration: 1800,
-  run: async (payload: { projectId: string; clipOrder?: string[]; musicUrl?: string; transition?: "none" | "fade" | "dissolve" }) => {
-    const { projectId, clipOrder, musicUrl, transition = "none" } = payload;
+  run: async (payload: { projectId: string; clipOrder?: string[]; musicUrl?: string; transition?: "none" | "fade" | "dissolve"; vfxEffect?: string }) => {
+    const { projectId, clipOrder, musicUrl, transition = "none", vfxEffect = "none" } = payload;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -160,13 +184,21 @@ export const composeVideoTask = task({
         await concatWithFade(localPaths, concatPath, transition === "dissolve");
       }
 
+      // Apply VFX filter if selected
+      const postVfxPath = vfxEffect && vfxEffect !== "none"
+        ? path.join(tmpDir, "vfx.mp4")
+        : concatPath;
+      if (vfxEffect && vfxEffect !== "none") {
+        await applyVfx(concatPath, postVfxPath, vfxEffect);
+      }
+
       // Mix in background music if provided
       const finalLocalPath = musicUrl
         ? path.join(tmpDir, "final.mp4")
-        : concatPath;
+        : postVfxPath;
 
       if (musicUrl) {
-        await mixAudio(concatPath, musicUrl, finalLocalPath, tmpDir);
+        await mixAudio(postVfxPath, musicUrl, finalLocalPath, tmpDir);
       }
 
       // Upload to Supabase Storage

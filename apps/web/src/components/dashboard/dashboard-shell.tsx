@@ -25,6 +25,7 @@ const NAV_LINKS = [
   { label: "Home",      href: "/dashboard" },
   { label: "Projects",  href: "/dashboard", active: true },
   { label: "Assets",    href: "/dashboard" },
+  { label: "Gallery",   href: "/gallery" },
   { label: "Settings",  href: "/settings" },
 ];
 

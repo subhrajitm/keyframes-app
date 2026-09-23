@@ -16,5 +16,5 @@ export function getProvider(name?: ProviderName): AIProvider {
   }
 }
 
-export type { AIProvider, ImageGenerationRequest, VideoGenerationRequest, GenerationResult } from "./types";
+export type { AIProvider, ImageGenerationRequest, VideoGenerationRequest, AudioGenerationRequest, GenerationResult } from "./types";
 export { DIMS } from "./fal";

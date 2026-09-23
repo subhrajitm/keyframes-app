@@ -36,12 +36,14 @@ export async function POST(req: NextRequest) {
   const clipOrder  = settings?.["clipOrder"]  as string[] | undefined;
   const musicUrl   = settings?.["musicUrl"]   as string | undefined;
   const transition = settings?.["transition"] as "none" | "fade" | "dissolve" | undefined;
+  const vfxEffect  = settings?.["vfxEffect"]  as string | undefined;
 
   const handle = await tasks.trigger<typeof composeVideoTask>("compose-video", {
     projectId,
     clipOrder,
     musicUrl,
     transition,
+    vfxEffect,
   });
 
   return NextResponse.json({ runId: handle.id });

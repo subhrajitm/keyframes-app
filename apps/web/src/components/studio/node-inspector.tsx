@@ -217,6 +217,65 @@ export function NodeInspector({ projectId }: NodeInspectorProps) {
           </>
         )}
 
+        {/* ── AudioGen ─────────────────────────────────────────── */}
+        {type === "audioGen" && (
+          <>
+            <Field label="Type">
+              <div className="flex gap-2">
+                {(["narration", "ambient"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => updateNodeData(node.id, { audioType: t })}
+                    className={`flex-1 rounded border py-2 text-xs capitalize transition-colors ${
+                      data.audioType === t
+                        ? "border-white/35 bg-white/[0.07] text-white"
+                        : "border-white/[0.07] text-white/40 hover:border-white/15"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            {data.audioType === "narration" && (
+              <Field label="Voice">
+                <select
+                  value={(data.audioVoice as string) ?? "af_sky"}
+                  onChange={(e) => updateNodeData(node.id, { audioVoice: e.target.value })}
+                  className="w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none"
+                >
+                  {["af_sky", "af_bella", "am_adam", "am_echo", "bf_emma", "bm_george"].map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
+              </Field>
+            )}
+
+            <Field label={data.audioType === "narration" ? "Script" : "Describe the sound"}>
+              <textarea
+                rows={4}
+                className="w-full resize-none rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-white placeholder:text-white/25 focus:border-violet-500/50 focus:outline-none leading-relaxed"
+                value={(data.audioText as string) ?? ""}
+                onChange={(e) => updateNodeData(node.id, { audioText: e.target.value })}
+                placeholder={
+                  data.audioType === "narration"
+                    ? "Enter the narration script…"
+                    : "Describe the sound, e.g. 'rainy coffee shop ambience'…"
+                }
+              />
+            </Field>
+
+            {data.audioUrl && (
+              <Field label="Generated audio">
+                <audio controls src={data.audioUrl as string} className="w-full" />
+              </Field>
+            )}
+
+            <AudioGenerateButton nodeId={node.id} data={data} updateNodeData={updateNodeData} />
+          </>
+        )}
+
         {/* ── Output ───────────────────────────────────────────── */}
         {type === "output" && (
           <Field label="Clip order">
@@ -261,5 +320,53 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       </label>
       {children}
     </div>
+  );
+}
+
+function AudioGenerateButton({ nodeId, data, updateNodeData }: {
+  nodeId: string;
+  data: import("@/store/project-store").NodeData;
+  updateNodeData: (id: string, d: Partial<import("@/store/project-store").NodeData>) => void;
+}) {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerate = async () => {
+    if (!data.audioText || isGenerating) return;
+    setIsGenerating(true);
+    try {
+      const res = await fetch("/api/audio/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: data.audioText,
+          type: data.audioType ?? "narration",
+          voice: data.audioVoice,
+        }),
+      });
+      const d = await res.json() as { audioUrl?: string; error?: string };
+      if (!res.ok) throw new Error(d.error ?? "Failed");
+      updateNodeData(nodeId, { audioUrl: d.audioUrl });
+      toast.success("Audio generated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Audio generation failed");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="w-full gap-1.5 text-violet-300/70 hover:bg-violet-500/10 hover:text-violet-200 disabled:opacity-40"
+      onClick={handleGenerate}
+      disabled={!data.audioText || isGenerating}
+    >
+      {isGenerating
+        ? <span className="material-symbols-rounded animate-spin text-[16px]">progress_activity</span>
+        : <span className="material-symbols-rounded text-[16px]">mic</span>
+      }
+      {isGenerating ? "Generating…" : "Generate Audio"}
+    </Button>
   );
 }

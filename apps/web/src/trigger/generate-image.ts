@@ -38,13 +38,16 @@ export const generateImageTask = task({
         style: shotSpec.style,
         modelId: shotSpec.imageModel,
         characterStrength: shotSpec.characterStrength,
+        numVariations: shotSpec.numVariations,
       });
 
-      // Store image and advance to video_pending
+      // Store image (and any variations) then advance to video_pending
+      const variationUrls = result.urls ?? [result.url];
       await supabase
         .from("shots")
         .update({
           image_url: result.url,
+          variation_urls: variationUrls,
           status: "video_pending",
           updated_at: new Date().toISOString(),
         })

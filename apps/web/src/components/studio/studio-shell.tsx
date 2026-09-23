@@ -15,13 +15,14 @@ import { useProjectStore, type KFNode, type KFEdge, type ProjectSettings } from 
 interface StudioShellProps {
   projectId: string;
   initialTitle: string;
+  initialIsPublic?: boolean;
   initialNodes: KFNode[];
   initialEdges: KFEdge[];
   initialSettings?: Partial<ProjectSettings>;
   initialDescription?: string;
 }
 
-export function StudioShell({ projectId, initialTitle, initialNodes, initialEdges, initialSettings, initialDescription }: StudioShellProps) {
+export function StudioShell({ projectId, initialTitle, initialIsPublic, initialNodes, initialEdges, initialSettings, initialDescription }: StudioShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -43,6 +44,7 @@ export function StudioShell({ projectId, initialTitle, initialNodes, initialEdge
       <StudioToolbar
         projectId={projectId}
         initialTitle={initialTitle}
+        initialIsPublic={initialIsPublic}
         onTitleChange={handleTitleChange}
         onSettingsOpen={() => setSettingsOpen(true)}
         onSaveTemplate={() => setSaveTemplateOpen(true)}

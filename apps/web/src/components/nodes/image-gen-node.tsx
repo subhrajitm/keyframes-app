@@ -19,6 +19,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
   const [isBusy, setIsBusy] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const updateShotStatus = useSceneStore((s) => s.updateShotStatus);
 
   const shot = useSceneStore((s) =>
     s.scenes.flatMap((sc) => sc.shots).find((sh) => sh.node_id === id)
@@ -26,7 +28,27 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
 
   const status = shot?.status ?? "idle";
   const imageUrl = shot?.image_url ?? (data.outputUrl as string | undefined);
+  const variationUrls: string[] = shot?.variation_urls ?? [];
   const isProcessing = ["image_pending", "image_processing", "video_pending", "video_processing"].includes(status);
+
+  const handleSelectVariation = async (index: number) => {
+    if (!shot?.id || isSwitching) return;
+    setIsSwitching(true);
+    try {
+      const res = await fetch(`/api/shots/${shot.id}/select-variation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ variationIndex: index }),
+      });
+      const d = await res.json() as { imageUrl?: string; error?: string };
+      if (!res.ok) throw new Error(d.error ?? "Failed");
+      updateShotStatus(shot.id, { image_url: d.imageUrl ?? null });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to switch variation");
+    } finally {
+      setIsSwitching(false);
+    }
+  };
 
   const dotCls =
     status === "completed" ? "bg-emerald-400"
@@ -100,6 +122,30 @@ export const ImageGenNode = memo(({ id, data }: NodeProps<KFNode>) => {
           </button>
         )}
       </div>
+
+      {/* Variation picker */}
+      {variationUrls.length > 1 && (
+        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {variationUrls.map((url, i) => (
+            <button
+              key={i}
+              onClick={(e) => { e.stopPropagation(); handleSelectVariation(i); }}
+              disabled={isSwitching}
+              className={`relative shrink-0 overflow-hidden rounded transition-all ${
+                url === imageUrl
+                  ? "ring-2 ring-white/60"
+                  : "ring-1 ring-white/10 opacity-60 hover:opacity-100"
+              }`}
+              style={{ width: 44, height: 28 }}
+            >
+              <img src={url} alt={`v${i + 1}`} className="h-full w-full object-cover" />
+              <span className="absolute bottom-0 left-0 rounded-tr bg-black/70 px-0.5 text-[8px] text-white/70">
+                {i + 1}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <Handle type="source" position={Position.Right} id="image-out"
         className="!h-2.5 !w-2.5 !rounded-full !border !border-white/15 !bg-[#161616]" />

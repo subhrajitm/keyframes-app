@@ -16,6 +16,7 @@ import { PromptNode } from "@/components/nodes/prompt-node";
 import { ImageGenNode } from "@/components/nodes/image-gen-node";
 import { VideoGenNode } from "@/components/nodes/video-gen-node";
 import { OutputNode } from "@/components/nodes/output-node";
+import { AudioGenNode } from "@/components/nodes/audio-gen-node";
 import { useProjectStore, type NodeType, type KFNode, type KFEdge } from "@/store/project-store";
 import { NodeInspector } from "@/components/studio/node-inspector";
 import { CanvasToolbar } from "@/components/studio/canvas-toolbar";
@@ -28,6 +29,7 @@ const NODE_TYPES: NodeTypes = {
   imageGen: ImageGenNode,
   videoGen: VideoGenNode,
   output: OutputNode,
+  audioGen: AudioGenNode,
 };
 
 interface StudioCanvasProps {
